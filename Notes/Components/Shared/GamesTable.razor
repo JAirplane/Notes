@@ -1,0 +1,33 @@
+﻿
+<div class="table-responsive">
+	<table class="table table-striped">
+		<thead class="thead-light">
+			<tr>
+				<th>Name</th>
+				<th>Genre</th>
+				<th>Release Date</th>
+				<th><input type="checkbox" @onchange="(() => displayButtons = !displayButtons)" /></th>
+			</tr>
+		</thead>
+		<tbody>
+			@if (Games == null || Games.Count == 0)
+			{
+				<tr>No items in collection</tr>
+			}
+			else
+			{
+				@foreach (Game g in Games)
+				{
+					<OneGame Game="g" IsTable="true" DisplayButton="displayButtons" />
+				}
+			}
+		</tbody>
+	</table>
+</div>
+
+@code {
+	[Parameter]
+	public List<Game>? Games { get; set; }
+
+	private bool displayButtons = false;
+}

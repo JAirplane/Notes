@@ -1,0 +1,78 @@
+﻿@if(Game is null)
+{
+	<div class="container">
+		<div class="row text-center alert-danger">
+			<div class="col">
+				<p>No Game Found</p>
+			</div>
+		</div>
+	</div>
+}
+else if (!IsTable)
+{
+	<div class="container">
+		<div class="row text-center alert alert-info">
+			<div class="col">
+				<p>@Game.Name</p>
+				<p>@Game.Genre</p>
+				<p>@Game.ReleaseDate.ToString("dd.MM.yyyy")</p>
+			</div>
+		</div>
+	</div>
+	@if(DisplayButton)
+	{
+		<div class="container">
+			<div class="row">
+				<div class="col offset-3">
+					<button class="btn btn-danger" @onclick="Delete">Delete</button>
+				</div>
+				<div class="col">
+					@if (message is not null)
+					{
+						<span class="text-danger">@message</span>
+					}
+				</div>
+			</div>
+		</div>
+	}
+}
+else
+{
+	<tr>
+		<td>@Game.Name</td>
+		<td>@Game.Genre</td>
+		<td>@Game.ReleaseDate.ToString("dd.MM.yyyy")</td>
+		<td>
+			@if (DisplayButton)
+			{
+				<button class="btn btn-danger" @onclick="Delete">Delete</button>
+				@if (message is not null)
+				{
+					<span class="text-danger pl-3">@message</span>
+				}
+			}
+		</td>
+	</tr>
+}
+
+@code
+{
+	[Parameter]
+	public Game? Game{ get; set; }
+
+	[Parameter]
+	public bool IsTable{ get; set; }
+
+	[Parameter]
+	public bool DisplayButton { get; set; } = false;
+
+	string? message;
+
+	public void Delete()
+	{
+		if(Game is not null)
+		{
+			message = $"Game {Game.Name} deleted";
+		}
+	}
+}

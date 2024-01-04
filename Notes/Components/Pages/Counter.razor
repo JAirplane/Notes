@@ -9,6 +9,10 @@
 
 <button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
 
+<GamesTable Games="anotherGames" />
+
+<OneGame Game="anotherGames[0]" IsTable="false" />
+
 @code {
     private int currentCount = 0;
 
@@ -19,4 +23,25 @@
     {
         currentCount += IncrementAmount;
     }
+
+	private List<Game>? anotherGames;
+
+	protected override void OnInitialized()
+	{
+		anotherGames = new List<Game>
+		{
+			new Game()
+			{
+				Name = "Test 1",
+				Genre = "Simulator",
+				ReleaseDate = new DateTime(2013, 10, 15)
+			},
+			new Game()
+			{
+				Name = "Test 2",
+				Genre = "Action/RPG",
+				ReleaseDate = new DateTime(2016, 05, 18)
+			}
+		};
+	}
 }
