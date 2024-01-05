@@ -24,13 +24,10 @@ else if (!IsTable)
 		<div class="container">
 			<div class="row">
 				<div class="col offset-3">
-					<button class="btn btn-danger" @onclick="Delete">Delete</button>
+					<button class="btn btn-danger" @onclick="SwitchGame">Switch</button>
 				</div>
 				<div class="col">
-					@if (message is not null)
-					{
-						<span class="text-danger">@message</span>
-					}
+					
 				</div>
 			</div>
 		</div>
@@ -45,11 +42,7 @@ else
 		<td>
 			@if (DisplayButton)
 			{
-				<button class="btn btn-danger" @onclick="Delete">Delete</button>
-				@if (message is not null)
-				{
-					<span class="text-danger pl-3">@message</span>
-				}
+				<button class="btn btn-danger" @onclick="(() => DeleteGame.InvokeAsync(Game))">Delete</button>
 			}
 		</td>
 	</tr>
@@ -66,13 +59,9 @@ else
 	[Parameter]
 	public bool DisplayButton { get; set; } = false;
 
-	string? message;
+	[Parameter]
+	public EventCallback<Game> DeleteGame { get; set; }
 
-	public void Delete()
-	{
-		if(Game is not null)
-		{
-			message = $"Game {Game.Name} deleted";
-		}
-	}
+	[Parameter]
+	public EventCallback SwitchGame { get; set; }
 }

@@ -19,11 +19,13 @@
 
 <GamesTable Games="games"/>
 
-<OneGame Game="games[0]" IsTable="false" DisplayButton="true"/>
+<OneGame Game="gameToShow" IsTable="false" DisplayButton="true" SwitchGame="ShowNewGame"/>
 
 @code
 {
 	private List<Game>? games;
+	private Random? rnd;
+	private Game? gameToShow;
 
 	protected override void OnInitialized()
 	{
@@ -48,5 +50,33 @@
 				ReleaseDate = new DateTime(2019, 03, 10)
 			}
 		};
+
+		rnd = new Random(DateTime.Now.Microsecond);
+		gameToShow = games[rnd.Next(0, games.Count)];
+	}
+
+	void ShowNewGame()
+	{
+		gameToShow = SwitchGame();
+	}
+
+	public Game? SwitchGame()
+	{
+		if(games is not null)
+		{
+			Game? tempGame = null;
+			if (games.Count >= 2)
+			{
+				int iterator = rnd.Next(0, games.Count);
+				tempGame = games[iterator];
+			}
+			else if (games.Count == 1)
+			{
+				tempGame = games[0];
+			}
+			else return new Game() {Name = "No items in collection", ReleaseDate = DateTime.Now };
+			return tempGame;
+		}
+		return null;
 	}
 }
