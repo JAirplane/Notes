@@ -1,0 +1,64 @@
+﻿@if(Game is null)
+{
+	<div class="container">
+		<div class="row text-center alert-danger">
+			<div class="col">
+				<p>No Game Found</p>
+			</div>
+		</div>
+	</div>
+}
+else if (!IsTable)
+{
+	<div class="container">
+		<div class="row text-center alert alert-info">
+			<div class="col">
+				<p>@Game.Name</p>
+				<p>@Game.Genre</p>
+				<p>@Game.ReleaseDate.ToString("dd.MM.yyyy")</p>
+			</div>
+			@if(DisplayButton)
+			{
+				<div class="container">
+					<div class="row">
+						<div class="col">
+							<button class="btn btn-primary" @onclick="SwitchGame">Switch</button>
+						</div>
+					</div>
+				</div>
+			}
+		</div>
+	</div>
+}
+else
+{
+	<tr>
+		<td>@Game.Name</td>
+		<td>@Game.Genre</td>
+		<td>@Game.ReleaseDate.ToString("dd.MM.yyyy")</td>
+		<td>
+			@if (DisplayButton)
+			{
+				<button class="btn btn-danger" @onclick="(() => DeleteGame.InvokeAsync(Game))">Delete</button>
+			}
+		</td>
+	</tr>
+}
+
+@code
+{
+	[Parameter]
+	public Game? Game{ get; set; }
+
+	[Parameter]
+	public bool IsTable{ get; set; }
+
+	[Parameter]
+	public bool DisplayButton { get; set; } = false;
+
+	[Parameter]
+	public EventCallback<Game> DeleteGame { get; set; }
+
+	[Parameter]
+	public EventCallback SwitchGame { get; set; }
+}

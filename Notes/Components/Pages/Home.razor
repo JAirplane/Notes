@@ -1,9 +1,75 @@
 ﻿@page "/"
+@rendermode InteractiveServer
+@inject Notes.Repository.IRepository repo
 
-<PageTitle>Home</PageTitle>
+<div class="container">
+	<div class="row">
+		<div class="col text-center">
+			<h1>Welcome to Home page</h1>
+		</div>
+	</div>
+</div>
 
-<h1>Hello, world!</h1>
+<div class="container">
+	<div class="row">
+		<div class="col text-center">
+			<h2>Show all games in Database:</h2>
+		</div>
+	</div>
+</div>
 
-Welcome to your new app.
+<GamesTable Games="games"/>
 
-<Counter IncrementAmount="5"/>
+<OneGame Game="gameToShow" IsTable="false" DisplayButton="true" SwitchGame="ShowNewGame"/>
+
+<div class="container">
+	<div class="row">
+		<div class="col text-center">
+			<button @onclick="AddNewGame" class="btn btn-success">Add game</button>
+		</div>
+	</div>
+</div>
+
+@code
+{
+	private List<Game>? games;
+	private Random? rnd;
+	private Game? gameToShow;
+
+	protected override void OnInitialized()
+	{
+		games = repo.GetAllGames();
+		rnd = new Random(DateTime.Now.Microsecond);
+		gameToShow = games[rnd.Next(0, games.Count)];
+	}
+
+	void ShowNewGame()
+	{
+		gameToShow = SwitchGame();
+	}
+
+	public Game? SwitchGame()
+	{
+		if(games is not null)
+		{
+			Game? tempGame = null;
+			if (games.Count >= 2)
+			{
+				int iterator = rnd.Next(0, games.Count);
+				tempGame = games[iterator];
+			}
+			else if (games.Count == 1)
+			{
+				tempGame = games[0];
+			}
+			else return new Game() {Name = "No items in collection", ReleaseDate = DateTime.Now };
+			return tempGame;
+		}
+		return null;
+	}
+
+	void AddNewGame()
+	{
+		games?.Add(new Game(){Name = "Test Game", Genre = "Test", ReleaseDate = DateTime.Today});
+	}
+}
