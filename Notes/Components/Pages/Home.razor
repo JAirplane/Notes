@@ -1,5 +1,6 @@
 ﻿@page "/"
 @rendermode InteractiveServer
+@inject Notes.Repository.IRepository repo
 
 <div class="container">
 	<div class="row">
@@ -21,36 +22,23 @@
 
 <OneGame Game="gameToShow" IsTable="false" DisplayButton="true" SwitchGame="ShowNewGame"/>
 
+<div class="container">
+	<div class="row">
+		<div class="col text-center">
+			<button @onclick="AddNewGame" class="btn btn-success">Add game</button>
+		</div>
+	</div>
+</div>
+
 @code
 {
-	private List<Game>? games = new List<Game>();
+	private List<Game>? games;
 	private Random? rnd;
 	private Game? gameToShow;
 
 	protected override void OnInitialized()
 	{
-		games = new List<Game>
-		{
-			new Game()
-			{
-				Name = "Cities SkyLine",
-				Genre = "Simulator",
-				ReleaseDate = new DateTime(2013, 10, 15)
-			},
-			new Game()
-			{
-				Name = "The Witcher 3",
-				Genre = "Action/RPG",
-				ReleaseDate = new DateTime(2016, 05, 18)
-			},
-			new Game()
-			{
-				Name = "They are billion!",
-				Genre = "Strategy",
-				ReleaseDate = new DateTime(2019, 03, 10)
-			}
-		};
-
+		games = repo.GetAllGames();
 		rnd = new Random(DateTime.Now.Microsecond);
 		gameToShow = games[rnd.Next(0, games.Count)];
 	}
@@ -78,5 +66,10 @@
 			return tempGame;
 		}
 		return null;
+	}
+
+	void AddNewGame()
+	{
+		games?.Add(new Game(){Name = "Test Game", Genre = "Test", ReleaseDate = DateTime.Today});
 	}
 }

@@ -1,10 +1,16 @@
+using Notes;
 using Notes.Components;
+using Notes.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
 	.AddInteractiveServerComponents();
+
+builder.Services.AddSingleton<SingletonService>();
+builder.Services.AddTransient<TransientService>();
+builder.Services.AddTransient<IRepository, GamesRepository>();
 
 var app = builder.Build();
 

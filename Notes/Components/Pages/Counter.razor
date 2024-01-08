@@ -1,5 +1,7 @@
 ﻿@page "/counter"
 @rendermode InteractiveServer
+@inject SingletonService singleton
+@inject TransientService transient
 
 <PageTitle>Counter</PageTitle>
 
@@ -30,7 +32,16 @@
     </div>
 </div>
 
-
+<div class="container">
+    <div class="row mt-3">
+        <div class="col-6 text-center alert-primary">
+            Singleton count: @singleton.Value
+        </div>
+        <div class="col-6 text-center alert-danger">
+            Transient count: @transient.Value
+        </div>
+    </div>
+</div>
 
 
 @code {
@@ -42,6 +53,8 @@
     private void IncrementCount()
     {
         currentCount += IncrementAmount;
+        singleton.Value = currentCount;
+        transient.Value = currentCount;
     }
 
 }
