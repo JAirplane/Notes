@@ -17,21 +17,18 @@ else if (!IsTable)
 				<p>@Game.Genre</p>
 				<p>@Game.ReleaseDate.ToString("dd.MM.yyyy")</p>
 			</div>
+			@if(DisplayButton)
+			{
+				<div class="container">
+					<div class="row">
+						<div class="col">
+							<button class="btn btn-primary" @onclick="SwitchGame">Switch</button>
+						</div>
+					</div>
+				</div>
+			}
 		</div>
 	</div>
-	@if(DisplayButton)
-	{
-		<div class="container">
-			<div class="row">
-				<div class="col offset-3">
-					<button class="btn btn-danger" @onclick="SwitchGame">Switch</button>
-				</div>
-				<div class="col">
-					
-				</div>
-			</div>
-		</div>
-	}
 }
 else
 {

@@ -1,0 +1,33 @@
+﻿@typeparam TItem
+
+@if (ItemsCollection == null || ItemsCollection.Count == 0)
+{
+	@if (EmptyCollection is null)
+	{
+		<img src="https://cdn.dribbble.com/users/1053052/screenshots/3600670/_____.gif" height="200" />
+	}
+	else
+		@EmptyCollection
+
+}
+else
+{
+	@foreach (TItem item in ItemsCollection)
+	{
+		if (ItemTemplate is not null)
+		{
+			@ItemTemplate(item)
+		}
+	}
+}
+
+@code {
+	[Parameter]
+	public RenderFragment? EmptyCollection { get; set; }
+
+	[Parameter]
+	public RenderFragment<TItem>? ItemTemplate { get; set; }
+
+	[Parameter]
+	public List<TItem>? ItemsCollection { get; set; }
+}

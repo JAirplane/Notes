@@ -10,17 +10,11 @@
 			</tr>
 		</thead>
 		<tbody>
-			@if (Games == null || Games.Count == 0)
-			{
-				<tr>No items in collection</tr>
-			}
-			else
-			{
-				@foreach (Game g in Games)
-				{
-					<OneGame Game="g" IsTable="true" DisplayButton="displayButtons" DeleteGame="DeleteGame" />
-				}
-			}
+			<GenericList ItemsCollection="Games">
+				<ItemTemplate Context="game">
+					<OneGame Game="game" IsTable=true DisplayButton="displayButtons" DeleteGame="DeleteGame"/>
+				</ItemTemplate>
+			</GenericList>
 		</tbody>
 	</table>
 </div>
