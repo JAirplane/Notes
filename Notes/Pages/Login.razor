@@ -3,16 +3,14 @@
 
 <PageTitle>Login</PageTitle>
 
-<h1>This is the login page</h1>
-
 <div class="login-form">
 	<form action="/examples/actions/confirmation.php" method="post">
 		<h2 class="text-center">Log in</h2>
 		<div class="form-group">
-			<input type="text" class="form-control" placeholder="Username" required="required">
+			<input type="text" class="form-control" placeholder="@UsernamePlaceholder" required="required">
 		</div>
 		<div class="form-group">
-			<input type="password" class="form-control" placeholder="Password" required="required">
+			<input type="password" class="form-control" placeholder="@PasswordPlaceholder" required="required">
 		</div>
 		<div class="form-group">
 			<button type="submit" class="btn btn-primary btn-block">Log in</button>
@@ -27,4 +25,9 @@
 
 <a href="/main">Go to main page</a>
 
-<SurveyPrompt Title="How is Blazor working for you?" />
+@code{
+	[Parameter]
+	public string UsernamePlaceholder { get; set; } = "Username";
+	[Parameter]
+	public string PasswordPlaceholder { get; set; } = "Password";
+}
