@@ -1,27 +1,33 @@
-﻿@layout LoginLayout
+﻿@using System.Timers
+@using System.ComponentModel.DataAnnotations
+@layout LoginLayout
 @page "/"
 
 <PageTitle>Login</PageTitle>
 
-<div class="login-form">
-	<form action="/examples/actions/confirmation.php" method="post">
-		<h2 class="text-center">Log in</h2>
-		<div class="form-group">
-			<input type="text" class="form-control" placeholder="@UsernamePlaceholder" required="required">
-		</div>
-		<div class="form-group">
-			<input type="password" class="form-control" placeholder="@PasswordPlaceholder" required="required">
-		</div>
-		<div class="form-group">
-			<button type="submit" class="btn btn-primary btn-block">Log in</button>
-		</div>
-		<div class="clearfix">
-			<label class="float-left form-check-label"><input type="checkbox"> Remember me</label>
-			<a href="#" class="float-right">Forgot Password?</a>
-		</div>
-	</form>
-	<p class="text-center"><a href="#">Create an Account</a></p>
-</div>
+	<div class="login-form">
+			<EditForm Model="credentials" OnValidSubmit="SendCredentials">
+				<DataAnnotationsValidator />
+				<h2 class="text-center">@LoginHeader</h2>
+				<div class="form-group">
+					<InputText class="form-control" placeholder="@UsernamePlaceholder" @bind-Value="credentials.LoginInput" />
+					<ValidationMessage For="(() => credentials.LoginInput)" />
+				</div>
+				<div class="form-group">
+					<InputText class="form-control" placeholder="@PasswordPlaceholder" @bind-Value="credentials.PasswordInput" />
+					<ValidationMessage For="(() => credentials.PasswordInput)" />
+				</div>
+				<div class="form-group">
+					<button type="submit" class="btn btn-primary btn-block">@ButtonTitle</button>
+				</div>
+				<div class="clearfix">
+					<label class="float-left form-check-label"><input type="checkbox"> Remember me</label>
+					<a href="#" class="float-right">Forgot Password?</a>
+				</div>
+			</EditForm>
+		<p class="text-center"><a href="#">Create an Account</a></p>
+	</div>
+
 
 <a href="/main">Go to main page</a>
 
@@ -30,4 +36,19 @@
 	public string UsernamePlaceholder { get; set; } = "Username";
 	[Parameter]
 	public string PasswordPlaceholder { get; set; } = "Password";
+	[Parameter]
+	public string LoginHeader { get; set; } = "Login";
+	[Parameter]
+	public string ButtonTitle { get; set; } = "Log in";
+
+	Credentials credentials = new();
+
+	protected override void OnInitialized()
+	{
+		
+	}
+	void SendCredentials()
+	{
+
+	}
 }
