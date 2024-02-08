@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34525.116
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Notes", "Notes\Notes.csproj", "{4A462103-6401-46F2-BB77-285751B7E4FF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Notes", "Notes\Notes.csproj", "{4A462103-6401-46F2-BB77-285751B7E4FF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Notes_Model", "Notes_Model\Notes_Model.csproj", "{1ECB14EB-CF6C-4FBC-AE11-F30D2690C19D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Notes_Model", "Notes_Model\Notes_Model.csproj", "{1ECB14EB-CF6C-4FBC-AE11-F30D2690C19D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Notes_ViewModel", "Notes_ViewModel\Notes_ViewModel.csproj", "{83414205-F788-4B3A-8BBD-EE7DEF859330}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Notes_ViewModel", "Notes_ViewModel\Notes_ViewModel.csproj", "{83414205-F788-4B3A-8BBD-EE7DEF859330}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

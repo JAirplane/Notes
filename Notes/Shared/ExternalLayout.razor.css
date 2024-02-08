@@ -1,0 +1,9 @@
+.page {
+	height: 100%;
+	flex-direction: column;
+}
+.border-top {
+	border-top: 1px solid #d6d5d5;
+}
+
+
