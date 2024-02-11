@@ -1,4 +1,4 @@
-﻿@layout ExternalLayout_Register
+﻿@layout ExternalLayout
 @page "/register"
 
 <PageTitle>Registration</PageTitle>
@@ -6,5 +6,20 @@
 <h3>Register</h3>
 
 @code {
+	[CascadingParameter]
+	public ExternalLayout? Layout { get; set; }
+	[Parameter]
+	public string HeaderLinkTitle { get; set; } = "To Login Page";
+	[Parameter]
+	public string HeaderLink { get; set; } = "/";
 
+	protected override void OnInitialized()
+	{
+		if (Layout is not null)
+		{
+			Layout.HeaderLinkTitle = HeaderLinkTitle;
+			Layout.HeaderLink = HeaderLink;
+			Layout.RedrawLayout();
+		}
+	}
 }
