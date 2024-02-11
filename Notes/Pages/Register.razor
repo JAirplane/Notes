@@ -3,15 +3,68 @@
 
 <PageTitle>Registration</PageTitle>
 
-<h3>Register</h3>
+<div class="login-form">
+	<EditForm Model="userData" OnValidSubmit="SendUserData">
+		<DataAnnotationsValidator />
+		<h2 class="text-center">@FormHeader</h2>
+		<div class="form-group">
+			<InputText class="form-control" placeholder="@LoginPlaceholder" @bind-Value="credentials.LoginInput" />
+			<ValidationMessage For="(() => credentials.LoginInput)" />
+		</div>
+		<div class="form-group">
+			<InputText class="form-control" placeholder="@PasswordPlaceholder" @bind-Value="credentials.PasswordInput" />
+			<ValidationMessage For="(() => credentials.PasswordInput)" />
+		</div>
+		<div class="form-group">
+			<InputText class="form-control" placeholder="@NamePlaceholder" @bind-Value="userData.Name" />
+			<ValidationMessage For="(() => userData.Name)" />
+		</div>
+		<div class="form-group">
+			<InputText class="form-control" placeholder="@SurnamePlaceholder" @bind-Value="userData.Surname" />
+			<ValidationMessage For="(() => userData.Surname)" />
+		</div>
+		<div class="form-group">
+			<InputText class="form-control" placeholder="@EmailPlaceholder" @bind-Value="userData.Email" />
+			<ValidationMessage For="(() => userData.Email)" />
+		</div>
+		<div class="form-group">
+			<SfMaskedTextBox class="form-control" Mask='000-000-0000' placeholder="@PhonePlaceholder" @bind-Value="userData.Phone" />
+			<ValidationMessage For="(() => userData.Phone)" />
+		</div>
+		<div class="form-group">
+			<button type="submit" class="btn btn-primary btn-block">@ButtonTitle</button>
+		</div>
+	</EditForm>
+</div>
 
 @code {
+	//customize layout variables
 	[CascadingParameter]
 	public ExternalLayout? Layout { get; set; }
 	[Parameter]
 	public string HeaderLinkTitle { get; set; } = "To Login Page";
 	[Parameter]
 	public string HeaderLink { get; set; } = "/";
+	//Register form variables
+	[Parameter]
+	public string FormHeader { get; set; } = "Registration";
+	[Parameter]
+	public string LoginPlaceholder { get; set; } = "Login";
+	[Parameter]
+	public string PasswordPlaceholder { get; set; } = "Password";
+	[Parameter]
+	public string NamePlaceholder { get; set; } = "Your name";
+	[Parameter]
+	public string SurnamePlaceholder { get; set; } = "Your surname";
+	[Parameter]
+	public string EmailPlaceholder { get; set; } = "Email";
+	[Parameter]
+	public string PhonePlaceholder { get; set; } = "Phone number";
+	[Parameter]
+	public string ButtonTitle { get; set; } = "Submit";
+
+	private UserData userData = new();
+	private Credentials credentials = new();
 
 	protected override void OnInitialized()
 	{
@@ -21,5 +74,9 @@
 			Layout.HeaderLink = HeaderLink;
 			Layout.RedrawLayout();
 		}
+	}
+	void SendUserData()
+	{
+		//TODO
 	}
 }
