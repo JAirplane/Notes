@@ -7,8 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Syncfusion.Blazor.Inputs" Version="24.2.4" />
-    <PackageReference Include="Syncfusion.Blazor.Themes" Version="24.2.4" />
+    <None Include="wwwroot\script\PhoneMask.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
   <ItemGroup>

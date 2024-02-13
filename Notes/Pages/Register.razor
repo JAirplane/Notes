@@ -1,4 +1,6 @@
 ﻿@layout ExternalLayout
+@inject IJSRuntime JSRuntime
+
 @page "/register"
 
 <PageTitle>Registration</PageTitle>
@@ -8,12 +10,12 @@
 		<DataAnnotationsValidator />
 		<h2 class="text-center">@FormHeader</h2>
 		<div class="form-group">
-			<InputText class="form-control" placeholder="@LoginPlaceholder" @bind-Value="credentials.LoginInput" />
-			<ValidationMessage For="(() => credentials.LoginInput)" />
+			<InputText class="form-control" placeholder="@LoginPlaceholder" @bind-Value="userData.LoginInput" />
+			<ValidationMessage For="(() => userData.LoginInput)" />
 		</div>
 		<div class="form-group">
-			<InputText class="form-control" placeholder="@PasswordPlaceholder" @bind-Value="credentials.PasswordInput" />
-			<ValidationMessage For="(() => credentials.PasswordInput)" />
+			<InputText class="form-control" placeholder="@PasswordPlaceholder" @bind-Value="userData.PasswordInput" />
+			<ValidationMessage For="(() => userData.PasswordInput)" />
 		</div>
 		<div class="form-group">
 			<InputText class="form-control" placeholder="@NamePlaceholder" @bind-Value="userData.Name" />
@@ -28,7 +30,7 @@
 			<ValidationMessage For="(() => userData.Email)" />
 		</div>
 		<div class="form-group">
-			<SfMaskedTextBox class="form-control" Mask='000-000-0000' placeholder="@PhonePlaceholder" @bind-Value="userData.Phone" />
+			<InputText class="form-control" id="phone-mask" placeholder="@PhonePlaceholder" @bind-Value="userData.Phone" />
 			<ValidationMessage For="(() => userData.Phone)" />
 		</div>
 		<div class="form-group">
@@ -63,8 +65,7 @@
 	[Parameter]
 	public string ButtonTitle { get; set; } = "Submit";
 
-	private UserData userData = new();
-	private Credentials credentials = new();
+	private RegistrationFormFields userData = new();
 
 	protected override void OnInitialized()
 	{
@@ -73,6 +74,13 @@
 			Layout.HeaderLinkTitle = HeaderLinkTitle;
 			Layout.HeaderLink = HeaderLink;
 			Layout.RedrawLayout();
+		}
+	}
+	protected override async Task OnAfterRenderAsync(bool firstRender)
+	{
+		if (firstRender)
+		{
+			await JSRuntime.InvokeVoidAsync("masks");
 		}
 	}
 	void SendUserData()
