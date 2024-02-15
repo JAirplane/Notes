@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Notes_ViewModel
+namespace Notes_Model
 {
     public class Credentials
     {

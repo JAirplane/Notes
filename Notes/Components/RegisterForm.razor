@@ -1,0 +1,72 @@
+﻿@inject IJSRuntime JSRuntime
+
+<div class="login-form">
+	<EditForm Model="userData" OnValidSubmit="SendUserData">
+		<DataAnnotationsValidator />
+		<h2 class="text-center">@FormHeader</h2>
+		<div class="form-group">
+			<InputText class="form-control" placeholder="@LoginPlaceholder" @bind-Value="userData.LoginInput" />
+			<ValidationMessage For="(() => userData.LoginInput)" />
+		</div>
+		<div class="form-group">
+			<InputText class="form-control" placeholder="@PasswordPlaceholder" @bind-Value="userData.PasswordInput" />
+			<ValidationMessage For="(() => userData.PasswordInput)" />
+		</div>
+		<div class="form-group">
+			<InputText class="form-control" placeholder="@NamePlaceholder" @bind-Value="userData.Name" />
+			<ValidationMessage For="(() => userData.Name)" />
+		</div>
+		<div class="form-group">
+			<InputText class="form-control" placeholder="@SurnamePlaceholder" @bind-Value="userData.Surname" />
+			<ValidationMessage For="(() => userData.Surname)" />
+		</div>
+		<div class="form-group">
+			<InputText class="form-control" placeholder="@EmailPlaceholder" @bind-Value="userData.Email" />
+			<ValidationMessage For="(() => userData.Email)" />
+		</div>
+		<div class="form-group">
+			<label for="phone-mask">@PhoneLabelPlaceholder</label>
+			<InputText class="form-control" id="phone-mask" placeholder="@PhoneMaskPlaceholder" @bind-Value="userData.Phone" />
+			<ValidationMessage For="(() => userData.Phone)" />
+		</div>
+		<div class="form-group">
+			<button type="submit" class="btn btn-primary btn-block">@ButtonTitle</button>
+		</div>
+	</EditForm>
+	<p class="text-center">Already have an account? <a href="/">Sign in</a></p>
+</div>
+
+@code {
+	[Parameter]
+	public string FormHeader { get; set; } = "Create an account";
+	[Parameter]
+	public string LoginPlaceholder { get; set; } = "Login";
+	[Parameter]
+	public string PasswordPlaceholder { get; set; } = "Password";
+	[Parameter]
+	public string NamePlaceholder { get; set; } = "Your name";
+	[Parameter]
+	public string SurnamePlaceholder { get; set; } = "Your surname";
+	[Parameter]
+	public string EmailPlaceholder { get; set; } = "Email";
+	[Parameter]
+	public string PhoneLabelPlaceholder { get; set; } = "Phone number";
+	[Parameter]
+	public string PhoneMaskPlaceholder { get; set; } = "+7(999)999-99-99";
+	[Parameter]
+	public string ButtonTitle { get; set; } = "Submit";
+
+	private RegistrationFormFields userData = new();
+
+	protected override async Task OnAfterRenderAsync(bool firstRender)
+	{
+		if (firstRender)
+		{
+			await JSRuntime.InvokeVoidAsync("masks");
+		}
+	}
+	void SendUserData()
+	{
+		//TODO
+	}
+}

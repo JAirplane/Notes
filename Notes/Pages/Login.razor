@@ -1,37 +1,16 @@
-﻿@using System.ComponentModel.DataAnnotations
-@layout ExternalLayout
+﻿@layout ExternalLayout
 @page "/"
 
 <PageTitle>Login</PageTitle>
 
-
-<div class="login-form">
-		<EditForm Model="credentials" OnValidSubmit="SendCredentials">
-			<DataAnnotationsValidator />
-			<h2 class="text-center">@FormHeader</h2>
-			<div class="form-group">
-			<InputText class="form-control" placeholder="@LoginPlaceholder" @bind-Value="credentials.LoginInput" />
-				<ValidationMessage For="(() => credentials.LoginInput)" />
-			</div>
-			<div class="form-group">
-				<InputText class="form-control" placeholder="@PasswordPlaceholder" @bind-Value="credentials.PasswordInput" />
-				<ValidationMessage For="(() => credentials.PasswordInput)" />
-			</div>
-			<div class="form-group">
-				<button type="submit" class="btn btn-primary btn-block">@ButtonTitle</button>
-			</div>
-			<div class="clearfix">
-				<label class="float-left form-check-label"><input type="checkbox"> Remember me</label>
-				<a href="#" class="float-right">Forgot Password?</a>
-			</div>
-		</EditForm>
-	<p class="text-center"><a href="/register">Create an Account</a></p>
+<LoginForm />
+<div class="container">
+	<div class="row">
+		<div class="col text-center">
+			<a href="/main">Go to main page</a>
+		</div>
+	</div>
 </div>
-
-
-<a href="/main">Go to main page</a>
-
-
 
 @code{
 	//customize layout variables
@@ -41,30 +20,14 @@
 	public string HeaderLinkTitle { get; set; } = "Register";
 	[Parameter]
 	public string HeaderLink { get; set; } = "/register";
-	//Login form variables
-	[Parameter]
-	public string FormHeader { get; set; } = "Login";
-	[Parameter]
-	public string LoginPlaceholder { get; set; } = "Username";
-	[Parameter]
-	public string PasswordPlaceholder { get; set; } = "Password";
-	
-	[Parameter]
-	public string ButtonTitle { get; set; } = "Log in";
-	
-	Credentials credentials = new();
 
 	protected override void OnInitialized()
 	{
-		if(Layout is not null)
+		if (Layout is not null)
 		{
 			Layout.HeaderLinkTitle = HeaderLinkTitle;
 			Layout.HeaderLink = HeaderLink;
 			Layout.RedrawLayout();
 		}
-	}
-	void SendCredentials()
-	{
-		//TODO
 	}
 }
