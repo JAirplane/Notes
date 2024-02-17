@@ -8,6 +8,9 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Notes_Model", "Notes_Model\Notes_Model.csproj", "{1ECB14EB-CF6C-4FBC-AE11-F30D2690C19D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Notes_ViewModel", "Notes_ViewModel\Notes_ViewModel.csproj", "{83414205-F788-4B3A-8BBD-EE7DEF859330}"
+	ProjectSection(ProjectDependencies) = postProject
+		{1ECB14EB-CF6C-4FBC-AE11-F30D2690C19D} = {1ECB14EB-CF6C-4FBC-AE11-F30D2690C19D}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

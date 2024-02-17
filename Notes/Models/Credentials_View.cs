@@ -1,9 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Notes_ViewModel
+namespace Notes.Models
 {
-    public class Credentials
-    {
+	public class Credentials_View
+	{
 		[Required(ErrorMessage = "Enter Login")]
 		[MinLength(4, ErrorMessage = "Login must contain at least 4 characters")]
 		[MaxLength(16, ErrorMessage = "Login must contain at most 16 characters")]

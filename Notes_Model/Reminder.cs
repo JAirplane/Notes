@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Notes_Model
 {
-	internal class Reminder : Note
+	public class Reminder : Note
 	{
 		public DateTime RemindTime { get; set; }
 	}

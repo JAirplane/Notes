@@ -1,4 +1,5 @@
 ﻿@inject IJSRuntime JSRuntime
+@inject NavigationManager navManager
 
 <div class="login-form">
 	<EditForm Model="userData" OnValidSubmit="SendUserData">
@@ -9,8 +10,12 @@
 			<ValidationMessage For="(() => userData.LoginInput)" />
 		</div>
 		<div class="form-group">
-			<InputText class="form-control" placeholder="@PasswordPlaceholder" @bind-Value="userData.PasswordInput" />
+			<InputText type="password" class="form-control" placeholder="@PasswordPlaceholder" @bind-Value="userData.PasswordInput" />
 			<ValidationMessage For="(() => userData.PasswordInput)" />
+		</div>
+		<div class="form-group">
+			<InputText type="password" class="form-control" placeholder="@PasswordConfirmPlaceholder" @bind-Value="userData.PasswordConfirmInput" />
+			<ValidationMessage For="(() => userData.PasswordConfirmInput)" />
 		</div>
 		<div class="form-group">
 			<InputText class="form-control" placeholder="@NamePlaceholder" @bind-Value="userData.Name" />
@@ -44,6 +49,8 @@
 	[Parameter]
 	public string PasswordPlaceholder { get; set; } = "Password";
 	[Parameter]
+	public string PasswordConfirmPlaceholder { get; set; } = "Confirm password";
+	[Parameter]
 	public string NamePlaceholder { get; set; } = "Your name";
 	[Parameter]
 	public string SurnamePlaceholder { get; set; } = "Your surname";
@@ -57,6 +64,7 @@
 	public string ButtonTitle { get; set; } = "Submit";
 
 	private RegistrationFormFields userData = new();
+	private Registration registration = new();
 
 	protected override async Task OnAfterRenderAsync(bool firstRender)
 	{
@@ -65,8 +73,15 @@
 			await JSRuntime.InvokeVoidAsync("masks");
 		}
 	}
-	void SendUserData()
+	public void SetRegistrationData()
 	{
-		//TODO
+		registration.NewUser = new User_VM(userData.LoginInput, userData.PasswordInput,
+						userData.Name, userData.Surname, userData.Email, userData.Phone);
+	}
+	public void SendUserData()
+	{
+		SetRegistrationData();
+		registration.AddNewUser();
+		navManager.NavigateTo("/");
 	}
 }

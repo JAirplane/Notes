@@ -3,9 +3,8 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Notes.Models
 {
-	//this class is actually like UserData class
-	//it was created due to blazor validation limitation
-	//Credentials field in UserData is LoginInput and PasswordInput here
+	//Class was created due to Blazor validation limitation
+	//Credentials_VM field is LoginInput and PasswordInput here
 	public class RegistrationFormFields
 	{
 		[Required(ErrorMessage = "Enter Login")]
@@ -17,6 +16,9 @@ namespace Notes.Models
 		[MinLength(4, ErrorMessage = "Password must contain at least 4 characters")]
 		[MaxLength(16, ErrorMessage = "Password must contain at most 16 characters")]
 		public string PasswordInput { get; set; } = string.Empty;
+
+		[Compare(nameof(PasswordInput), ErrorMessage = "Passwords must be equal")]
+		public string PasswordConfirmInput { get; set; } = string.Empty;
 
 		[Required(ErrorMessage = "Enter your name")]
 		[MaxLength(16, ErrorMessage = "Name must contain at most 50 characters")]

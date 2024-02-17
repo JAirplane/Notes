@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Notes_Model
 {
-	internal class Tag
+	public class Tag
 	{
 		public string TagName { get; set; } = string.Empty;
 	}

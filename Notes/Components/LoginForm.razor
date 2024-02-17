@@ -1,15 +1,18 @@
-﻿
+﻿@using System.ComponentModel.DataAnnotations;
+
+@inject NavigationManager navManager
+
 <div class="login-form">
-	<EditForm Model="credentials" OnValidSubmit="SendCredentials">
+	<EditForm Model="Credentials" OnValidSubmit="SendCredentials">
 		<DataAnnotationsValidator />
 		<h2 class="text-center">@FormHeader</h2>
 		<div class="form-group">
-			<InputText class="form-control" placeholder="@LoginPlaceholder" @bind-Value="credentials.LoginInput" />
-			<ValidationMessage For="(() => credentials.LoginInput)" />
+			<InputText class="form-control" placeholder="@LoginPlaceholder" @bind-Value="Credentials.LoginInput" />
+			<ValidationMessage For="(() => Credentials.LoginInput)" />
 		</div>
 		<div class="form-group">
-			<InputText class="form-control" placeholder="@PasswordPlaceholder" @bind-Value="credentials.PasswordInput" />
-			<ValidationMessage For="(() => credentials.PasswordInput)" />
+			<InputText type="password" class="form-control" placeholder="@PasswordPlaceholder" @bind-Value="Credentials.PasswordInput" />
+			<ValidationMessage For="(() => Credentials.PasswordInput)" />
 		</div>
 		<div class="form-group">
 			<button type="submit" class="btn btn-primary btn-block">@ButtonTitle</button>
@@ -18,6 +21,36 @@
 			<label class="float-left form-check-label"><input type="checkbox"> Remember me</label>
 			<a href="/resetpassword" class="float-right">Forgot Password?</a>
 		</div>
+		@if (credentialsChecked)
+		{
+			@if (authorization.ValidLogin)
+			{
+				@if (authorization.ValidPassword)
+				{
+					navManager.NavigateTo("/main");
+				}
+				else
+				{
+					<div class="container">
+						<div class="row text-center">
+							<div class="col">
+								<span class="text-danger">@InvalidPasswordMessage</span>
+							</div>
+						</div>
+					</div>
+				}
+			}
+			else
+			{
+				<div class="container">
+					<div class="row text-center">
+						<div class="col">
+							<span class="text-danger">@InvalidLoginMessage</span>
+						</div>
+					</div>
+				</div>
+			}
+		}
 	</EditForm>
 	<p class="text-center">Don't have an account? <a href="/register">Create an Account</a></p>
 </div>
@@ -29,14 +62,27 @@
 	public string LoginPlaceholder { get; set; } = "Username";
 	[Parameter]
 	public string PasswordPlaceholder { get; set; } = "Password";
+	[Parameter]
+	public string ButtonTitle { get; set; } = "Sign in";
 
 	[Parameter]
-	public string ButtonTitle { get; set; } = "Log in";
+	public string InvalidPasswordMessage { get; set; } = "Wrong password, please try again.";
+	[Parameter]
+	public string InvalidLoginMessage { get; set; } = "User with this credentials does not exist.";
 
-	private Credentials credentials = new();
+	private Credentials_View Credentials { get; set; } = new();
+	private Authorization authorization = new();
+	private bool credentialsChecked;
 
-	void SendCredentials()
+	public void SendCredentials()
 	{
-		//TODO
+		SetAuthorizationData();
+		authorization.GetUserByCredentials();
+		credentialsChecked = true;
+	}
+	public void SetAuthorizationData()
+	{
+		authorization.CredentialsVM.LoginInput = Credentials.LoginInput;
+		authorization.CredentialsVM.PasswordInput = Credentials.PasswordInput;
 	}
 }

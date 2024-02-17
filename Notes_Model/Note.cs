@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Notes_Model
 {
-	internal class Note
+	public class Note
 	{
 		public DateTime CreationDateTime { get; set; } = DateTime.Now;
 		public string Header { get; set; } = string.Empty;

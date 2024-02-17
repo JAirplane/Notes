@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Notes_Model
 {
-	internal class User
+	public class User
 	{
 		public int Id { get; set; }
 		public List<Note> UserNotes { get; set; } = [];
@@ -17,5 +17,15 @@ namespace Notes_Model
 		public string Surname { get; set; } = string.Empty;
 		public string Email { get; set; } = string.Empty;
 		public string Phone { get; set; } = string.Empty;
+		public User(string _login, string _password, string _name, string _surname,
+						string _email, string _phone)
+		{
+			Сredentials.Login = _login;
+			Сredentials.Password = _password;
+			Name = _name;
+			Surname = _surname;
+			Email = _email;
+			Phone = _phone;
+		}
 	}
 }

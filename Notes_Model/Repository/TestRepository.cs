@@ -6,31 +6,29 @@ using System.Threading.Tasks;
 
 namespace Notes_Model.Repository
 {
-	internal class TestRepository : IRepository
+	public static class TestRepository
 	{
-		private List<User>? users;
-        public TestRepository()
-        {
+		private static List<User>? users;
+		static TestRepository()
+		{
 			users =
 			[
-				new()
-				{
-					Id = 1,
-					Сredentials = {LoginInput = "admin", PasswordInput = "admin"},
-					Name = "Eugene",
-					Surname = "Shevchenko",
-					Email = "eugeneshevchenko0@gmail.com",
-					Phone = "79615796948"
-				}
+				new("admin", "admin", "Eugene", "Shevchenko", "eugeneshevchenko0@gmail.com", "79615796948")
 			];
-        }
-        public List<User> GetAllUsers()
+		}
+		public static List<User> GetAllUsers()
 		{
 			if(users is not null)
 			{
 				return users;
 			}
 			return [];
+		}
+		public static bool AddUser(User newUser)
+		{
+			if (newUser is null) return false;
+			users?.Add(newUser);
+			return true;
 		}
 	}
 }
