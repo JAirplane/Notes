@@ -5,10 +5,11 @@ using System.Text;
 using System.Threading.Tasks;
 using Notes_Model;
 using Notes_Model.Repository;
+using Notes_ViewModel.Models_VM;
 
 namespace Notes_ViewModel
 {
-	public class Authorization
+    public class Authorization
 	{
 		public Credentials_VM CredentialsVM { get; set; } = new();
 

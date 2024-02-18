@@ -3,7 +3,7 @@
 @inject NavigationManager navManager
 
 <div class="login-form">
-	<EditForm Model="Credentials" OnValidSubmit="SendCredentials">
+	<EditForm Model=@Credentials OnValidSubmit="SendCredentials">
 		<DataAnnotationsValidator />
 		<h2 class="text-center">@FormHeader</h2>
 		<div class="form-group">
@@ -70,11 +70,12 @@
 	[Parameter]
 	public string InvalidLoginMessage { get; set; } = "User with this credentials does not exist.";
 
+	//cannot use Credentials_VM in Authorization class due to validation limitation
 	private Credentials_View Credentials { get; set; } = new();
 	private Authorization authorization = new();
 	private bool credentialsChecked;
 
-	public void SendCredentials()
+	virtual public void SendCredentials()
 	{
 		SetAuthorizationData();
 		authorization.GetUserByCredentials();
