@@ -8,20 +8,28 @@ using System.Threading.Tasks;
 
 namespace Notes_ViewModel
 {
-	public class PasswordChange
+	public class EmailInput_VM
 	{
 		public string Email { get; set; } = string.Empty;
-        public bool UserFound { get; set; }
-        private User? matchedUser;
-		public void FindUserByEmail()
+		public int GetUserIdByEmail()
 		{
 			List<User> userCollection = TestRepository.GetAllUsers();
 			var user = userCollection.FirstOrDefault(user => user.Email.Equals(Email));
 			if (user is not null)
 			{
-				matchedUser = user;
-				UserFound = true;
+				return user.Id;
 			}
+			return -1;
+		}
+		virtual public string GetSecureCode()
+		{
+			Random rnd = new();
+			string secureCode = string.Empty;
+			for(int i = 0; i < 4; i++)
+			{
+				secureCode += rnd.Next();
+			}
+			return secureCode;
 		}
 	}
 }

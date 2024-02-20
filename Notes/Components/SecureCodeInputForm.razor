@@ -1,6 +1,6 @@
 ﻿
 <div class="login-form">
-	<EditForm Model=@resetCode OnValidSubmit="ChangePassword">
+	<EditForm Model=@resetCode OnValidSubmit=ChangePassword>
 		<DataAnnotationsValidator />
 		<h2 class="text-center">@FormHeader</h2>
 		<div>
@@ -10,7 +10,7 @@
 		{
 			<div class="form-group">
 				<label for="email-send">@CodeFieldLabelMessage</label>
-				<InputNumber class="form-control" id="email-send" placeholder="@CodePlaceholder" @bind-Value="resetCode.EmailCodeInput" />
+				<InputText class="form-control" id="email-send" placeholder="@CodePlaceholder" @bind-Value="resetCode.EmailCodeInput" />
 				<ValidationMessage For="(() => resetCode.EmailCodeInput)" />
 			</div>
 		}
@@ -22,7 +22,7 @@
 
 @code {
 	[Parameter]
-	public int EmailCode { get; set; }
+	public string EmailCode { get; set; } = string.Empty;
 	[Parameter]
 	public string FormHeader { get; set; } = "Email Code";
 	[Parameter]
@@ -35,12 +35,16 @@
 	public string SubmitButtonTitle { get; set; } = "Submit";
 
 	[Parameter]
-	public PasswordResetCode? resetCode { get; set; }
+	public PasswordResetCode resetCode { get; set; } = new();
 	[Parameter]
 	public EventCallback<bool> OnCorrectCodeInput{ get; set; }
 
+	protected override void OnParametersSet()
+	{
+		resetCode.EmailCode = EmailCode;
+	}
 	virtual public void ChangePassword()
 	{
-		OnCorrectCodeInput.InvokeAsync();
+		OnCorrectCodeInput.InvokeAsync(true);
 	}
 }

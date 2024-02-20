@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Notes_ViewModel
+namespace Notes.ValidationModels
 {
 	public class PasswordResetEmail
 	{

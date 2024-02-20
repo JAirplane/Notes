@@ -1,7 +1,7 @@
 ﻿using Notes_ViewModel;
 using System.ComponentModel.DataAnnotations;
 
-namespace Notes.Models
+namespace Notes.ValidationModels
 {
 	//Class was created due to Blazor validation limitation
 	//Credentials_VM field is LoginInput and PasswordInput here

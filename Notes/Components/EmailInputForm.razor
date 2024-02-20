@@ -1,7 +1,7 @@
 ﻿@using System.ComponentModel.DataAnnotations
 
 <div class="login-form">
-	<EditForm Model=@reset OnValidSubmit="SendEmail">
+	<EditForm Model=@reset OnValidSubmit=SendEmail>
 		<DataAnnotationsValidator />
 		<h2 class="text-center">@EmailFormHeader</h2>
 		<div>
@@ -15,7 +15,7 @@
 		<div class="form-group">
 			<button type="submit" class="btn btn-primary btn-block">@EmailFormButtonTitle</button>
 		</div>
-		@if(userExistanceChecked && !passwordChange.UserFound)
+		@if (userExistanceChecked && userId != -1)
 		{
 			<div class="container">
 				<div class="row text-center">
@@ -42,24 +42,31 @@
 	public string EmailNotFoundMessage { get; set; } = "User with this Email not found";
 
 	[Parameter]
-	public EventCallback<bool> OnEmailSent { get; set; }
+	public EventCallback<string> OnEmailSent { get; set; }
+	[Parameter]
+	public EventCallback<int> OnUserFound { get; set; }
+
 	private PasswordResetEmail reset = new();
-	private PasswordChange passwordChange = new();
+	private EmailInput_VM passwordChange = new();
 	private bool userExistanceChecked;
+	private int userId = -1;
 
 	virtual public void SendEmail()
 	{
 		SetEmail();
-		passwordChange.FindUserByEmail();
+		userId = passwordChange.GetUserIdByEmail();
 		userExistanceChecked = true;
-		if(passwordChange.UserFound)
+		if(userId != -1)
 		{
+			OnUserFound.InvokeAsync(userId);
+			string code = passwordChange.GetSecureCode();
 			//TODO: Send email
-			OnEmailSent.InvokeAsync();
+			OnEmailSent.InvokeAsync(code);
 		}
 	}
 	virtual public void SetEmail()
 	{
 		passwordChange.Email = reset.Email;
 	}
+	
 }

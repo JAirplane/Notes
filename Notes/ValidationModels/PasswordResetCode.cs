@@ -5,13 +5,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Notes_ViewModel
+namespace Notes.ValidationModels
 {
 	public class PasswordResetCode
 	{
-		public int EmailCode { get; set; }
+		public string EmailCode { get; set; } = string.Empty;
 
 		[Compare(nameof(EmailCode), ErrorMessage = "Invalid code")]
-		public int EmailCodeInput { get; set; }
+		[MinLength(4, ErrorMessage = "Secure Code must contain 4 characters")]
+		public string EmailCodeInput { get; set; } = string.Empty;
 	}
 }

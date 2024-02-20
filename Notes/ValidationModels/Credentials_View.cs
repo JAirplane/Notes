@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Notes.Models
+namespace Notes.ValidationModels
 {
 	public class Credentials_View
 	{
