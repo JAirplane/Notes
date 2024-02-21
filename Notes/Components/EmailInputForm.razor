@@ -1,7 +1,7 @@
 ﻿@using System.ComponentModel.DataAnnotations
 
 <div class="login-form">
-	<EditForm Model=@reset OnValidSubmit=SendEmail>
+	<EditForm Model=@reset OnValidSubmit=SendEmailAsync>
 		<DataAnnotationsValidator />
 		<h2 class="text-center">@EmailFormHeader</h2>
 		<div>
@@ -15,7 +15,7 @@
 		<div class="form-group">
 			<button type="submit" class="btn btn-primary btn-block">@EmailFormButtonTitle</button>
 		</div>
-		@if (userExistanceChecked && userId != -1)
+		@if (userExistanceChecked && userId == -1)
 		{
 			<div class="container">
 				<div class="row text-center">
@@ -48,20 +48,21 @@
 
 	private PasswordResetEmail reset = new();
 	private EmailInput_VM passwordChange = new();
+	private EmailService emailService = new();
 	private bool userExistanceChecked;
 	private int userId = -1;
 
-	virtual public void SendEmail()
+	virtual async public void SendEmailAsync()
 	{
 		SetEmail();
 		userId = passwordChange.GetUserIdByEmail();
 		userExistanceChecked = true;
 		if(userId != -1)
 		{
-			OnUserFound.InvokeAsync(userId);
+			await OnUserFound.InvokeAsync(userId);
 			string code = passwordChange.GetSecureCode();
-			//TODO: Send email
-			OnEmailSent.InvokeAsync(code);
+			await emailService.SendEmailAsync(reset.Email, "Notes.com Password Reset", code);
+			await OnEmailSent.InvokeAsync(code);
 		}
 	}
 	virtual public void SetEmail()

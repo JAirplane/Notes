@@ -17,9 +17,10 @@ namespace Notes_Model
 		public string Surname { get; set; } = string.Empty;
 		public string Email { get; set; } = string.Empty;
 		public string Phone { get; set; } = string.Empty;
-		public User(string _login, string _password, string _name, string _surname,
+		public User(int _id, string _login, string _password, string _name, string _surname,
 						string _email, string _phone)
 		{
+			Id = _id;
 			Сredentials.Login = _login;
 			Сredentials.Password = _password;
 			Name = _name;

@@ -13,8 +13,7 @@ namespace Notes_ViewModel
 		public string Email { get; set; } = string.Empty;
 		public int GetUserIdByEmail()
 		{
-			List<User> userCollection = TestRepository.GetAllUsers();
-			var user = userCollection.FirstOrDefault(user => user.Email.Equals(Email));
+			var user = TestRepository.GetUserByEmail(Email);
 			if (user is not null)
 			{
 				return user.Id;

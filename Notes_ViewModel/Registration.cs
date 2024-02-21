@@ -16,7 +16,7 @@ namespace Notes_ViewModel
 		public bool AddNewUser()
 		{
 			if (NewUser is null) return false;
-			User_m = new User(NewUser.Сredentials.LoginInput, NewUser.Сredentials.PasswordInput,
+			User_m = new User(TestRepository.GetNewId(), NewUser.Сredentials.LoginInput, NewUser.Сredentials.PasswordInput,
 				NewUser.Name, NewUser.Surname, NewUser.Email, NewUser.Phone);
 			TestRepository.AddUser(User_m);
 			return true;

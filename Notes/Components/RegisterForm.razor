@@ -39,7 +39,7 @@
 			<button type="submit" class="btn btn-primary btn-block">@ButtonTitle</button>
 		</div>
 	</EditForm>
-	<p class="text-center">Already have an account? <a href="/">Sign in</a></p>
+	<p class="text-center">@BottomLinkText<a href=@BottomLink>@BottomLinkTitle</a></p>
 </div>
 
 @code {
@@ -63,6 +63,12 @@
 	public string PhoneMaskPlaceholder { get; set; } = "+7(999)999-99-99";
 	[Parameter]
 	public string ButtonTitle { get; set; } = "Submit";
+	[Parameter]
+	public string BottomLinkText { get; set; } = "Already have an account? ";
+	[Parameter]
+	public string BottomLink { get; set; } = "/";
+	[Parameter]
+	public string BottomLinkTitle { get; set; } = "Sign in";
 
 	private RegistrationFormFields userData = new();
 	private Registration registration = new();

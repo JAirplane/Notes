@@ -52,7 +52,7 @@
 			}
 		}
 	</EditForm>
-	<p class="text-center">Don't have an account? <a href="/register">Create an Account</a></p>
+	<p class="text-center">@BottomLinkText <a href="@BottomLink">@BottomLinkTitle</a></p>
 </div>
 
 @code {
@@ -64,6 +64,12 @@
 	public string PasswordPlaceholder { get; set; } = "Password";
 	[Parameter]
 	public string ButtonTitle { get; set; } = "Sign in";
+	[Parameter]
+	public string BottomLinkText { get; set; } = "Don't have an account?";
+	[Parameter]
+	public string BottomLink { get; set; } = "/register";
+	[Parameter]
+	public string BottomLinkTitle { get; set; } = "Create an Account";
 
 	[Parameter]
 	public string InvalidPasswordMessage { get; set; } = "Wrong password, please try again.";
