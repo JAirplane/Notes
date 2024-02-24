@@ -26,7 +26,7 @@ namespace Notes_ViewModel
 			string secureCode = string.Empty;
 			for(int i = 0; i < 4; i++)
 			{
-				secureCode += rnd.Next();
+				secureCode += rnd.Next(0, 10);
 			}
 			return secureCode;
 		}

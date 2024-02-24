@@ -12,7 +12,6 @@ namespace Notes.ValidationModels
 		public string EmailCode { get; set; } = string.Empty;
 
 		[Compare(nameof(EmailCode), ErrorMessage = "Invalid code")]
-		[MinLength(4, ErrorMessage = "Secure Code must contain 4 characters")]
 		public string EmailCodeInput { get; set; } = string.Empty;
 	}
 }

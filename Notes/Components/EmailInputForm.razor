@@ -40,6 +40,8 @@
 	public string EmailFormButtonTitle { get; set; } = "Submit";
 	[Parameter]
 	public string EmailNotFoundMessage { get; set; } = "User with this Email not found";
+	[Parameter]
+	public string EmailMessage { get; set; } = "Enter this code to reset your password: ";
 
 	[Parameter]
 	public EventCallback<string> OnEmailSent { get; set; }
@@ -61,7 +63,7 @@
 		{
 			await OnUserFound.InvokeAsync(userId);
 			string code = passwordChange.GetSecureCode();
-			await emailService.SendEmailAsync(reset.Email, "Notes.com Password Reset", code);
+			await emailService.SendEmailAsync(reset.Email, "Notes.com Password Reset", EmailMessage + code);
 			await OnEmailSent.InvokeAsync(code);
 		}
 	}

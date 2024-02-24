@@ -11,7 +11,7 @@ namespace Notes_ViewModel
 	{
 		public int UserId { get; set; }
 		public string NewPassword { get; set; } = string.Empty;
-        public async Task<bool> SetNewPasswordAsync()
+		public async Task<bool> SetNewPasswordAsync()
 		{
 			if (string.IsNullOrEmpty(NewPassword))
 			{
