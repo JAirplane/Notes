@@ -16,11 +16,11 @@ namespace Notes_ViewModel
 		private User? validUser;
 		public bool ValidLogin { get; set; }
 		public bool ValidPassword { get; set; }
-		public void GetUserByCredentials()
+		public async Task GetUserByCredentialsAsync()
 		{
 			if (!string.IsNullOrEmpty(CredentialsVM.LoginInput) && !string.IsNullOrEmpty(CredentialsVM.PasswordInput))
 			{
-				List<User> userCollection = TestRepository.GetAllUsers();
+				List<User> userCollection = await TestRepository.GetAllUsersAsync();
 				var matchUser = userCollection.FirstOrDefault(user => user.Сredentials.Login.Equals(CredentialsVM.LoginInput));
 				if(matchUser is not null)
 				{
@@ -32,6 +32,11 @@ namespace Notes_ViewModel
 					}
 				}
 			}
+		}
+		public int GetUserId()
+		{
+			if (validUser is null) return -1;
+			return validUser.Id;
 		}
 	}
 }

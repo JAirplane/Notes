@@ -1,9 +1,10 @@
 ﻿@using System.ComponentModel.DataAnnotations;
 
 @inject NavigationManager navManager
+@inject UserAuthenticationState authState
 
 <div class="login-form">
-	<EditForm Model=@Credentials OnValidSubmit="SendCredentials">
+	<EditForm Model=@Credentials OnValidSubmit="SendCredentialsAsync">
 		<DataAnnotationsValidator />
 		<h2 class="text-center">@FormHeader</h2>
 		<div class="form-group">
@@ -27,7 +28,8 @@
 			{
 				@if (authorization.ValidPassword)
 				{
-					navManager.NavigateTo("/main");
+					authState.UserLoggedIn = true;
+					navManager.NavigateTo($"/main/{authorization.GetUserId()}");
 				}
 				else
 				{
@@ -81,10 +83,10 @@
 	private Authorization authorization = new();
 	private bool credentialsChecked;
 
-	virtual public void SendCredentials()
+	virtual async public Task SendCredentialsAsync()
 	{
 		SetAuthorizationData();
-		authorization.GetUserByCredentials();
+		await authorization.GetUserByCredentialsAsync();
 		credentialsChecked = true;
 	}
 	public void SetAuthorizationData()

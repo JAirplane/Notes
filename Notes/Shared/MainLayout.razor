@@ -2,18 +2,24 @@
 
 <PageTitle>Notes</PageTitle>
 
-<div class="page">
-    <div class="sidebar">
-        <NavMenu />
-    </div>
+<CascadingValue Value="this">
+	<div class="page">
+		<div class="sidebar">
+			<NavMenu />
+		</div>
 
-    <main>
-        <div class="top-row px-4">
-            <a href="/">Sign out</a>
-        </div>
+		<main>
+			<div class="top-row px-4">
+				<a href="/" class="btn btn-outline-secondary">Sign out</a>
+			</div>
 
-        <article class="content px-4">
-            @Body
-        </article>
-    </main>
-</div>
+			<article class="content px-4">
+				@Body
+			</article>
+		</main>
+	</div>
+</CascadingValue>
+
+@code{
+	public string MainPageLink { get; set; } = string.Empty;
+}

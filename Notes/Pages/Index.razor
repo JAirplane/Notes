@@ -1,4 +1,4 @@
-﻿@page "/main"
+﻿@page "/main/{UserId:int}"
 
 <PageTitle>Index</PageTitle>
 
@@ -7,3 +7,18 @@
 Welcome to your new app.
 
 <SurveyPrompt Title="How is Blazor working for you?" />
+
+@code{
+	[CascadingParameter]
+	public MainLayout? mainLayout { get; set; }
+	[Parameter]
+	public int UserId { get; set; }
+
+	protected override void OnParametersSet()
+	{
+		if(mainLayout is not null)
+		{
+			mainLayout.MainPageLink = $"/main/{UserId}";
+		}
+	}
+}
