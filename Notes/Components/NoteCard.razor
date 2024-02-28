@@ -1,0 +1,55 @@
+﻿
+<div class="container">
+	<div class="row">
+		<div class="col-sm-12 col-md-4 p-3 text-center">
+			<div class="card text-white bg-secondary">
+				<div class="card-header">@CardHeader</div>
+				<div class="card-body">
+					<p class="card-text">@CardText</p>
+					<div class="btn-group my-3" role="group">
+						<button type="button" class="btn btn-outline-info" data-bs-toggle="modal" data-bs-target="#editModal">
+							<i class="fa-solid fa-pen-to-square" />
+						</button>
+						<button type="button" class="btn btn-outline-danger" @onclick="(() => OnDeleteNote.InvokeAsync(noteId))">
+							<i class="fa-solid fa-trash-can" />
+						</button>
+						<ModalWindow ModalId=TargetModal NoteHeader=CardHeader NoteText=CardText/>
+					</div>
+				</div>
+				<div class="card-footer">
+					@foreach(var tag in tags ?? Array.Empty<string>())
+					{
+						if(ChildContent is not null)
+						{
+							@ChildContent(tag)
+						}
+						else
+						{
+							<span class="text-muted">@tag </span>
+						}
+					}
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+@code {
+	[Parameter]
+	public int noteId { get; set; }
+	[Parameter]
+	public string TargetModal { get; set; } = "editModal";
+	[Parameter]
+	public string CardHeader { get; set; } = string.Empty;
+	[Parameter]
+	public string CardText { get; set; } = string.Empty;
+	[Parameter]
+	public IEnumerable<string>? tags { get; set; }
+	[Parameter]
+	public RenderFragment<string>? ChildContent { get; set; }
+	[Parameter]
+	public EventCallback OnEditNote { get; set; }
+	[Parameter]
+	public EventCallback<int> OnDeleteNote { get; set; }
+}
