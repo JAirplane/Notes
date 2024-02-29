@@ -9,10 +9,13 @@
 }
 else
 {
-	<h1>Hello, world!</h1>
+	<h1 class="text-center">Your notes</h1>
 
+	@foreach(var note in handler_VM?.GetUserNotes() ?? [])
+	{
+		<NoteCard NoteId="note.Id" CardHeader="note.Header" CardText="note.Body"/>
+	}
 
-	<SurveyPrompt Title = "How is Blazor working for you?" />
 }
 
 
@@ -21,6 +24,8 @@ else
 	public MainLayout? mainLayout { get; set; }
 	[Parameter]
 	public int UserId { get; set; }
+	[Inject]
+	public AuthenticatedUserHandler_VM? handler_VM { get; set; }
 
 	protected override void OnParametersSet()
 	{

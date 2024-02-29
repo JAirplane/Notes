@@ -13,7 +13,7 @@ namespace Notes_ViewModel
 	{
 		public Credentials_VM CredentialsVM { get; set; } = new();
 
-		private User? validUser;
+		public User? validUser { get; set; }
 		public bool ValidLogin { get; set; }
 		public bool ValidPassword { get; set; }
 		public async Task GetUserByCredentialsAsync()

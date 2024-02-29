@@ -2,6 +2,7 @@
 
 @inject NavigationManager navManager
 @inject UserAuthenticationState authState
+@inject AuthenticatedUserHandler_VM handler_VM
 
 <div class="login-form">
 	<EditForm Model=@Credentials OnValidSubmit="SendCredentialsAsync">
@@ -29,6 +30,7 @@
 				@if (authorization.ValidPassword)
 				{
 					authState.UserLoggedIn = true;
+					handler_VM.SetUser(authorization.validUser);
 					navManager.NavigateTo($"/main/{authorization.GetUserId()}");
 				}
 				else

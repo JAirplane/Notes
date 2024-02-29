@@ -1,5 +1,4 @@
-﻿
-@inject IJSRuntime JSRuntime
+﻿@inject IJSRuntime JSRuntime
 @inject NavigationManager navManager
 
 <div class="login-form">
@@ -106,8 +105,14 @@
 	}
 	public void SetRegistrationData()
 	{
-		registration.NewUser = new User_VM(userData.LoginInput, userData.PasswordInput,
-						userData.Name, userData.Surname, userData.Email, userData.Phone);
+		var _user = new User_VM();
+		_user.Сredentials.LoginInput = userData.LoginInput;
+		_user.Сredentials.PasswordInput = userData.PasswordInput;
+		_user.Name = userData.Name;
+		_user.Surname = userData.Surname;
+		_user.Email = userData.Email;
+		_user.Phone = userData.Phone;
+		registration.NewUser = _user;
 	}
 	virtual async public Task SendUserData()
 	{

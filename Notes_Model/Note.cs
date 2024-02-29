@@ -8,6 +8,7 @@ namespace Notes_Model
 {
 	public class Note
 	{
+		public int Id { get; set; }
 		public DateTime CreationDateTime { get; set; } = DateTime.Now;
 		public string Header { get; set; } = string.Empty;
 		public string Body { get; set; } = string.Empty;

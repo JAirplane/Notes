@@ -9,13 +9,21 @@ namespace Notes_Model.Repository
 	public static class TestRepository
 	{
 		private static List<User>? users;
-		private static int currentId = 0;
+		private static int currentUserId = 0;
+		private static int currentNoteId = 0;
 		static TestRepository()
 		{
 			users =
 			[
-				new(GetNewId(), "admin", "admin", "Eugene", "Shevchenko", "eugeneshevchenko0@gmail.com", "79615796948")
+				new(GetNewUserId(), "admin", "admin", "Eugene", "Shevchenko", "eugeneshevchenko0@gmail.com", "79615796948")
 			];
+			var note = new Note
+			{
+				Id = GetNewNoteId(),
+				Header = "Test Note",
+				Body = "This note created for test purposes"
+			};
+			users[0].UserNotes.Add(note);
 		}
 		public static List<User> GetAllUsers()
 		{
@@ -59,9 +67,13 @@ namespace Notes_Model.Repository
 		{
 			return await Task.Run(() => GetUserById(id));
 		}
-		public static int GetNewId()
+		public static int GetNewUserId()
 		{
-			return ++currentId;
+			return ++currentUserId;
+		}
+		public static int GetNewNoteId()
+		{
+			return ++currentNoteId;
 		}
 	}
 }

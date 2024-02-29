@@ -10,10 +10,10 @@
 						<button type="button" class="btn btn-outline-info" data-bs-toggle="modal" data-bs-target="#editModal">
 							<i class="fa-solid fa-pen-to-square" />
 						</button>
-						<button type="button" class="btn btn-outline-danger" @onclick="(() => OnDeleteNote.InvokeAsync(noteId))">
+						<ModalWindow ModalId=TargetModal NoteHeader=CardHeader NoteText=CardText OnSaveChanges="OnSaveChangesHandler"/>
+						<button type="button" class="btn btn-outline-danger" @onclick="(() => OnDeleteNote.InvokeAsync(NoteId))">
 							<i class="fa-solid fa-trash-can" />
 						</button>
-						<ModalWindow ModalId=TargetModal NoteHeader=CardHeader NoteText=CardText/>
 					</div>
 				</div>
 				<div class="card-footer">
@@ -37,7 +37,7 @@
 
 @code {
 	[Parameter]
-	public int noteId { get; set; }
+	public int NoteId { get; set; }
 	[Parameter]
 	public string TargetModal { get; set; } = "editModal";
 	[Parameter]
@@ -52,4 +52,10 @@
 	public EventCallback OnEditNote { get; set; }
 	[Parameter]
 	public EventCallback<int> OnDeleteNote { get; set; }
+
+	virtual public void OnSaveChangesHandler(NoteContent content)
+	{
+		CardHeader = content.NoteHeader;
+		CardText = content.NoteText;
+	}
 }

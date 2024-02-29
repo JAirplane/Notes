@@ -12,7 +12,7 @@
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-				<button type="button" class="btn btn-primary" @onclick=SaveChangesAsync>Save changes</button>
+				<button type="button" class="btn btn-primary" @onclick=@(async () => await OnSaveChanges.InvokeAsync(new NoteContent(NoteHeader, NoteText)))>Save changes</button>
 			</div>
 		</div>
 	</div>
@@ -28,11 +28,5 @@
 	[Parameter]
 	public string NoteText { get; set; } = string.Empty;
 	[Parameter]
-	public EventCallback<Tuple<string, string>> OnSaveChanges { get; set; }
-
-	async Task SaveChangesAsync()
-	{
-		var changes = Tuple.Create(NoteHeader, NoteText);
-		await OnSaveChanges.InvokeAsync(changes);
-	}
+	public EventCallback<NoteContent> OnSaveChanges { get; set; }
 }
