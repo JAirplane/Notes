@@ -30,7 +30,7 @@ namespace Notes.ValidationModels
 		[RegularExpression(@"^[a-zA-Zа-яА-Я]+$", ErrorMessage = "The surname must contain Latin or Russian letters")]
 		public string Surname { get; set; } = string.Empty;
 
-		[Required(ErrorMessage = "Enter Email")]
+		[Required(ErrorMessage = "Enter valid Email")]
 		[EmailAddress(ErrorMessage = "Invalid Email address")]
 		public string Email { get; set; } = string.Empty;
 

@@ -11,6 +11,8 @@ namespace Notes_Model.Repository
 		private static List<User>? users;
 		private static int currentUserId = 0;
 		private static int currentNoteId = 0;
+		private static int currentReminderId = 0;
+		private static int currentTagId = 0;
 		static TestRepository()
 		{
 			users =
@@ -74,6 +76,14 @@ namespace Notes_Model.Repository
 		public static int GetNewNoteId()
 		{
 			return ++currentNoteId;
+		}
+		public static int GetNewReminderId()
+		{
+			return ++currentReminderId;
+		}
+		public static int GetNewTagId()
+		{
+			return ++currentTagId;
 		}
 	}
 }

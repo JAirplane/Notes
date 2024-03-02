@@ -14,5 +14,17 @@ namespace Notes_ViewModel.Models_VM
 		public string Header { get; set; } = string.Empty;
 		public string Body { get; set; } = string.Empty;
 		public List<Tag_VM> NoteTags { get; set; } = [];
+		public Note_VM() { }
+		public Note_VM(Note note)
+		{
+			Id = note.Id;
+			CreationDateTime = note.CreationDateTime;
+			Header = note.Header;
+			Body = note.Body;
+			foreach(Tag tag in note.NoteTags)
+			{
+				NoteTags.Add(new Tag_VM(tag));
+			}
+		}
 	}
 }

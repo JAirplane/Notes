@@ -1,5 +1,6 @@
 ﻿using Notes_Model;
 using Notes_Model.Repository;
+using Notes_ViewModel.Models_VM;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +12,7 @@ namespace Notes_ViewModel
 	public class AuthenticatedUserHandler_VM
 	{
 		private User? user;
+		private LoggedInUser_VM? user_VM;
 		public void SetUser(User? _user)
 		{
 			if(_user is null)
@@ -18,12 +20,22 @@ namespace Notes_ViewModel
 				throw new Exception("AuthenticatedUserHandler_VM.SetUser() got null");
 			}
 			user = _user;
+			ConvertFromUserToUserVM();
 		}
-		public IEnumerable<Note> GetUserNotes()
+		public bool ConvertFromUserToUserVM()
 		{
-			if (user is not null && user.UserNotes is not null)
+			if (user is null)
 			{
-				return user.UserNotes;
+				return false;
+			}
+			user_VM = new(user);
+			return true;
+		}
+		public IEnumerable<Note_VM> GetUserNotes()
+		{
+			if (user_VM is not null && user_VM.UserNotes is not null)
+			{
+				return user_VM.UserNotes;
 			}
 			else
 			{
