@@ -1,0 +1,55 @@
+﻿
+<div class="modal fade show" id="editModal" style="display:block; background-color: rgba(10,10,10,.7);"
+	aria-modal="true" role="dialog" @onclick="CloseModal">
+	<div class="modal-dialog modal-dialog-scrollable" @onclick:stopPropagation>
+			<div class="modal-content bg-light">
+				<div class="modal-header">
+					<h4 class="modal-title">@ModalTitle</h4>
+					<button type="button" class="btn-close" @onclick="CloseModal"></button>
+				</div>
+				<div class="modal-body">
+					<div class="row">
+						<p class="mb-1">Note header:</p>
+						<div class="col-12">
+							<InputText class="w-100" @bind-Value=NoteHeader />
+						</div>
+						<p class="my-1">Note:</p>
+						<div class="col-12">
+							<InputTextArea class="w-100" @bind-Value=NoteText />
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" @onclick="CloseModal">@LeftFooterButtonTitle</button>
+				<button type="button" class="btn btn-primary" @onclick="SaveChanges">@RightFooterButtonTitle</button>
+				</div>
+			</div>
+	</div>
+</div>
+
+@code {
+	[Parameter]
+	public string ModalTitle { get; set; } = "Edit note";
+	[Parameter]
+	public string NoteHeader { get; set; } = string.Empty;
+	[Parameter]
+	public string NoteText { get; set; } = string.Empty;
+	[Parameter]
+	public string LeftFooterButtonTitle { get; set; } = "Close";
+	[Parameter]
+	public string RightFooterButtonTitle { get; set; } = "Save changes";
+	[Parameter]
+	public EventCallback<bool> OnClose { get; set; }
+	[Parameter]
+	public EventCallback<NoteContent> OnSaveChanges { get; set; }
+
+	private Task CloseModal()
+	{
+		return OnClose.InvokeAsync(false);
+	}
+	private Task SaveChanges()
+	{
+		var content = new NoteContent(NoteHeader, NoteText);
+		return OnSaveChanges.InvokeAsync(content);
+	}
+}

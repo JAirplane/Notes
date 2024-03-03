@@ -1,42 +1,44 @@
 ﻿
-<div class="container">
-	<div class="row">
-		<div class="col-sm-12 col-md-4 p-3 text-center">
-			<div class="card text-white bg-secondary">
-				<div class="card-header">@CardHeader</div>
-				<div class="card-body">
-					<p class="card-text">@CardText</p>
-					<div class="btn-group my-3" role="group">
-						<button type="button" class="btn btn-outline-info" @onclick=@(() => OnEditModalStateChanged(true))>
-							<i class="fa-solid fa-pen-to-square" />
-						</button>
-						<button type="button" class="btn btn-outline-danger" @onclick="(() => OnDeleteNote.InvokeAsync(NoteId))">
-							<i class="fa-solid fa-trash-can" />
-						</button>
-					</div>
-					
-				</div>
-				<div class="card-footer">
-					@foreach(var tag in tags ?? Array.Empty<string>())
-					{
-						if(ChildContent is not null)
-						{
-							@ChildContent(tag)
-						}
-						else
-						{
-							<span class="text-muted">@tag </span>
-						}
-					}
-				</div>
+<div class="col-sm-12 col-md-4 p-3">
+	<div class="card text-white bg-secondary" @onclick=@(() => OnShowModalStateChanged(true))>
+		<div class="card-header text-center text-truncate">@CardHeader</div>
+		<div class="card-body p-2">
+			<p class="card-text">@CardText</p>
+		</div>
+		<div class=" text-center">
+			<div class="btn-group my-1" role="group">
+				<button type="button" class="btn btn-outline-info" @onclick=@(() => OnEditModalStateChanged(true))>
+					<i class="fa-solid fa-pen-to-square" />
+				</button>
+				<button type="button" class="btn btn-outline-danger" @onclick="(() => OnDeleteNote.InvokeAsync(NoteId))">
+					<i class="fa-solid fa-trash-can" />
+				</button>
 			</div>
+		</div>
+		<div class="card-footer">
+			@foreach(var tag in Tags ?? Array.Empty<string>())
+			{
+				if(ChildContent is not null)
+				{
+					@ChildContent(tag)
+				}
+				else
+				{
+					<span class="text-muted">@tag </span>
+				}
+			}
 		</div>
 	</div>
 </div>
 
 @if(EditWindowIsOpen)
 {
-	<ModalWindow NoteHeader=@CardHeader NoteText=@CardText OnClose="OnEditModalStateChanged"/>
+	ShowWindowIsOpen = false;
+	<EditCardModalWindow NoteHeader=@CardHeader NoteText=@CardText OnClose="OnEditModalStateChanged" OnSaveChanges="OnSaveChangesHandler"/>
+}
+else if(ShowWindowIsOpen)
+{
+	<ShowCardModalWindow NoteHeader=@CardHeader NoteText=@CardText CardTags="Tags" OnClose="OnShowModalStateChanged" />
 }
 
 @code {
@@ -49,7 +51,7 @@
 	[Parameter]
 	public string CardText { get; set; } = string.Empty;
 	[Parameter]
-	public IEnumerable<string>? tags { get; set; }
+	public IEnumerable<string>? Tags { get; set; }
 	[Parameter]
 	public RenderFragment<string>? ChildContent { get; set; }
 	[Parameter]
@@ -57,17 +59,24 @@
 	[Parameter]
 	public EventCallback<int> OnDeleteNote { get; set; }
 
-	public bool EditWindowIsOpen { get; set; }
+	private bool EditWindowIsOpen { get; set; }
+	private bool ShowWindowIsOpen { get; set; }
 
 
 	virtual public void OnSaveChangesHandler(NoteContent content)
 	{
 		CardHeader = content.NoteHeader;
 		CardText = content.NoteText;
+		OnEditModalStateChanged(false);
 	}
 	private void OnEditModalStateChanged(bool state)
 	{
 		EditWindowIsOpen = state;
+		StateHasChanged();
+	}
+	private void OnShowModalStateChanged(bool state)
+	{
+		ShowWindowIsOpen = state;
 		StateHasChanged();
 	}
 }

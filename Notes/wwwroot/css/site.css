@@ -62,3 +62,24 @@ a, .btn-link {
 	.blazor-error-boundary::after {
 		content: "An error has occurred."
 	}
+
+.card {
+	height: 300px;
+}
+.card-header {
+	height: 40px;
+}
+.card-text {
+	height: 210px;
+}
+.card-body .btn-group {
+	position: absolute;
+	bottom: 0;
+}
+.card-footer {
+	height: 50px;
+}
+.card:hover {
+	border: 3px solid;
+	border-color: lightsteelblue;
+}

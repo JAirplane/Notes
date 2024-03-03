@@ -23,9 +23,25 @@ namespace Notes_Model.Repository
 			{
 				Id = GetNewNoteId(),
 				Header = "Test Note",
-				Body = "This note created for test purposes"
+				Body = "This note created for test purposes This note created for test purposes This note created for test purposes This note created for test purposes This note created for test purposes" +
+				"This note created for test purposes This note created for test purposes This note created for test purposes This note created for test purposes This note created for test purposes" +
+				"This note created for test purposes This note created for test purposes This note created for test purposes This note created for test purposes This note created for test purposes"
 			};
 			users[0].UserNotes.Add(note);
+			var note1 = new Note
+			{
+				Id = GetNewNoteId(),
+				Header = "Test Note1",
+				Body = "This note created for test purposes"
+			};
+			users[0].UserNotes.Add(note1);
+			var note2 = new Note
+			{
+				Id = GetNewNoteId(),
+				Header = "Test Note2",
+				Body = "This note created for test purposes"
+			};
+			users[0].UserNotes.Add(note2);
 		}
 		public static List<User> GetAllUsers()
 		{
