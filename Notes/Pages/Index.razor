@@ -10,13 +10,11 @@
 else
 {
 	<h1 class="text-center">Your notes</h1>
-	<div class="container">
-		<div class="row">
+	<div class="note-container">
 			@foreach(Note_VM note in handler_VM?.GetUserNotes() ?? [])
 			{
 				<NoteCard NoteId=@note.Id CardHeader=@note.Header CardText=@note.Body />
 			}
-		</div>
 	</div>
 }
 
