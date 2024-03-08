@@ -2,24 +2,26 @@
 <div class="modal fade show" id="showModal" style="display:block; background-color: rgba(10,10,10,.7);"
 	aria-modal="true" role="dialog" @onclick="CloseModal">
 	<div class="modal-dialog modal-dialog-scrollable" @onclick:stopPropagation>
-		<div class="modal-content bg-light">
+		<div class="modal-content bg-secondary text-white">
 			<div class="modal-header">
-				<h4 class="modal-title">@ModalTitle</h4>
+				<h4 class="modal-title">@NoteHeader</h4>
 				<button type="button" class="btn-close" @onclick="CloseModal"></button>
 			</div>
 			<div class="modal-body">
-				<div class="card text-white bg-secondary">
-					<div class="card-header text-center">@NoteHeader</div>
-					<div class="card-body p-2">
-						<p class="card-text">@NoteText</p>
-					</div>
-					<div class="card-footer">
-						@foreach (var tag in CardTags ?? Array.Empty<string>())
-						{
-							<span class="text-muted">@tag </span>
-						}
-					</div>
-				</div>
+				<span>@NoteText</span>
+			</div>
+			<div class="modal-footer modal-footer-start">
+				@foreach (var tag in NoteTags ?? Array.Empty<Tag_VM>())
+				{
+					if (ChildContent is not null)
+					{
+						@ChildContent(tag.TagName)
+					}
+					else
+					{
+						<a href="#" class="badge fst-italic">@tag.TagName</a>
+					}
+				}
 			</div>
 		</div>
 	</div>
@@ -27,13 +29,13 @@
 
 @code {
 	[Parameter]
-	public string ModalTitle { get; set; } = "Note";
-	[Parameter]
 	public string NoteHeader { get; set; } = string.Empty;
 	[Parameter]
 	public string NoteText { get; set; } = string.Empty;
 	[Parameter]
-	public IEnumerable<string>? CardTags { get; set; }
+	public IEnumerable<Tag_VM>? NoteTags { get; set; }
+	[Parameter]
+	public RenderFragment<string>? ChildContent { get; set; }
 	[Parameter]
 	public EventCallback<bool> OnClose { get; set; }
 

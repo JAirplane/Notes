@@ -13,7 +13,7 @@ else
 	<div class="note-container">
 			@foreach(Note_VM note in handler_VM?.GetUserNotes() ?? [])
 			{
-				<NoteCard NoteId=@note.Id CardHeader=@note.Header CardText=@note.Body />
+				<NoteCard NoteId=@note.Id CardHeader=@note.Header CardText=@note.Body Tags=@note.NoteTags/>
 			}
 	</div>
 }

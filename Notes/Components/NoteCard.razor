@@ -43,20 +43,20 @@
 	</div>
 	<hr class="note-hr"/>
 	<div class="note-footer">
-		<div class="col-7">
-			@foreach (var tag in Tags ?? Array.Empty<string>())
+		<div class="note-footer-tags">
+			@foreach (var tag in Tags ?? Array.Empty<Tag_VM>())
 			{
 				if (ChildContent is not null)
 				{
-					@ChildContent(tag)
+					@ChildContent(tag.TagName)
 				}
 				else
 				{
-					<span class="text-muted">@tag </span>
+					<a href="#" class="badge fst-italic">@tag.TagName</a>
 				}
 			}
 		</div>
-		<div class="col-5 text-end">
+		<div class="mx-3 text-end">
 			<div class="btn-group my-1" role="group">
 				<button type="button" class="btn card-btn btn-outline-info" @onclick=@(() => OnEditModalStateChanged(true))>
 					<i class="fa-solid fa-pen-to-square" />
@@ -76,7 +76,7 @@
 }
 else if(ShowWindowIsOpen)
 {
-	<ShowCardModalWindow NoteHeader=@CardHeader NoteText=@CardText CardTags="Tags" OnClose="OnShowModalStateChanged" />
+	<ShowCardModalWindow NoteHeader=@CardHeader NoteText=@CardText NoteTags="Tags" OnClose="OnShowModalStateChanged" />
 }
 
 @code {
@@ -89,7 +89,7 @@ else if(ShowWindowIsOpen)
 	[Parameter]
 	public string CardText { get; set; } = string.Empty;
 	[Parameter]
-	public IEnumerable<string>? Tags { get; set; }
+	public IEnumerable<Tag_VM>? Tags { get; set; }
 	[Parameter]
 	public RenderFragment<string>? ChildContent { get; set; }
 	[Parameter]

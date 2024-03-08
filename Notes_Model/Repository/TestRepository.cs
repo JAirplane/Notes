@@ -27,6 +27,11 @@ namespace Notes_Model.Repository
 				"This note created for test purposes This note created for test purposes This note created for test purposes This note created for test purposes This note created for test purposes" +
 				"This note created for test purposes This note created for test purposes This note created for test purposes This note created for test purposes This note created for test purposes"
 			};
+			note.NoteTags.Add(new Tag {Id = GetNewTagId(), TagName = "#11111" });
+			note.NoteTags.Add(new Tag { Id = GetNewTagId(), TagName = "#2222" });
+			note.NoteTags.Add(new Tag { Id = GetNewTagId(), TagName = "#33333333333333" });
+			note.NoteTags.Add(new Tag { Id = GetNewTagId(), TagName = "#444444444" });
+			note.NoteTags.Add(new Tag { Id = GetNewTagId(), TagName = "#5555555555555555555555555555" });
 			users[0].UserNotes.Add(note);
 			var note1 = new Note
 			{
@@ -42,6 +47,34 @@ namespace Notes_Model.Repository
 				Body = "This note created for test purposes"
 			};
 			users[0].UserNotes.Add(note2);
+			var note3 = new Note
+			{
+				Id = GetNewNoteId(),
+				Header = "Test Note3",
+				Body = "This note created for test purposes"
+			};
+			users[0].UserNotes.Add(note3);
+			var note4 = new Note
+			{
+				Id = GetNewNoteId(),
+				Header = "Test Note4",
+				Body = "This note created for test purposes"
+			};
+			users[0].UserNotes.Add(note4);
+			var note5 = new Note
+			{
+				Id = GetNewNoteId(),
+				Header = "Test Note5",
+				Body = "This note created for test purposes"
+			};
+			users[0].UserNotes.Add(note5);
+			var note6 = new Note
+			{
+				Id = GetNewNoteId(),
+				Header = "Test Note6",
+				Body = "This note created for test purposes"
+			};
+			users[0].UserNotes.Add(note6);
 		}
 		public static List<User> GetAllUsers()
 		{

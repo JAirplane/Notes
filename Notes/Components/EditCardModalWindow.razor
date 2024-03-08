@@ -2,7 +2,7 @@
 <div class="modal fade show" id="editModal" style="display:block; background-color: rgba(10,10,10,.7);"
 	aria-modal="true" role="dialog" @onclick="CloseModal">
 	<div class="modal-dialog modal-dialog-scrollable" @onclick:stopPropagation>
-			<div class="modal-content bg-light">
+			<div class="modal-content">
 				<div class="modal-header">
 					<h4 class="modal-title">@ModalTitle</h4>
 					<button type="button" class="btn-close" @onclick="CloseModal"></button>
@@ -15,13 +15,13 @@
 						</div>
 						<p class="my-1">Note:</p>
 						<div class="col-12">
-							<InputTextArea class="w-100" @bind-Value=NoteText />
+							<InputTextArea class="w-100" rows="10" @bind-Value=NoteText />
 						</div>
 					</div>
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-secondary" @onclick="CloseModal">@LeftFooterButtonTitle</button>
-				<button type="button" class="btn btn-primary" @onclick="SaveChanges">@RightFooterButtonTitle</button>
+					<button type="button" class="btn btn-primary" @onclick="SaveChanges">@RightFooterButtonTitle</button>
 				</div>
 			</div>
 	</div>
