@@ -1,0 +1,56 @@
+﻿
+<button class="btn btn-outline-primary" @onclick="(() => OnCreateTagModalStateChanged(true))">
+	<i class="fa-solid fa-plus"></i>
+</button>
+<h2>@Title</h2>
+
+<div class="container">
+	<div class="row">
+		@foreach (var tag in Tags ?? [])
+		{
+			<div class="col">
+				<span class="badge bg-secondary text-white">@tag.TagName</span>
+				<div class="mx-3 text-end">
+					<div class="btn-group my-1" role="group">
+						<button type="button" class="btn card-btn btn-outline-info">
+							<i class="fa-solid fa-pen-to-square" />
+						</button>
+						<button type="button" class="btn card-btn btn-outline-danger">
+							<i class="fa-solid fa-trash-can" />
+						</button>
+					</div>
+				</div>
+			</div>
+		}
+	</div>
+</div>
+
+
+@if(CreateTagModalWindowIsOpen)
+{
+	<CreateTagModalWindow OnClose="OnCreateTagModalStateChanged" OnCreateTag="OnCreateNewTag" />
+}
+
+@code {
+	[Parameter]
+	public string Title { get; set; } = "Tags";
+	[Parameter]
+	public IEnumerable<Tag_VM>? Tags { get; set; }
+	[Parameter]
+	public EventCallback<string> OnCreateTagHandler { get; set; }
+	[Parameter]
+	public string CreateButtonTitle { get; set; } = "Create tag";
+
+	private bool CreateTagModalWindowIsOpen;
+
+	private void OnCreateTagModalStateChanged(bool state)
+	{
+		CreateTagModalWindowIsOpen = state;
+		StateHasChanged();
+	}
+	private async void OnCreateNewTag(string tagName)
+	{
+		await OnCreateTagHandler.InvokeAsync(tagName);
+	}
+
+}

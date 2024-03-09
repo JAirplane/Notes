@@ -12,6 +12,7 @@ namespace Notes_ViewModel.Models_VM
 		public int Id { get; set; }
 		public List<Note_VM> UserNotes { get; set; } = [];
 		public List<Reminder_VM> UserReminders { get; set; } = [];
+		public HashSet<Tag_VM> UserTags { get; set; } = [];
 		public LoggedInUser_VM() { }
 		public LoggedInUser_VM(User user) :base(user.Сredentials.Login, user.Сredentials.Password,
 			user.Name, user.Surname, user.Email, user.Phone)
@@ -24,6 +25,10 @@ namespace Notes_ViewModel.Models_VM
 			foreach(Reminder reminder in user.UserReminders)
 			{
 				UserReminders.Add(new Reminder_VM(reminder));
+			}
+			foreach(Tag tag in user.UserTags)
+			{
+				UserTags.Add(new Tag_VM(tag));
 			}
 		}
 		public bool DeleteNoteById(int noteId)

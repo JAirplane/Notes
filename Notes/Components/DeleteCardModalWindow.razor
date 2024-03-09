@@ -10,9 +10,9 @@
 			<div class="modal-body">
 				<span>@ModalText</span>
 			</div>
-			<div class="modal-footer modal-footer-start">
+			<div class="modal-footer">
 				<button type="button" class="btn btn-secondary" @onclick="CloseModal">@LeftFooterButtonTitle</button>
-				<button type="button" class="btn btn-primary" @onclick="SaveChanges">@RightFooterButtonTitle</button>
+				<button type="button" class="btn btn-danger" @onclick="DeleteNote">@RightFooterButtonTitle</button>
 			</div>
 		</div>
 	</div>
@@ -31,8 +31,14 @@
 	public EventCallback<bool> OnClose { get; set; }
 	[Parameter]
 	public EventCallback OnDelete { get; set; }
+
 	private Task CloseModal()
 	{
 		return OnClose.InvokeAsync(false);
+	}
+	private async Task DeleteNote()
+	{
+		await OnDelete.InvokeAsync();
+		await OnClose.InvokeAsync(false);
 	}
 }

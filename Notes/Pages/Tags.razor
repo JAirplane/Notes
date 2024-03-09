@@ -1,0 +1,13 @@
+﻿@page "/tags"
+
+<UserTagsForm Tags="handler_VM.GetUserTags()" OnCreateTagHandler="handler_VM.AddNewTag"/>
+
+@code {
+	private AuthenticatedUserHandler_VM? _handler_VM;
+	[Inject]
+	public AuthenticatedUserHandler_VM handler_VM
+	{
+		get => _handler_VM ?? throw new Exception("AuthenticatedUserHandler_VM is null");
+		set => _handler_VM = value ?? throw new Exception("AuthenticatedUserHandler_VM is null");
+	}
+}

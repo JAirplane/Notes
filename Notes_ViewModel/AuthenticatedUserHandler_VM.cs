@@ -45,6 +45,17 @@ namespace Notes_ViewModel
 				return [];
 			}
 		}
+		public IEnumerable<Tag_VM> GetUserTags()
+		{
+			if (user_VM is not null && user_VM.UserTags is not null)
+			{
+				return user_VM.UserTags;
+			}
+			else
+			{
+				return [];
+			}
+		}
 		public void DeleteUserNote(int noteId)
 		{
 			if (user_VM is not null && user_VM.UserNotes is not null)
@@ -55,6 +66,22 @@ namespace Notes_ViewModel
 					throw new Exception($"AuthenticatedUserHandler_VM.DeleteUserNote(noteId = {noteId}) failed");
 				}
 			}
+		}
+		public void AddNewTag(string tagName)
+		{
+			var fixedTagName = "#" + tagName;
+			if(fixedTagName.Length > 30)
+			{
+				fixedTagName = fixedTagName[..30];
+			}
+			var tag = new Tag { Id = TestRepository.GetNewTagId(), TagName = fixedTagName };
+			user?.UserTags.Add(tag);
+			user_VM?.UserTags.Add(new Tag_VM(tag));
+		}
+		public void NullifyUser()
+		{
+			user_VM = null;
+			user = null;
 		}
 	}
 }

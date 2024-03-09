@@ -13,7 +13,7 @@ namespace Notes_ViewModel.Models_VM
 		public DateTime CreationDateTime { get; set; } = DateTime.Now;
 		public string Header { get; set; } = string.Empty;
 		public string Body { get; set; } = string.Empty;
-		public List<Tag_VM> NoteTags { get; set; } = [];
+		public HashSet<Tag_VM> NoteTags { get; set; } = [];
 		public Note_VM() { }
 		public Note_VM(Note note)
 		{

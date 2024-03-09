@@ -1,5 +1,8 @@
 ﻿@inherits LayoutComponentBase
 
+@inject UserAuthenticationState authState
+@inject NavigationManager navManager
+
 <PageTitle>Notes</PageTitle>
 
 <CascadingValue Value="this">
@@ -10,7 +13,7 @@
 
 		<main>
 			<div class="top-row px-4">
-				<a href="/" class="btn btn-outline-secondary">Sign out</a>
+				<button class="btn btn-outline-secondary" @onclick="SignOut">Sign out</button>
 			</div>
 
 			<article class="content px-4">
@@ -21,5 +24,17 @@
 </CascadingValue>
 
 @code{
-	public string MainPageLink { get; set; } = string.Empty;
+	private AuthenticatedUserHandler_VM? _handler_VM;
+	[Inject]
+	public AuthenticatedUserHandler_VM handler_VM
+	{
+		get => _handler_VM ?? throw new Exception("AuthenticatedUserHandler_VM is null");
+		set => _handler_VM = value ?? throw new Exception("AuthenticatedUserHandler_VM is null");
+	}
+	public void SignOut()
+	{
+		authState.UserLoggedIn = false;
+		handler_VM.NullifyUser();
+		navManager.NavigateTo("/");
+	}
 }

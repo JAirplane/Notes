@@ -17,5 +17,22 @@ namespace Notes_ViewModel.Models_VM
 			Id = tag.Id;
 			TagName = tag.TagName;
 		}
+		public override bool Equals(object? obj)
+		{
+			if(obj is not null)
+			{
+				var comparedTo = obj as Tag_VM;
+				if(comparedTo != null)
+				{
+					return TagName.Equals(comparedTo.TagName);
+				}
+				
+			}
+			return false;
+		}
+		public override int GetHashCode()
+		{
+			return TagName.GetHashCode();
+		}
 	}
 }

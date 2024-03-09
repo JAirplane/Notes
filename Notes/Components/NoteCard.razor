@@ -27,7 +27,7 @@
 				<button type="button" class="btn card-btn btn-outline-info" @onclick=@(() => OnEditModalStateChanged(true))>
 					<i class="fa-solid fa-pen-to-square" />
 				</button>
-				<button type="button" class="btn card-btn btn-outline-danger" @onclick=@(() => OnDeleteNote.InvokeAsync(NoteId))>
+				<button type="button" class="btn card-btn btn-outline-danger" @onclick=@(() => OnDeleteModalStateChanged(true))>
 					<i class="fa-solid fa-trash-can" />
 				</button>
 			</div>
@@ -40,14 +40,16 @@
 	ShowModalIsOpen = false;
 	<EditCardModalWindow NoteHeader=@CardHeader NoteText=@CardText OnClose="OnEditModalStateChanged" OnSaveChanges="OnSaveChangesHandler"/>
 }
+else if (DeleteModalIsOpen)
+{
+	ShowModalIsOpen = false;
+	<DeleteCardModalWindow OnClose="OnDeleteModalStateChanged" OnDelete="(() => OnDeleteNote.InvokeAsync(NoteId))" />
+}
 else if (ShowModalIsOpen)
 {
 	<ShowCardModalWindow NoteHeader=@CardHeader NoteText=@CardText NoteTags="Tags" OnClose="OnShowModalStateChanged" />
 }
-else if (DeleteModalIsOpen)
-{
-	<DeleteCardModalWindow />
-}
+
 
 @code {
 	[Parameter]

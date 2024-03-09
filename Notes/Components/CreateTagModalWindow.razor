@@ -1,0 +1,52 @@
+﻿
+<div class="modal fade show" id="createTagModal" style="display:block; background-color: rgba(10,10,10,.7);"
+	aria-modal="true" role="dialog" @onclick="CloseModal">
+	<div class="modal-dialog" @onclick:stopPropagation>
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title">@ModalTitle</h4>
+				<button type="button" class="btn-close" @onclick="CloseModal"></button>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<p class="mb-1">Note header:</p>
+					<div class="input-group">
+						<div class="input-group-prepend">
+							<span class="input-group-text">#</span>
+						</div>
+						<InputText id="createTagInput" @bind-Value=tagName />
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" @onclick="CloseModal">@LeftFooterButtonTitle</button>
+				<button type="button" class="btn btn-primary" @onclick="CreateTag">@RightFooterButtonTitle</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+@code {
+	[Parameter]
+	public string ModalTitle { get; set; } = "Create new tag";
+	[Parameter]
+	public EventCallback<bool> OnClose { get; set; }
+	[Parameter]
+	public EventCallback<string> OnCreateTag { get; set; }
+	[Parameter]
+	public string LeftFooterButtonTitle { get; set; } = "Close";
+	[Parameter]
+	public string RightFooterButtonTitle { get; set; } = "Create tag";
+
+	private string tagName = string.Empty;
+
+	private Task CloseModal()
+	{
+		return OnClose.InvokeAsync(false);
+	}
+	private async Task CreateTag()
+	{
+		await OnCreateTag.InvokeAsync(tagName);
+		await OnClose.InvokeAsync(false);
+	}
+}

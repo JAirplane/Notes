@@ -10,5 +10,25 @@ namespace Notes_Model
 	{
 		public int Id { get; set; }
 		public string TagName { get; set; } = string.Empty;
+
+		public override bool Equals(object? obj)
+		{
+			if (obj is not null)
+			{
+				var comparedTo = obj as Tag;
+				if (comparedTo != null)
+				{
+					return TagName.Equals(comparedTo.TagName);
+				}
+
+			}
+			return false;
+		}
+
+		public override int GetHashCode()
+		{
+			return TagName.GetHashCode();
+		}
 	}
+	
 }

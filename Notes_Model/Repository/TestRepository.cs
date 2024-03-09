@@ -19,6 +19,11 @@ namespace Notes_Model.Repository
 			[
 				new(GetNewUserId(), "admin", "admin", "Eugene", "Shevchenko", "eugeneshevchenko0@gmail.com", "79615796948")
 			];
+			users[0].UserTags.Add(new Tag { Id = GetNewTagId(), TagName = "#11111" });
+			users[0].UserTags.Add(new Tag { Id = GetNewTagId(), TagName = "#2222" });
+			users[0].UserTags.Add(new Tag { Id = GetNewTagId(), TagName = "#33333333333333" });
+			users[0].UserTags.Add(new Tag { Id = GetNewTagId(), TagName = "#444444444" });
+			users[0].UserTags.Add(new Tag { Id = GetNewTagId(), TagName = "#5555555555555555555555555555" });
 			var note = new Note
 			{
 				Id = GetNewNoteId(),
@@ -27,11 +32,12 @@ namespace Notes_Model.Repository
 				"This note created for test purposes This note created for test purposes This note created for test purposes This note created for test purposes This note created for test purposes" +
 				"This note created for test purposes This note created for test purposes This note created for test purposes This note created for test purposes This note created for test purposes"
 			};
-			note.NoteTags.Add(new Tag {Id = GetNewTagId(), TagName = "#11111" });
-			note.NoteTags.Add(new Tag { Id = GetNewTagId(), TagName = "#2222" });
-			note.NoteTags.Add(new Tag { Id = GetNewTagId(), TagName = "#33333333333333" });
-			note.NoteTags.Add(new Tag { Id = GetNewTagId(), TagName = "#444444444" });
-			note.NoteTags.Add(new Tag { Id = GetNewTagId(), TagName = "#5555555555555555555555555555" });
+			for(int i = 1; i < 6; i++)
+			{
+				var tag = users[0].UserTags.FirstOrDefault(tag => tag.Id.Equals(i));
+				if(tag is not null)
+					note.NoteTags.Add(tag);
+			}
 			users[0].UserNotes.Add(note);
 			var note1 = new Note
 			{
