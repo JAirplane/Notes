@@ -20,7 +20,10 @@ namespace Notes_ViewModel
 				throw new Exception("AuthenticatedUserHandler_VM.SetUser() got null");
 			}
 			user = _user;
-			ConvertFromUserToUserVM();
+			if(!ConvertFromUserToUserVM())
+			{
+				throw new Exception("AuthenticatedUserHandler_VM.ConvertFromUserToUserVM() failed to convert user");
+			}
 		}
 		public bool ConvertFromUserToUserVM()
 		{
@@ -40,6 +43,17 @@ namespace Notes_ViewModel
 			else
 			{
 				return [];
+			}
+		}
+		public void DeleteUserNote(int noteId)
+		{
+			if (user_VM is not null && user_VM.UserNotes is not null)
+			{
+				bool isDeleted = user_VM.DeleteNoteById(noteId);
+				if (!isDeleted)
+				{
+					throw new Exception($"AuthenticatedUserHandler_VM.DeleteUserNote(noteId = {noteId}) failed");
+				}
 			}
 		}
 	}

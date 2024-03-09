@@ -13,7 +13,7 @@ else
 	<div class="note-container">
 			@foreach(Note_VM note in handler_VM?.GetUserNotes() ?? [])
 			{
-				<NoteCard NoteId=@note.Id CardHeader=@note.Header CardText=@note.Body Tags=@note.NoteTags/>
+				<NoteCard NoteId=@note.Id CardHeader=@note.Header CardText=@note.Body Tags=@note.NoteTags OnDeleteNote="handler_VM.DeleteUserNote"/>
 			}
 	</div>
 }
@@ -24,8 +24,14 @@ else
 	public MainLayout? mainLayout { get; set; }
 	[Parameter]
 	public int UserId { get; set; }
+
+	private AuthenticatedUserHandler_VM? _handler_VM;
 	[Inject]
-	public AuthenticatedUserHandler_VM? handler_VM { get; set; }
+	public AuthenticatedUserHandler_VM handler_VM
+	{
+		get => _handler_VM ?? throw new Exception("AuthenticatedUserHandler_VM is null");
+		set => _handler_VM = value ?? throw new Exception("AuthenticatedUserHandler_VM is null");
+	}
 
 	protected override void OnParametersSet()
 	{

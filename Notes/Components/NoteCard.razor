@@ -1,38 +1,4 @@
 ﻿
-@* <div class="col-sm-12 col-md-4 p-3">
-	<div class="card text-white bg-secondary" @onclick=@(() => OnShowModalStateChanged(true))>
-		<div class="card-header text-center text-truncate py-1">@CardHeader</div>
-		<div class="card-body p-2">
-			<p class="card-text">@CardText</p>
-		</div>
-		<div class="card-footer py-0">
-				<div class="col-7">
-					@foreach (var tag in Tags ?? Array.Empty<string>())
-					{
-						if (ChildContent is not null)
-						{
-							@ChildContent(tag)
-						}
-						else
-						{
-							<span class="text-muted">@tag </span>
-						}
-					}
-				</div>
-				<div class="col-5 text-end">
-					<div class="btn-group my-1" role="group">
-						<button type="button" class="btn card-btn btn-outline-info" @onclick=@(() => OnEditModalStateChanged(true))>
-							<i class="fa-solid fa-pen-to-square" />
-						</button>
-						<button type="button" class="btn card-btn btn-outline-danger" @onclick="(() => OnDeleteNote.InvokeAsync(NoteId))">
-							<i class="fa-solid fa-trash-can" />
-						</button>
-					</div>
-				</div>
-		</div>
-	</div>
-</div> *@
-
 <div class="note" @onclick=@(() => OnShowModalStateChanged(true))>
 	<div class="note-header text-center">
 		<span>@CardHeader</span>
@@ -61,7 +27,7 @@
 				<button type="button" class="btn card-btn btn-outline-info" @onclick=@(() => OnEditModalStateChanged(true))>
 					<i class="fa-solid fa-pen-to-square" />
 				</button>
-				<button type="button" class="btn card-btn btn-outline-danger" @onclick="(() => OnDeleteNote.InvokeAsync(NoteId))">
+				<button type="button" class="btn card-btn btn-outline-danger" @onclick=@(() => OnDeleteNote.InvokeAsync(NoteId))>
 					<i class="fa-solid fa-trash-can" />
 				</button>
 			</div>
@@ -69,14 +35,18 @@
 	</div>
 </div>
 
-@if(EditWindowIsOpen)
+@if (EditModalIsOpen)
 {
-	ShowWindowIsOpen = false;
+	ShowModalIsOpen = false;
 	<EditCardModalWindow NoteHeader=@CardHeader NoteText=@CardText OnClose="OnEditModalStateChanged" OnSaveChanges="OnSaveChangesHandler"/>
 }
-else if(ShowWindowIsOpen)
+else if (ShowModalIsOpen)
 {
 	<ShowCardModalWindow NoteHeader=@CardHeader NoteText=@CardText NoteTags="Tags" OnClose="OnShowModalStateChanged" />
+}
+else if (DeleteModalIsOpen)
+{
+	<DeleteCardModalWindow />
 }
 
 @code {
@@ -97,8 +67,9 @@ else if(ShowWindowIsOpen)
 	[Parameter]
 	public EventCallback<int> OnDeleteNote { get; set; }
 
-	private bool EditWindowIsOpen { get; set; }
-	private bool ShowWindowIsOpen { get; set; }
+	private bool EditModalIsOpen { get; set; }
+	private bool ShowModalIsOpen { get; set; }
+	private bool DeleteModalIsOpen { get; set; }
 
 
 	virtual public void OnSaveChangesHandler(NoteContent content)
@@ -109,12 +80,17 @@ else if(ShowWindowIsOpen)
 	}
 	private void OnEditModalStateChanged(bool state)
 	{
-		EditWindowIsOpen = state;
+		EditModalIsOpen = state;
 		StateHasChanged();
 	}
 	private void OnShowModalStateChanged(bool state)
 	{
-		ShowWindowIsOpen = state;
+		ShowModalIsOpen = state;
+		StateHasChanged();
+	}
+	private void OnDeleteModalStateChanged(bool state)
+	{
+		DeleteModalIsOpen = state;
 		StateHasChanged();
 	}
 }

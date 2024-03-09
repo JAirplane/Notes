@@ -26,5 +26,15 @@ namespace Notes_ViewModel.Models_VM
 				UserReminders.Add(new Reminder_VM(reminder));
 			}
 		}
+		public bool DeleteNoteById(int noteId)
+		{
+			var note = UserNotes.FirstOrDefault(note => note.Id.Equals(noteId));
+			if (note != null)
+			{
+				UserNotes.Remove(note);
+				return true;
+			}
+			return false;
+		}
 	}
 }

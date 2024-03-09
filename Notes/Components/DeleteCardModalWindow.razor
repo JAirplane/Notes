@@ -1,0 +1,38 @@
+﻿
+<div class="modal fade show" id="deleteModal" style="display:block; background-color: rgba(10,10,10,.7);"
+	 aria-modal="true" role="dialog" @onclick="CloseModal">
+	<div class="modal-dialog modal-dialog-scrollable" @onclick:stopPropagation>
+		<div class="modal-content bg-secondary text-white">
+			<div class="modal-header">
+				<h4 class="modal-title">@ModalHeader</h4>
+				<button type="button" class="btn-close" @onclick="CloseModal"></button>
+			</div>
+			<div class="modal-body">
+				<span>@ModalText</span>
+			</div>
+			<div class="modal-footer modal-footer-start">
+				<button type="button" class="btn btn-secondary" @onclick="CloseModal">@LeftFooterButtonTitle</button>
+				<button type="button" class="btn btn-primary" @onclick="SaveChanges">@RightFooterButtonTitle</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+@code {
+	[Parameter]
+	public string ModalHeader { get; set; } = "Delete note";
+	[Parameter]
+	public string ModalText { get; set; } = "Are you sure you want to delete note?";
+	[Parameter]
+	public string LeftFooterButtonTitle { get; set; } = "Close";
+	[Parameter]
+	public string RightFooterButtonTitle { get; set; } = "Delete note";
+	[Parameter]
+	public EventCallback<bool> OnClose { get; set; }
+	[Parameter]
+	public EventCallback OnDelete { get; set; }
+	private Task CloseModal()
+	{
+		return OnClose.InvokeAsync(false);
+	}
+}
