@@ -4,25 +4,11 @@
 </button>
 <h2>@Title</h2>
 
-<div class="container">
-	<div class="row">
-		@foreach (var tag in Tags ?? [])
-		{
-			<div class="col">
-				<span class="badge bg-secondary text-white">@tag.TagName</span>
-				<div class="mx-3 text-end">
-					<div class="btn-group my-1" role="group">
-						<button type="button" class="btn card-btn btn-outline-info">
-							<i class="fa-solid fa-pen-to-square" />
-						</button>
-						<button type="button" class="btn card-btn btn-outline-danger">
-							<i class="fa-solid fa-trash-can" />
-						</button>
-					</div>
-				</div>
-			</div>
-		}
-	</div>
+<div class="tag-container">
+	@foreach (var tag in Tags ?? [])
+	{
+		<IndividualTagForm Tag=@tag OnDelete="OnDeleteTag"/>
+	}
 </div>
 
 
@@ -39,7 +25,7 @@
 	[Parameter]
 	public EventCallback<string> OnCreateTagHandler { get; set; }
 	[Parameter]
-	public string CreateButtonTitle { get; set; } = "Create tag";
+	public EventCallback<int> OnDeleteTagHandler { get; set; }
 
 	private bool CreateTagModalWindowIsOpen;
 
@@ -48,9 +34,14 @@
 		CreateTagModalWindowIsOpen = state;
 		StateHasChanged();
 	}
-	private async void OnCreateNewTag(string tagName)
+	private async Task OnCreateNewTag(string tagName)
 	{
 		await OnCreateTagHandler.InvokeAsync(tagName);
+		OnCreateTagModalStateChanged(false);
+	}
+	private async Task OnDeleteTag(int id)
+	{
+		await OnDeleteTagHandler.InvokeAsync(id);
 	}
 
 }

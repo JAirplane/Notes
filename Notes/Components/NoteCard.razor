@@ -43,7 +43,7 @@
 else if (DeleteModalIsOpen)
 {
 	ShowModalIsOpen = false;
-	<DeleteCardModalWindow OnClose="OnDeleteModalStateChanged" OnDelete="(() => OnDeleteNote.InvokeAsync(NoteId))" />
+	<ConfirmModalWindow OnClose="OnDeleteModalStateChanged" OnConfirm="(() => OnDeleteNote.InvokeAsync(NoteId))" />
 }
 else if (ShowModalIsOpen)
 {

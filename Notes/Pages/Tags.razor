@@ -1,6 +1,6 @@
 ﻿@page "/tags"
 
-<UserTagsForm Tags="handler_VM.GetUserTags()" OnCreateTagHandler="handler_VM.AddNewTag"/>
+<UserTagsForm Tags="handler_VM.GetUserTags()" OnCreateTagHandler="handler_VM.AddNewTag" OnDeleteTagHandler="handler_VM.DeleteUserTag"/>
 
 @code {
 	private AuthenticatedUserHandler_VM? _handler_VM;

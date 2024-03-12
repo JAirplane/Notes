@@ -58,9 +58,10 @@ namespace Notes_ViewModel
 		}
 		public void DeleteUserNote(int noteId)
 		{
-			if (user_VM is not null && user_VM.UserNotes is not null)
+			if (user_VM is not null)
 			{
 				bool isDeleted = user_VM.DeleteNoteById(noteId);
+				//TODO: Delete from user and save changes in db
 				if (!isDeleted)
 				{
 					throw new Exception($"AuthenticatedUserHandler_VM.DeleteUserNote(noteId = {noteId}) failed");
@@ -77,6 +78,14 @@ namespace Notes_ViewModel
 			var tag = new Tag { Id = TestRepository.GetNewTagId(), TagName = fixedTagName };
 			user?.UserTags.Add(tag);
 			user_VM?.UserTags.Add(new Tag_VM(tag));
+		}
+		public void DeleteUserTag(int tagId)
+		{
+			if (user_VM is not null)
+			{
+				user_VM.DeleteTagById(tagId);
+				//TODO: Delete from user and save changes in db
+			}
 		}
 		public void NullifyUser()
 		{

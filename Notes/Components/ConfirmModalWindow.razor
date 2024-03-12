@@ -11,34 +11,35 @@
 				<span>@ModalText</span>
 			</div>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-secondary" @onclick="CloseModal">@LeftFooterButtonTitle</button>
-				<button type="button" class="btn btn-danger" @onclick="DeleteNote">@RightFooterButtonTitle</button>
+				<button type="button" class="btn btn-secondary" @onclick="CloseModal">@FooterLeftButtonTitle</button>
+				<button type="button" class="btn btn-danger" @onclick="Confirm">@FooterRightButtonTitle</button>
 			</div>
 		</div>
 	</div>
 </div>
 
 @code {
+	//Params by default appropriate for note deletion
 	[Parameter]
 	public string ModalHeader { get; set; } = "Delete note";
 	[Parameter]
 	public string ModalText { get; set; } = "Are you sure you want to delete note?";
 	[Parameter]
-	public string LeftFooterButtonTitle { get; set; } = "Close";
+	public string FooterLeftButtonTitle { get; set; } = "Close";
 	[Parameter]
-	public string RightFooterButtonTitle { get; set; } = "Delete note";
+	public string FooterRightButtonTitle { get; set; } = "Delete note";
 	[Parameter]
 	public EventCallback<bool> OnClose { get; set; }
 	[Parameter]
-	public EventCallback OnDelete { get; set; }
+	public EventCallback OnConfirm { get; set; }
 
-	private Task CloseModal()
+	private async Task CloseModal()
 	{
-		return OnClose.InvokeAsync(false);
+		await OnClose.InvokeAsync(false);
 	}
-	private async Task DeleteNote()
+	private async Task Confirm()
 	{
-		await OnDelete.InvokeAsync();
+		await OnConfirm.InvokeAsync();
 		await OnClose.InvokeAsync(false);
 	}
 }

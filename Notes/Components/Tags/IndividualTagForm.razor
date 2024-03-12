@@ -1,0 +1,69 @@
+﻿
+<div class="tag">
+	<div class="tag-inline tag-link">
+		<a href="#" class="badge bg-secondary">@Tag?.TagName</a>
+	</div>
+	<div class="tag-inline mx-3">
+		<div class="btn-group my-1" role="group">
+			<button type="button" class="btn card-btn btn-outline-info" @onclick="(() => EditModalStateChanged(true))">
+				<i class="fa-solid fa-pen-to-square" />
+			</button>
+			<button type="button" class="btn card-btn btn-outline-danger" @onclick="(() => DeleteModalStateChanged(true))">
+				<i class="fa-solid fa-trash-can" />
+			</button>
+		</div>
+	</div>
+</div>
+
+@if(isEditModalOpen)
+{
+	<EditTagModalWindow TagName=@Tag?.TagName.Substring(1) OnClose="EditModalStateChanged" OnSaveChanges="SaveChanges" />
+}
+else if(isDeleteModalOpen)
+{
+	isEditModalOpen = false;
+	<ConfirmModalWindow ModalHeader=@DeleteHeader ModalText=@DeleteText FooterRightButtonTitle=@DeleteButtonTitle OnClose="DeleteModalStateChanged" OnConfirm="DeleteElement" />
+}
+
+@code {
+	[Parameter]
+	public Tag_VM? Tag { get; set; }
+	[Parameter]
+	public string DeleteHeader { get; set; } = "Delete tag";
+	[Parameter]
+	public string DeleteText { get; set; } = "Are you sure you want to delete tag?";
+	[Parameter]
+	public string DeleteButtonTitle { get; set; } = "Delete tag";
+	[Parameter]
+	public EventCallback<int> OnDelete { get; set; }
+
+	private bool isEditModalOpen;
+	private bool isDeleteModalOpen;
+
+	public void EditModalStateChanged(bool state)
+	{
+		isEditModalOpen = state;
+		StateHasChanged();
+	}
+	public void DeleteModalStateChanged(bool state)
+	{
+		isDeleteModalOpen = state;
+		StateHasChanged();
+	}
+	virtual public void SaveChanges(string tagName)
+	{
+		if(Tag is not null)
+		{
+			Tag.TagName = "#" + tagName;
+		}
+		EditModalStateChanged(false);
+	}
+	virtual async public Task DeleteElement()
+	{
+		if(Tag is not null)
+		{
+			await OnDelete.InvokeAsync(Tag.Id);
+		}
+		DeleteModalStateChanged(false);
+	}
+}

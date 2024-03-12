@@ -41,5 +41,29 @@ namespace Notes_ViewModel.Models_VM
 			}
 			return false;
 		}
+		public void DeleteTagById(int tagId)
+		{
+			var tag = UserTags.FirstOrDefault(tag => tag.Id.Equals(tagId));
+			if (tag != null)
+			{
+				UserTags.Remove(tag);
+			}
+			foreach(var note in UserNotes)
+			{
+				var nTag = note.NoteTags.FirstOrDefault(tag => tag.Id.Equals(tagId));
+				if(nTag is not null)
+				{
+					note.NoteTags.Remove(nTag);
+				}
+			}
+			foreach (var reminder in UserReminders)
+			{
+				var rTag = reminder.NoteTags.FirstOrDefault(tag => tag.Id.Equals(tagId));
+				if(rTag is not null)
+				{
+					reminder.NoteTags.Remove(rTag);
+				}
+			}
+		}
 	}
 }
