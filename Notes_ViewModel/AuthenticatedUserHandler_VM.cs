@@ -1,4 +1,5 @@
-﻿using Notes_Model;
+﻿using Notes_ViewModel.Helpers;
+using Notes_Model;
 using Notes_Model.Repository;
 using Notes_ViewModel.Models_VM;
 using System;
@@ -67,6 +68,17 @@ namespace Notes_ViewModel
 					throw new Exception($"AuthenticatedUserHandler_VM.DeleteUserNote(noteId = {noteId}) failed");
 				}
 			}
+		}
+		public void AddNewNote(NoteContent content)
+		{
+			var note = new Note_VM()
+			{ 
+				Id = TestRepository.GetNewNoteId(),
+				CreationDateTime = DateTime.Now,
+				Header = content.NoteHeader,
+				Body = content.NoteText
+			};
+			user_VM?.UserNotes.Add(note);
 		}
 		public void AddNewTag(string tagName)
 		{

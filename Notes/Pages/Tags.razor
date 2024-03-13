@@ -1,6 +1,8 @@
 ﻿@page "/tags"
 
-<UserTagsForm Tags="handler_VM.GetUserTags()" OnCreateTagHandler="handler_VM.AddNewTag" OnDeleteTagHandler="handler_VM.DeleteUserTag"/>
+<CreateTag ModalWindowTitle=@CreateTagModalTitle OnCreate="handler_VM.AddNewTag" />
+
+<UserTagsForm Tags="handler_VM.GetUserTags()" OnDeleteTagHandler="handler_VM.DeleteUserTag"/>
 
 @code {
 	private AuthenticatedUserHandler_VM? _handler_VM;
@@ -10,4 +12,6 @@
 		get => _handler_VM ?? throw new Exception("AuthenticatedUserHandler_VM is null");
 		set => _handler_VM = value ?? throw new Exception("AuthenticatedUserHandler_VM is null");
 	}
+
+	public string CreateTagModalTitle { get; set; } = "Create tag";
 }

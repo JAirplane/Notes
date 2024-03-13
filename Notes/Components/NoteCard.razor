@@ -38,7 +38,7 @@
 @if (EditModalIsOpen)
 {
 	ShowModalIsOpen = false;
-	<EditCardModalWindow NoteHeader=@CardHeader NoteText=@CardText OnClose="OnEditModalStateChanged" OnSaveChanges="OnSaveChangesHandler"/>
+	<CardStateChangeModal ModalTitle=@ModalWindowTitle NoteHeader=@CardHeader NoteText=@CardText OnClose="OnEditModalStateChanged" OnSaveChanges="OnSaveChangesHandler" />
 }
 else if (DeleteModalIsOpen)
 {
@@ -55,7 +55,7 @@ else if (ShowModalIsOpen)
 	[Parameter]
 	public int NoteId { get; set; }
 	[Parameter]
-	public string TargetModal { get; set; } = "editModal";
+	public string ModalWindowTitle { get; set; } = "Edit note";
 	[Parameter]
 	public string CardHeader { get; set; } = string.Empty;
 	[Parameter]

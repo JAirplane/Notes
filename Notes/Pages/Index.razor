@@ -9,6 +9,7 @@
 }
 else
 {
+	<CreateNote ModalWindowTitle=@CreateNoteModalWindowTitle OnCreate="handler_VM.AddNewNote"/>
 	<h1 class="text-center">Your notes</h1>
 	<div class="note-container">
 			@foreach(Note_VM note in handler_VM.GetUserNotes() ?? [])
@@ -30,4 +31,6 @@ else
 		get => _handler_VM ?? throw new Exception("AuthenticatedUserHandler_VM is null");
 		set => _handler_VM = value ?? throw new Exception("AuthenticatedUserHandler_VM is null");
 	}
+
+	public string CreateNoteModalWindowTitle { get; set; } = "Create note";
 }

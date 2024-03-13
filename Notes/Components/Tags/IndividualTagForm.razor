@@ -17,7 +17,7 @@
 
 @if(isEditModalOpen)
 {
-	<EditTagModalWindow TagName=@Tag?.TagName.Substring(1) OnClose="EditModalStateChanged" OnSaveChanges="SaveChanges" />
+	<TagStateChangeModal TagName=@Tag?.TagName.Substring(1) OnClose="EditModalStateChanged" OnConfirm="SaveChanges" />
 }
 else if(isDeleteModalOpen)
 {
@@ -54,6 +54,10 @@ else if(isDeleteModalOpen)
 	{
 		if(Tag is not null)
 		{
+			if (tagName.Length > 30)
+			{
+				tagName = tagName[..30];
+			}
 			Tag.TagName = "#" + tagName;
 		}
 		EditModalStateChanged(false);

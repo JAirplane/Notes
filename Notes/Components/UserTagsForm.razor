@@ -1,7 +1,4 @@
 ﻿
-<button class="btn btn-outline-primary" @onclick="(() => OnCreateTagModalStateChanged(true))">
-	<i class="fa-solid fa-plus"></i>
-</button>
 <h2>@Title</h2>
 
 <div class="tag-container">
@@ -11,37 +8,16 @@
 	}
 </div>
 
-
-@if(CreateTagModalWindowIsOpen)
-{
-	<CreateTagModalWindow OnClose="OnCreateTagModalStateChanged" OnCreateTag="OnCreateNewTag" />
-}
-
 @code {
 	[Parameter]
 	public string Title { get; set; } = "Tags";
 	[Parameter]
 	public IEnumerable<Tag_VM>? Tags { get; set; }
 	[Parameter]
-	public EventCallback<string> OnCreateTagHandler { get; set; }
-	[Parameter]
 	public EventCallback<int> OnDeleteTagHandler { get; set; }
 
-	private bool CreateTagModalWindowIsOpen;
-
-	private void OnCreateTagModalStateChanged(bool state)
-	{
-		CreateTagModalWindowIsOpen = state;
-		StateHasChanged();
-	}
-	private async Task OnCreateNewTag(string tagName)
-	{
-		await OnCreateTagHandler.InvokeAsync(tagName);
-		OnCreateTagModalStateChanged(false);
-	}
 	private async Task OnDeleteTag(int id)
 	{
 		await OnDeleteTagHandler.InvokeAsync(id);
 	}
-
 }

@@ -1,0 +1,29 @@
+﻿
+<button class="btn btn-outline-primary" @onclick="(() => OnCreateModalStateChanged(true))">
+	<i class="fa-solid fa-plus fa-lg"></i>
+</button>
+
+@if (CreateModalWindowIsOpen)
+{
+	<CardStateChangeModal ModalTitle=@ModalWindowTitle OnClose="OnCreateModalStateChanged" OnSaveChanges="OnCreateNewNote" />
+}
+
+@code {
+	[Parameter]
+	public string ModalWindowTitle { get; set; } = string.Empty;
+	[Parameter]
+	public EventCallback<NoteContent> OnCreate { get; set; }
+
+	private bool CreateModalWindowIsOpen;
+
+	private void OnCreateModalStateChanged(bool state)
+	{
+		CreateModalWindowIsOpen = state;
+		StateHasChanged();
+	}
+	private async Task OnCreateNewNote(NoteContent content)
+	{
+		await OnCreate.InvokeAsync(content);
+		OnCreateModalStateChanged(false);
+	}
+}

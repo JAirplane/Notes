@@ -1,0 +1,29 @@
+﻿
+<button class="btn btn-outline-primary" @onclick="(() => OnCreateModalStateChanged(true))">
+	<i class="fa-solid fa-plus fa-lg"></i>
+</button>
+
+@if (CreateModalWindowIsOpen)
+{
+	<TagStateChangeModal ModalTitle=@ModalWindowTitle OnClose="OnCreateModalStateChanged" OnConfirm="OnCreateNewTag" />
+}
+
+@code {
+	[Parameter]
+	public string ModalWindowTitle { get; set; } = string.Empty;
+	[Parameter]
+	public EventCallback<string> OnCreate { get; set; }
+
+	private bool CreateModalWindowIsOpen;
+
+	private void OnCreateModalStateChanged(bool state)
+	{
+		CreateModalWindowIsOpen = state;
+		StateHasChanged();
+	}
+	private async Task OnCreateNewTag(string tagName)
+	{
+		await OnCreate.InvokeAsync(tagName);
+		OnCreateModalStateChanged(false);
+	}
+}

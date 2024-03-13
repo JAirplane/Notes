@@ -1,7 +1,7 @@
 ﻿
-<div class="modal fade show" id="createTagModal" style="display:block; background-color: rgba(10,10,10,.7);"
+<div class="modal fade show" id="editModal" style="display:block; background-color: rgba(10,10,10,.7);"
 	aria-modal="true" role="dialog" @onclick="CloseModal">
-	<div class="modal-dialog" @onclick:stopPropagation>
+	<div class="modal-dialog modal-dialog-scrollable" @onclick:stopPropagation>
 		<div class="modal-content">
 			<div class="modal-header">
 				<h4 class="modal-title">@ModalTitle</h4>
@@ -14,13 +14,13 @@
 						<div class="input-group-prepend">
 							<span class="input-group-text">#</span>
 						</div>
-						<InputText id="tagInput" @bind-Value=tagName />
+						<InputText id="tagInput" @bind-Value=TagName />
 					</div>
 				</div>
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-secondary" @onclick="CloseModal">@LeftFooterButtonTitle</button>
-				<button type="button" class="btn btn-primary" @onclick="CreateTag">@RightFooterButtonTitle</button>
+				<button type="button" class="btn btn-primary" @onclick="Confirm">@RightFooterButtonTitle</button>
 			</div>
 		</div>
 	</div>
@@ -28,27 +28,27 @@
 
 @code {
 	[Parameter]
-	public string ModalTitle { get; set; } = "Create new tag";
+	public string ModalTitle { get; set; } = "Edit tag";
 	[Parameter]
 	public string InputHeader { get; set; } = "Tag name:";
 	[Parameter]
-	public EventCallback<bool> OnClose { get; set; }
-	[Parameter]
-	public EventCallback<string> OnCreateTag { get; set; }
+	public string TagName { get; set; } = string.Empty;
 	[Parameter]
 	public string LeftFooterButtonTitle { get; set; } = "Close";
 	[Parameter]
-	public string RightFooterButtonTitle { get; set; } = "Create tag";
+	public string RightFooterButtonTitle { get; set; } = "Save changes";
+	[Parameter]
+	public EventCallback<bool> OnClose { get; set; }
+	[Parameter]
+	public EventCallback<string> OnConfirm { get; set; }
 
-	private string tagName = string.Empty;
 
-	private Task CloseModal()
+	private async Task CloseModal()
 	{
-		return OnClose.InvokeAsync(false);
-	}
-	private async Task CreateTag()
-	{
-		await OnCreateTag.InvokeAsync(tagName);
 		await OnClose.InvokeAsync(false);
+	}
+	private async Task Confirm()
+	{
+		await OnConfirm.InvokeAsync(TagName);
 	}
 }

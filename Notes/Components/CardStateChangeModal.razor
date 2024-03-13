@@ -9,14 +9,17 @@
 				</div>
 				<div class="modal-body">
 					<div class="row">
-						<p class="mb-1">Note header:</p>
+					<p class="mb-1">@NoteHeaderHeader</p>
 						<div class="col-12">
 							<InputText class="w-100" @bind-Value=NoteHeader />
 						</div>
-						<p class="my-1">Note:</p>
+						<p class="my-1">@NoteTextHeader</p>
 						<div class="col-12">
 							<InputTextArea class="w-100" rows="10" @bind-Value=NoteText />
 						</div>
+					</div>
+					<div class="row">
+
 					</div>
 				</div>
 				<div class="modal-footer">
@@ -29,7 +32,11 @@
 
 @code {
 	[Parameter]
-	public string ModalTitle { get; set; } = "Edit note";
+	public string ModalTitle { get; set; } = string.Empty;
+	[Parameter]
+	public string NoteHeaderHeader { get; set; } = "Note header:";
+	[Parameter]
+	public string NoteTextHeader { get; set; } = "Note:";
 	[Parameter]
 	public string NoteHeader { get; set; } = string.Empty;
 	[Parameter]
