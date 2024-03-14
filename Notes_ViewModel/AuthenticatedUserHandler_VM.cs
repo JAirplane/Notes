@@ -80,8 +80,9 @@ namespace Notes_ViewModel
 			};
 			user_VM?.UserNotes.Add(note);
 		}
-		public void AddNewTag(string tagName)
+		public Tag_VM? AddNewTag(string tagName)
 		{
+			if (tagName.Length == 0) return null;
 			var fixedTagName = "#" + tagName;
 			if(fixedTagName.Length > 30)
 			{
@@ -89,7 +90,9 @@ namespace Notes_ViewModel
 			}
 			var tag = new Tag { Id = TestRepository.GetNewTagId(), TagName = fixedTagName };
 			user?.UserTags.Add(tag);
-			user_VM?.UserTags.Add(new Tag_VM(tag));
+			var tag_vm = new Tag_VM(tag);
+			user_VM?.UserTags.Add(tag_vm);
+			return tag_vm;
 		}
 		public void DeleteUserTag(int tagId)
 		{

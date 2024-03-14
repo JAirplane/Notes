@@ -12,7 +12,7 @@
 	[Parameter]
 	public string ModalWindowTitle { get; set; } = string.Empty;
 	[Parameter]
-	public EventCallback<string> OnCreate { get; set; }
+	public Func<string, Tag_VM>? OnCreate { get; set; }
 
 	private bool CreateModalWindowIsOpen;
 
@@ -21,9 +21,16 @@
 		CreateModalWindowIsOpen = state;
 		StateHasChanged();
 	}
-	private async Task OnCreateNewTag(string tagName)
+	private void OnCreateNewTag(string tagName)
 	{
-		await OnCreate.InvokeAsync(tagName);
+		if(OnCreate is not null)
+		{
+			OnCreate.Invoke(tagName);
+		}
+		else
+		{
+			throw new Exception("CreateTag -> OnCreate is null");
+		}
 		OnCreateModalStateChanged(false);
 	}
 }

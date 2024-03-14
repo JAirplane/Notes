@@ -1,0 +1,167 @@
+﻿@using System.Timers
+
+<div class="modal fade show" id="editModal" style="display:block; background-color: rgba(10,10,10,.7);"
+	 aria-modal="true" role="dialog" @onclick="CloseModal">
+	<div class="modal-dialog modal-dialog-scrollable" @onclick:stopPropagation>
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title">@ModalTitle</h4>
+				<button type="button" class="btn-close" @onclick="CloseModal"></button>
+			</div>
+			<div class="modal-body tag-edit-container">
+				<div class="tag-bind">
+					<p class="mb-1">@BindTagHeader</p>
+					<div class="input-group">
+						<div class="input-group-prepend">
+							<span class="input-group-text">#</span>
+						</div>
+						<input type="text" autocomplete="off"
+							@bind-value="TagName"
+							@bind-value:event="oninput"
+							@onclick="HasResults"
+							@onfocusout="FocusOut" />
+					</div>
+					@if (isSearching)
+					{
+						<div class="all-results">
+							<div class="result">
+								<span>Loading...</span>
+							</div>
+						</div>
+					}
+					else if(ShowResults())
+					{
+						<div class="all-results">
+							@foreach (var item in searchResults)
+							{
+								<div @key="@item" class="result" tabindex="0"
+									 @onclick="@(() => SelectResult(item))"
+									 @onmouseover="MouseOverHandler"
+									 @onmouseout="MouseOutHandler">
+									@ResultTemplate(item)
+								</div>
+							}
+						</div>
+					}
+				</div>
+				<div class="confirm-bind">
+					<button type="button" class="btn btn-primary" @onclick="OnTagBind">@TagBindConfirmButtonTitle</button>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" @onclick="CloseModal">@FooterButtonTitle</button>
+				
+			</div>
+		</div>
+	</div>
+</div>
+
+@code {
+	[Parameter]
+	public string ModalTitle { get; set; } = "Edit note tags";
+	[Parameter]
+	public string BindTagHeader { get; set; } = "Bind tag:";
+	[Parameter]
+	public string TagBindConfirmButtonTitle { get; set; } = "Confirm";
+	[Parameter]
+	public string FooterButtonTitle { get; set; } = "Close";
+	[Parameter]
+	public EventCallback<bool> OnClose { get; set; }
+	[Parameter]
+	public EventCallback<string> OnConfirm { get; set; }
+
+	[Parameter]
+	public int MinimalLength { get; set; } = 1;
+	[Parameter]
+	public int TimerInterval { get; set; } = 300;
+	[Parameter]
+	public Func<string, Task<IEnumerable<Tag_VM>>>? OnSearchHandler { get; set; }
+	private Timer? timer;
+	private string tagName = string.Empty;
+	public string TagName
+	{	get => tagName; 
+		set
+		{
+			tagName = value;
+			if(tagName.Length == 0)
+			{
+				isShowingResults = false;
+				timer?.Stop();
+				searchResults = new();
+			}
+			else if(tagName.Length < MinimalLength)
+			{
+				timer?.Stop();
+				timer?.Start();
+			}
+		}
+	}
+	protected List<Tag_VM> searchResults = new();
+	private bool isSearching;
+	private bool isShowingResults;
+	private bool isMouseOver;
+
+	protected override void OnInitialized()
+	{
+		timer = new();
+		timer.Interval = TimerInterval;
+		timer.AutoReset = false;
+		timer.Elapsed += Search;
+	}
+	protected async void Search(object? sender, ElapsedEventArgs args)
+	{
+		isSearching = true;
+		isShowingResults = false;
+		await InvokeAsync(StateHasChanged);
+		if (OnSearchHandler is not null)
+		{
+			searchResults = (await OnSearchHandler.Invoke(tagName)).ToList();
+		}
+		else
+		{
+			throw new Exception("EditNoteTagsModal -> OnSearchHandler is null");
+		}
+		isSearching = false;
+		isShowingResults = true;
+		await InvokeAsync(StateHasChanged);
+	}
+	public void HasResults()
+	{
+		if(searchResults.Any())
+		{
+			isShowingResults = true;
+		}
+	}
+	public bool ShowResults()
+	{
+		return isShowingResults && searchResults.Any();
+	}
+	public bool NothingFound()
+	{
+		return isShowingResults && !searchResults.Any();
+	}
+	public void MouseOverHandler()
+	{
+		isMouseOver = true;
+	}
+	public void MouseOutHandler()
+	{
+		isMouseOver = false;
+	}
+	public void FocusOut()
+	{
+		if(!isMouseOver)
+		{
+			isShowingResults = false;
+		}
+	}
+	private async Task CloseModal()
+	{
+		await OnClose.InvokeAsync(false);
+	}
+	private async Task OnTagBind()
+	{
+		await OnConfirm.InvokeAsync(TagName);
+	}
+
+}

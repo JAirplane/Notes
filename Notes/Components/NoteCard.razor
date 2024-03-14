@@ -22,8 +22,11 @@
 				}
 			}
 		</div>
-		<div class="mx-3 text-end">
+		<div class="text-center">
 			<div class="btn-group my-1" role="group">
+				<button type="button" class="btn card-btn btn-outline-info" @onclick=@(() => OnEditTagsModalStateChanged(true))>
+					<i class="fa-solid fa-hashtag" />
+				</button>
 				<button type="button" class="btn card-btn btn-outline-info" @onclick=@(() => OnEditModalStateChanged(true))>
 					<i class="fa-solid fa-pen-to-square" />
 				</button>
@@ -44,6 +47,11 @@ else if (DeleteModalIsOpen)
 {
 	ShowModalIsOpen = false;
 	<ConfirmModalWindow OnClose="OnDeleteModalStateChanged" OnConfirm="(() => OnDeleteNote.InvokeAsync(NoteId))" />
+}
+else if (TagEditionModalIsOpen)
+{
+	ShowModalIsOpen = false;
+	<EditNoteTagsModal OnClose="OnEditTagsModalStateChanged"/>
 }
 else if (ShowModalIsOpen)
 {
@@ -72,6 +80,7 @@ else if (ShowModalIsOpen)
 	private bool EditModalIsOpen { get; set; }
 	private bool ShowModalIsOpen { get; set; }
 	private bool DeleteModalIsOpen { get; set; }
+	private bool TagEditionModalIsOpen { get; set; }
 
 
 	virtual public void OnSaveChangesHandler(NoteContent content)
@@ -79,6 +88,10 @@ else if (ShowModalIsOpen)
 		CardHeader = content.NoteHeader;
 		CardText = content.NoteText;
 		OnEditModalStateChanged(false);
+	}
+	virtual public void OnTagAdded(string tagName)
+	{
+		
 	}
 	private void OnEditModalStateChanged(bool state)
 	{
@@ -93,6 +106,11 @@ else if (ShowModalIsOpen)
 	private void OnDeleteModalStateChanged(bool state)
 	{
 		DeleteModalIsOpen = state;
+		StateHasChanged();
+	}
+	private void OnEditTagsModalStateChanged(bool state)
+	{
+		TagEditionModalIsOpen = state;
 		StateHasChanged();
 	}
 }

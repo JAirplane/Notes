@@ -38,15 +38,13 @@
 	height: 120px;
 }
 .note-footer {
-	display: flex;
-	justify-content:space-between;
-	
+	margin-inline: 3px;
 }
 .note-footer-tags {
-	max-width: 280px;
+	width: 100%;
+	min-height: 24px;
 	white-space: nowrap;
 	overflow: hidden;
-	margin: auto;
 }
 .note-footer-tags a {
 	font-size: 13px;
@@ -56,8 +54,8 @@
 	.note-footer-tags a:hover {
 		color: #0dcaf0;
 	}
-.modal-footer-start{
-	justify-content:start;
+.modal-footer-start {
+	justify-content: start;
 }
 .modal-footer a {
 	background-color:darkcyan;
@@ -66,4 +64,19 @@
 .modal-footer a:hover {
 	color:plum;
 }
+.tag-edit-container {
+	display: flex;
+	flex-flow: row wrap;
+	gap: 5px;
+}
+.tag-bind{
+	display: inline-block;
+	width: 100%;
+}
+.confirm-bind {
+	display: inline-block;
+	margin-inline-start: auto;
+}
+.all-results{
 
+}
