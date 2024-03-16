@@ -10,11 +10,13 @@
 else
 {
 	<CreateNote ModalWindowTitle=@CreateNoteModalWindowTitle OnCreate="handler_VM.AddNewNote"/>
+
 	<h1 class="text-center">Your notes</h1>
 	<div class="note-container">
 			@foreach(Note_VM note in handler_VM.GetUserNotes() ?? [])
 			{
-				<NoteCard NoteId=@note.Id CardHeader=@note.Header CardText=@note.Body Tags=@note.NoteTags OnDeleteNote="handler_VM.DeleteUserNote"/>
+				<NoteCard NoteId=@note.Id CardHeader=@note.Header CardText=@note.Body Tags=@note.NoteTags OnDeleteNote="handler_VM.DeleteUserNote"
+					  OnTagsSearchHandler="handler_VM.GetUserTagsByTagName" OnCreateNewTag="handler_VM.AddNewTag"/>
 			}
 	</div>
 }

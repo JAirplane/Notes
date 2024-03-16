@@ -64,19 +64,3 @@
 .modal-footer a:hover {
 	color:plum;
 }
-.tag-edit-container {
-	display: flex;
-	flex-flow: row wrap;
-	gap: 5px;
-}
-.tag-bind{
-	display: inline-block;
-	width: 100%;
-}
-.confirm-bind {
-	display: inline-block;
-	margin-inline-start: auto;
-}
-.all-results{
-
-}

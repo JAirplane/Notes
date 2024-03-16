@@ -13,6 +13,8 @@
 	public string ModalWindowTitle { get; set; } = string.Empty;
 	[Parameter]
 	public Func<string, Tag_VM>? OnCreate { get; set; }
+	[Parameter]
+	public EventCallback ParentComponentStateHasChanged { get; set; }
 
 	private bool CreateModalWindowIsOpen;
 
@@ -32,5 +34,6 @@
 			throw new Exception("CreateTag -> OnCreate is null");
 		}
 		OnCreateModalStateChanged(false);
+		ParentComponentStateHasChanged.InvokeAsync();
 	}
 }

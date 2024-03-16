@@ -1,6 +1,6 @@
 ﻿@page "/tags"
 
-<CreateTag ModalWindowTitle=@CreateTagModalTitle OnCreate="handler_VM.AddNewTag" />
+<CreateTag ModalWindowTitle=@CreateTagModalTitle OnCreate="handler_VM.AddNewTag" ParentComponentStateHasChanged="StateHasChanged"/>
 
 <UserTagsForm Tags="handler_VM.GetUserTags()" OnDeleteTagHandler="handler_VM.DeleteUserTag"/>
 

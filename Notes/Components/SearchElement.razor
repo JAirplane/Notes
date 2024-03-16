@@ -1,0 +1,170 @@
+﻿@using System.Timers
+
+<div class="tag-bind">
+	<p class="mb-1">@BindHeader</p>
+	<div class="input-group">
+		<div class="input-group-prepend">
+			<span class="input-group-text">@InputPrependSymbol</span>
+		</div>
+		<input class="search-element-input" type="text" autocomplete="off"
+			@bind-value="TagName"
+			@bind-value:event="oninput"
+			@onclick="HasResults"
+			@onfocusout="FocusOut" />
+		<div class="confirm-bind">
+			<button type="button" class="btn btn-primary" @onclick="(() => OnCreateNewElement.InvokeAsync(TagName))">@TagBindConfirmButtonTitle</button>
+		</div>
+	</div>
+	<div class="tag-search-results">
+		@if (isSearching)
+		{
+			<div class="all-results">
+				<div class="result">
+					<span>@LoadingMessage</span>
+				</div>
+			</div>
+		}
+		else if (ShowResults())
+		{
+			<div class="all-results">
+				@foreach (var item in searchResults)
+				{
+					<div @key="@item" class="result" tabindex="0"
+						 @onclick="@(() => SelectResult(item))"
+						 @onmouseover="MouseOverHandler"
+						 @onmouseout="MouseOutHandler">
+						@if (ResultTemplate is not null)
+						{
+							@ResultTemplate(item)
+						}
+					</div>
+				}
+			</div>
+		}
+		else if (NothingFound())
+		{
+			<div class="all-results">
+				@if (NotFoundTemplate != null)
+				{
+					<div class="notfound">
+						@NotFoundTemplate
+					</div>
+				}
+				else
+				{
+					<div class="notfound">
+						<span>No Results</span>
+					</div>
+				}
+			</div>
+		}
+	</div>
+</div>
+
+@code {
+	[Parameter]
+	public string BindHeader { get; set; } = "Bind tag:";
+	[Parameter]
+	public string InputPrependSymbol { get; set; } = "#";
+	[Parameter]
+	public string LoadingMessage { get; set; } = "Loading...";
+	[Parameter]
+	public string TagBindConfirmButtonTitle { get; set; } = "Confirm";
+	[Parameter]
+	public int TimerInterval { get; set; } = 300;
+	[Parameter]
+	public RenderFragment<Tag_VM>? ResultTemplate { get; set; }
+	[Parameter]
+	public RenderFragment? NotFoundTemplate { get; set; }
+	[Parameter]
+	public Func<string, IEnumerable<Tag_VM>>? OnSearchHandler { get; set; }
+	[Parameter]
+	public EventCallback<Tag_VM> OnChoiceMade { get; set; }
+	[Parameter]
+	public EventCallback<string> OnCreateNewElement { get; set; }
+
+	private Timer? timer;
+	private string tagName = string.Empty;
+	public string TagName
+	{
+		get => tagName;
+		set
+		{
+			tagName = value;
+			if (tagName.Length == 0)
+			{
+				isShowingResults = false;
+				timer?.Stop();
+				searchResults = new();
+			}
+			else
+			{
+				timer?.Start();
+			}
+		}
+	}
+	protected List<Tag_VM> searchResults = new();
+	private bool isSearching;
+	private bool isShowingResults;
+	private bool isMouseOver;
+
+	protected override void OnInitialized()
+	{
+		timer = new();
+		timer.Interval = TimerInterval;
+		timer.AutoReset = false;
+		timer.Elapsed += Search;
+	}
+	protected async void Search(object? sender, ElapsedEventArgs args)
+	{
+		isSearching = true;
+		isShowingResults = false;
+		await InvokeAsync(StateHasChanged);
+		if (OnSearchHandler is not null)
+		{
+			searchResults = OnSearchHandler.Invoke(tagName).ToList();
+		}
+		else
+		{
+			throw new Exception("EditNoteTagsModal -> OnSearchHandler is null");
+		}
+		isSearching = false;
+		isShowingResults = true;
+		await InvokeAsync(StateHasChanged);
+	}
+	public void HasResults()
+	{
+		if (searchResults.Any())
+		{
+			isShowingResults = true;
+		}
+	}
+	public bool ShowResults()
+	{
+		return isShowingResults && searchResults.Any();
+	}
+	public bool NothingFound()
+	{
+		return isShowingResults && !searchResults.Any();
+	}
+	public void MouseOverHandler()
+	{
+		isMouseOver = true;
+	}
+	public void MouseOutHandler()
+	{
+		isMouseOver = false;
+	}
+	public void FocusOut()
+	{
+		if (!isMouseOver)
+		{
+			isShowingResults = false;
+		}
+	}
+	public async void SelectResult(Tag_VM chosenTag)
+	{
+		TagName = string.Empty;
+		await OnChoiceMade.InvokeAsync(chosenTag);
+	}
+}

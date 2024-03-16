@@ -10,7 +10,7 @@
 	<hr class="note-hr"/>
 	<div class="note-footer">
 		<div class="note-footer-tags">
-			@foreach (var tag in Tags ?? Array.Empty<Tag_VM>())
+			@foreach (var tag in Tags ?? [])
 			{
 				if (ChildContent is not null)
 				{
@@ -51,7 +51,7 @@ else if (DeleteModalIsOpen)
 else if (TagEditionModalIsOpen)
 {
 	ShowModalIsOpen = false;
-	<EditNoteTagsModal OnClose="OnEditTagsModalStateChanged"/>
+	<EditNoteTagsModal OnClose="OnEditTagsModalStateChanged" OnConfirm="CreateAndAddNewTag" OnChoiceMade="AddExistedTagToNote" OnSearchHandler="OnTagsSearch" />
 }
 else if (ShowModalIsOpen)
 {
@@ -69,13 +69,18 @@ else if (ShowModalIsOpen)
 	[Parameter]
 	public string CardText { get; set; } = string.Empty;
 	[Parameter]
-	public IEnumerable<Tag_VM>? Tags { get; set; }
+	public HashSet<Tag_VM>? Tags { get; set; }
 	[Parameter]
 	public RenderFragment<string>? ChildContent { get; set; }
 	[Parameter]
 	public EventCallback OnEditNote { get; set; }
 	[Parameter]
 	public EventCallback<int> OnDeleteNote { get; set; }
+
+	[Parameter]
+	public Func<string, IEnumerable<Tag_VM>>? OnTagsSearchHandler { get; set; }
+	[Parameter]
+	public Func<string, Tag_VM?>? OnCreateNewTag { get; set; }
 
 	private bool EditModalIsOpen { get; set; }
 	private bool ShowModalIsOpen { get; set; }
@@ -89,9 +94,28 @@ else if (ShowModalIsOpen)
 		CardText = content.NoteText;
 		OnEditModalStateChanged(false);
 	}
-	virtual public void OnTagAdded(string tagName)
+	public void CreateAndAddNewTag(string tagName)
 	{
-		
+		var newTag = OnCreateNewTag?.Invoke(tagName); //creates and adds new tag to all user tags collection
+		if(newTag is not null)
+		{
+			Tags?.Add(newTag); //adds created tag to list of this particular note collection
+		}
+	}
+	public IEnumerable<Tag_VM> OnTagsSearch(string tagName)
+	{
+		if(OnTagsSearchHandler is not null)
+		{
+			return OnTagsSearchHandler.Invoke(tagName);
+		}
+		else
+		{
+			return [];
+		}
+	}
+	private void AddExistedTagToNote(Tag_VM tag)
+	{
+		Tags?.Add(tag);
 	}
 	private void OnEditModalStateChanged(bool state)
 	{

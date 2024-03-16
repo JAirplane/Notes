@@ -102,6 +102,11 @@ namespace Notes_ViewModel
 				//TODO: Delete from user and save changes in db
 			}
 		}
+		public IEnumerable<Tag_VM> GetUserTagsByTagName(string tagName)
+		{
+			var tags = GetUserTags();
+			return tags.Where(tag => tag.TagName.Contains(tagName));
+		}
 		public void NullifyUser()
 		{
 			user_VM = null;

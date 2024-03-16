@@ -1,0 +1,42 @@
+﻿
+.tag-bind {
+	display: flex;
+	flex-flow: row wrap;
+}
+
+.search-element-input {
+	width: calc(75%);
+}
+
+.confirm-bind {
+	display: inline-block;
+	margin-inline-start: auto;
+}
+.tag-search-results{
+	width: 466px;
+}
+.all-results {
+	position: absolute;
+	border: 1px groove #dbdbdb;
+	min-height: 2rem;
+	max-height: 30rem;
+	overflow-y: auto;
+	z-index: 10;
+	width: inherit;
+	background: #fff;
+}
+.result {
+	padding: 0.5rem;
+	border: 1px groove #fff;
+}
+
+	.result:hover,
+	.result:focus {
+		background-color: #17a2b8;
+		border: 1px groove #000;
+		color: #000;
+		cursor: pointer;
+	}
+.modal-min-heigth{
+	min-block-size: 20em;
+}
