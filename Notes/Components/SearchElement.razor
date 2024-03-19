@@ -1,4 +1,5 @@
 ﻿@using System.Timers
+@implements IDisposable
 
 <div class="tag-bind">
 	<p class="mb-1">@BindHeader</p>
@@ -12,7 +13,7 @@
 			@onclick="HasResults"
 			@onfocusout="FocusOut" />
 		<div class="confirm-bind">
-			<button type="button" class="btn btn-primary" @onclick="(() => OnCreateNewElement.InvokeAsync(TagName))">@TagBindConfirmButtonTitle</button>
+			<button type="button" class="btn btn-primary" @onclick="(() => CreateNewElement(TagName))">@TagBindConfirmButtonTitle</button>
 		</div>
 	</div>
 	<div class="tag-search-results">
@@ -61,6 +62,14 @@
 	</div>
 </div>
 
+@if (showResultingMessage)
+{
+	<div class="info-message">
+		<i class="fa fa-check"></i>
+		@resultingMessage
+	</div>
+}
+
 @code {
 	[Parameter]
 	public string BindHeader { get; set; } = "Bind tag:";
@@ -71,7 +80,9 @@
 	[Parameter]
 	public string TagBindConfirmButtonTitle { get; set; } = "Confirm";
 	[Parameter]
-	public int TimerInterval { get; set; } = 300;
+	public int SearchTimerInterval { get; set; } = 300;
+	[Parameter]
+	public int ResultMessageTimerInterval { get; set; } = 5000;
 	[Parameter]
 	public RenderFragment<Tag_VM>? ResultTemplate { get; set; }
 	[Parameter]
@@ -82,8 +93,14 @@
 	public EventCallback<Tag_VM> OnChoiceMade { get; set; }
 	[Parameter]
 	public EventCallback<string> OnCreateNewElement { get; set; }
+	[Parameter]
+	public string OnChoiceMadeMessage { get; set; } = "Tag binded successfully.";
+	[Parameter]
+	public string OnCreateNewElementMessage { get; set; } = "Tag created and binded successfully.";
 
-	private Timer? timer;
+
+	private Timer? searchTimer;
+	private Timer? resultMessageTimer;
 	private string tagName = string.Empty;
 	public string TagName
 	{
@@ -94,12 +111,12 @@
 			if (tagName.Length == 0)
 			{
 				isShowingResults = false;
-				timer?.Stop();
+				searchTimer?.Stop();
 				searchResults = new();
 			}
 			else
 			{
-				timer?.Start();
+				searchTimer?.Start();
 			}
 		}
 	}
@@ -107,13 +124,25 @@
 	private bool isSearching;
 	private bool isShowingResults;
 	private bool isMouseOver;
+	private bool showResultingMessage;
+	private string resultingMessage = string.Empty;
 
 	protected override void OnInitialized()
 	{
-		timer = new();
-		timer.Interval = TimerInterval;
-		timer.AutoReset = false;
-		timer.Elapsed += Search;
+		searchTimer = new();
+		searchTimer.Interval = SearchTimerInterval;
+		searchTimer.AutoReset = false;
+		searchTimer.Elapsed += Search;
+
+		resultMessageTimer = new();
+		resultMessageTimer.Interval = ResultMessageTimerInterval;
+		resultMessageTimer.AutoReset = false;
+		resultMessageTimer.Elapsed += (object? sender, ElapsedEventArgs args) =>
+											{
+												showResultingMessage = false;
+												resultMessageTimer.Stop();
+												InvokeAsync(StateHasChanged);
+											};
 	}
 	protected async void Search(object? sender, ElapsedEventArgs args)
 	{
@@ -165,6 +194,22 @@
 	public async void SelectResult(Tag_VM chosenTag)
 	{
 		TagName = string.Empty;
+		resultingMessage = OnChoiceMadeMessage;
 		await OnChoiceMade.InvokeAsync(chosenTag);
+		showResultingMessage = true;
+		resultMessageTimer?.Start();
+	}
+	public async void CreateNewElement(string elementName)
+	{
+		TagName = string.Empty;
+		resultingMessage = OnCreateNewElementMessage;
+		await OnCreateNewElement.InvokeAsync(elementName);
+		showResultingMessage = true;
+		resultMessageTimer?.Start();
+	}
+	public void Dispose()
+	{
+		searchTimer?.Dispose();
+		resultMessageTimer?.Dispose();
 	}
 }

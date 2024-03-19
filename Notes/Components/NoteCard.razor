@@ -51,7 +51,8 @@ else if (DeleteModalIsOpen)
 else if (TagEditionModalIsOpen)
 {
 	ShowModalIsOpen = false;
-	<EditNoteTagsModal OnClose="OnEditTagsModalStateChanged" OnConfirm="CreateAndAddNewTag" OnChoiceMade="AddExistedTagToNote" OnSearchHandler="OnTagsSearch" />
+	<EditNoteTagsModal OnClose="OnEditTagsModalStateChanged" OnConfirm="CreateAndAddNewTag" OnChoiceMade="AddExistedTagToNote"
+					   OnSearchHandler="OnTagsSearch" NoteTags="Tags" OnTagUnbind="UnbindTag" />
 }
 else if (ShowModalIsOpen)
 {
@@ -69,7 +70,7 @@ else if (ShowModalIsOpen)
 	[Parameter]
 	public string CardText { get; set; } = string.Empty;
 	[Parameter]
-	public HashSet<Tag_VM>? Tags { get; set; }
+	public ICollection<Tag_VM>? Tags { get; set; }
 	[Parameter]
 	public RenderFragment<string>? ChildContent { get; set; }
 	[Parameter]
@@ -101,6 +102,10 @@ else if (ShowModalIsOpen)
 		{
 			Tags?.Add(newTag); //adds created tag to list of this particular note collection
 		}
+	}
+	public void UnbindTag(Tag_VM tag)
+	{
+		Tags?.Remove(tag);
 	}
 	public IEnumerable<Tag_VM> OnTagsSearch(string tagName)
 	{

@@ -32,3 +32,29 @@
 #tagInput {
 	width: calc(100% - 35px);
 }
+.tag-delete-container{
+	
+}
+.tag-modal-inline {
+	display: flex;
+	width: calc(100% - 10px);
+	margin: 8px;
+	padding: 3px;
+	border: 2px solid #ced4da;
+	border-radius: 5px;
+	background-color: #e9ecef;
+	align-items:center;
+}
+.tag-name {
+	display: inline-block;
+	margin-inline-end: auto;
+	margin-inline-start: 10px;
+	color: darkslateblue;
+}
+.tag-delete-button {
+	display: inline-block;
+}
+.tag-modal-inline:has(.tag-delete-button:hover) {
+	border-color: #dc3545;
+	background-color: lightcoral;
+}

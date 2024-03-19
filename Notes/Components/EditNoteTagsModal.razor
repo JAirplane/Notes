@@ -14,10 +14,21 @@
 						@context.TagName
 					</ResultTemplate>
 				</SearchElement>
+				<hr />
+				<div class="tag-delete-container">
+					@foreach(var tag in NoteTags ?? [])
+					{
+						<div class="tag-modal-inline">
+							<div class="tag-name">@tag.TagName</div>
+							<button type="button" class="btn btn-outline-danger tag-delete-button" @onclick="() => OnTagUnbind.InvokeAsync(tag)">
+								<i class="fa-solid fa-minus"></i>
+							</button>
+						</div>
+					}
+				</div>
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-secondary" @onclick="CloseModal">@FooterButtonTitle</button>
-				
 			</div>
 		</div>
 	</div>
@@ -29,6 +40,8 @@
 	[Parameter]
 	public string FooterButtonTitle { get; set; } = "Close";
 	[Parameter]
+	public IEnumerable<Tag_VM>? NoteTags { get; set; }
+	[Parameter]
 	public EventCallback<bool> OnClose { get; set; }
 	//OnConfirm invokes if nothing was found and you click confirm button
 	[Parameter]
@@ -36,6 +49,8 @@
 	//OnTagChosen do something with chosen element
 	[Parameter]
 	public EventCallback<Tag_VM> OnChoiceMade { get; set; }
+	[Parameter]
+	public EventCallback<Tag_VM> OnTagUnbind { get; set; }
 	[Parameter]
 	public Func<string, IEnumerable<Tag_VM>>? OnSearchHandler { get; set; }
 
