@@ -46,6 +46,17 @@ namespace Notes_ViewModel
 				return [];
 			}
 		}
+		public IEnumerable<Reminder_VM> GetUserReminders()
+		{
+			if (user_VM is not null && user_VM.UserReminders is not null)
+			{
+				return user_VM.UserReminders;
+			}
+			else
+			{
+				return [];
+			}
+		}
 		public IEnumerable<Tag_VM> GetUserTags()
 		{
 			if (user_VM is not null && user_VM.UserTags is not null)

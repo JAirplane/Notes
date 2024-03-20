@@ -81,6 +81,54 @@ namespace Notes_Model.Repository
 				Body = "This note created for test purposes"
 			};
 			users[0].UserNotes.Add(note6);
+			var reminder1 = new Reminder
+			{
+				Id = GetNewReminderId(),
+				Header = "Reminder header1",
+				Body = "This reminder created for test purposes",
+				RemindTime = DateTime.Now.AddHours(12)
+			};
+			users[0].UserReminders.Add(reminder1);
+			var reminder2 = new Reminder
+			{
+				Id = GetNewReminderId(),
+				Header = "Reminder header2",
+				Body = "This reminder created for test purposes",
+				RemindTime = DateTime.Now.AddHours(-45)
+			};
+			users[0].UserReminders.Add(reminder2);
+			var reminder3 = new Reminder
+			{
+				Id = GetNewReminderId(),
+				Header = "Reminder header3",
+				Body = "This reminder created for test purposes",
+				RemindTime = DateTime.Now.AddHours(-123)
+			};
+			users[0].UserReminders.Add(reminder3);
+			var reminder4 = new Reminder
+			{
+				Id = GetNewReminderId(),
+				Header = "Reminder header4",
+				Body = "This reminder created for test purposes",
+				RemindTime = DateTime.Now.AddHours(-222)
+			};
+			users[0].UserReminders.Add(reminder4);
+			var reminder5 = new Reminder
+			{
+				Id = GetNewReminderId(),
+				Header = "Reminder header5",
+				Body = "This reminder created for test purposes",
+				RemindTime = DateTime.Now.AddHours(288)
+			};
+			users[0].UserReminders.Add(reminder5);
+			var reminder6 = new Reminder
+			{
+				Id = GetNewReminderId(),
+				Header = "Reminder header6",
+				Body = "This reminder created for test purposes",
+				RemindTime = DateTime.Now.AddHours(-3000)
+			};
+			users[0].UserReminders.Add(reminder6);
 		}
 		public static List<User> GetAllUsers()
 		{

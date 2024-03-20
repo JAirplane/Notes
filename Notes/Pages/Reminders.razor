@@ -1,0 +1,33 @@
+﻿@page "/reminders"
+@inject UserAuthenticationState authState
+
+<PageTitle>Reminders</PageTitle>
+
+@if (!authState.UserLoggedIn)
+{
+	<NotAuthorizedForm />
+}
+else
+{
+	<h1 class="text-center">Your notes</h1>
+	<div class="note-container">
+		@foreach (Reminder_VM reminder in handler_VM.GetUserReminders() ?? [])
+		{
+			<NoteCard NoteId=@reminder.Id CardHeader=@reminder.Header CardText=@reminder.Body Tags=@reminder.NoteTags TimeToRemind=@reminder.RemindTime
+					OnDeleteNote="handler_VM.DeleteUserNote" OnTagsSearchHandler="handler_VM.GetUserTagsByTagName"
+					OnCreateNewTag="handler_VM.AddNewTag" CardTextCSSClass="reminder-text" RemindStaleTextColorCSSClass="text-red"/>
+		}
+	</div>
+}
+
+@code {
+	private AuthenticatedUserHandler_VM? _handler_VM;
+	[Inject]
+	public AuthenticatedUserHandler_VM handler_VM
+	{
+		get => _handler_VM ?? throw new Exception("AuthenticatedUserHandler_VM is null");
+		set => _handler_VM = value ?? throw new Exception("AuthenticatedUserHandler_VM is null");
+	}
+
+	public string CreateNoteModalWindowTitle { get; set; } = "Create reminder";
+}

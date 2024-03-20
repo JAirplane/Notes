@@ -5,7 +5,16 @@
 	</div>
 	<hr class="note-hr" />
 	<div class="note-body">
-		<span>@CardText</span>
+		<div class=@CardTextCSSClass>
+			<span>@CardText</span>
+		</div>
+		@if (TimeToRemind is not null)
+		{
+			<div class="card-remind">
+				<hr class="note-hr" />
+				<span class=@RemindStaleTextColorCSSClass>@RemindMessage @TimeToRemind.ToString()</span>
+			</div>
+		}
 	</div>
 	<hr class="note-hr"/>
 	<div class="note-footer">
@@ -69,6 +78,15 @@ else if (ShowModalIsOpen)
 	public string CardHeader { get; set; } = string.Empty;
 	[Parameter]
 	public string CardText { get; set; } = string.Empty;
+	//for note use default value, for reminder use "reminder-text" instead
+	[Parameter]
+	public string CardTextCSSClass { get; set; } = "note-text";
+	[Parameter]
+	public string RemindStaleTextColorCSSClass { get; set; } = string.Empty;
+	[Parameter]
+	public string RemindMessage { get; set; } = "Notification at: ";
+	[Parameter]
+	public DateTime? TimeToRemind { get; set; }
 	[Parameter]
 	public ICollection<Tag_VM>? Tags { get; set; }
 	[Parameter]
@@ -88,7 +106,14 @@ else if (ShowModalIsOpen)
 	private bool DeleteModalIsOpen { get; set; }
 	private bool TagEditionModalIsOpen { get; set; }
 
-
+	protected override void OnParametersSet()
+	{
+		base.OnParametersSet();
+		if(TimeToRemind > DateTime.Now)
+		{
+			RemindStaleTextColorCSSClass = string.Empty;
+		}
+	}
 	virtual public void OnSaveChangesHandler(NoteContent content)
 	{
 		CardHeader = content.NoteHeader;
