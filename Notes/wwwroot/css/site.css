@@ -62,3 +62,20 @@ a, .btn-link {
 	.blazor-error-boundary::after {
 		content: "An error has occurred."
 	}
+
+.success-message,
+.info-message {
+	
+	margin: 10px 0;
+	padding: 10px;
+	border-radius: 3px 3px 3px 3px;
+}
+.success-message {
+	color: #270;
+	background-color: #DFF2BF;
+	text-align: center;
+}
+.info-message {
+	color: #059;
+	background-color: #BEF;
+}

@@ -13,9 +13,8 @@ else
 	<div class="note-container">
 		@foreach (Reminder_VM reminder in handler_VM.GetUserReminders() ?? [])
 		{
-			<NoteCard NoteId=@reminder.Id CardHeader=@reminder.Header CardText=@reminder.Body Tags=@reminder.NoteTags TimeToRemind=@reminder.RemindTime
-					OnDeleteNote="handler_VM.DeleteUserNote" OnTagsSearchHandler="handler_VM.GetUserTagsByTagName"
-					OnCreateNewTag="handler_VM.AddNewTag" CardTextCSSClass="reminder-text" RemindStaleTextColorCSSClass="text-red"/>
+			<NoteCard Note="reminder" OnDeleteNote="handler_VM.DeleteUserNote" OnTagsSearchHandler="handler_VM.GetUserTagsByTagName"
+				OnCreateNewTag="handler_VM.AddNewTag" CardTextCSSClass="reminder-text" RemindStaleTextColorCSSClass="text-red"/>
 		}
 	</div>
 }

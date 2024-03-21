@@ -15,8 +15,8 @@ else
 	<div class="note-container">
 			@foreach(Note_VM note in handler_VM.GetUserNotes() ?? [])
 			{
-				<NoteCard NoteId=@note.Id CardHeader=@note.Header CardText=@note.Body Tags=@note.NoteTags OnDeleteNote="handler_VM.DeleteUserNote"
-					  OnTagsSearchHandler="handler_VM.GetUserTagsByTagName" OnCreateNewTag="handler_VM.AddNewTag"/>
+				<NoteCard Note="note" OnDeleteNote="handler_VM.DeleteUserNote" OnTagsSearchHandler="handler_VM.GetUserTagsByTagName"
+					OnCreateNewTag="handler_VM.AddNewTag" OnConvertNoteToReminder="handler_VM.ConvertNoteToReminder" />
 			}
 	</div>
 }

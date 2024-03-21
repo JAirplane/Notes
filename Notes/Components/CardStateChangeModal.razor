@@ -9,7 +9,7 @@
 				</div>
 				<div class="modal-body">
 					<div class="row">
-					<p class="mb-1">@NoteHeaderHeader</p>
+						<p class="mb-1">@NoteHeaderHeader</p>
 						<div class="col-12">
 							<InputText class="w-100" @bind-Value=NoteHeader />
 						</div>
@@ -17,9 +17,19 @@
 						<div class="col-12">
 							<InputTextArea class="w-100" rows="10" @bind-Value=NoteText />
 						</div>
-					</div>
-					<div class="row">
-
+						<p class="mb-1">@NoteReminderHeader</p>
+						<div class="col-12">
+							<InputDate class="w-100" Type="InputDateType.DateTimeLocal" @bind-Value="@RemindTime"/>
+						</div>
+						@if (RemindTime is null)
+						{
+							<div class="col-12">
+								<div class="info-message">
+									<i class="fa-solid fa-circle-info"></i>
+									@SetRemindTimeToNoteInfoMessage
+								</div>
+							</div>
+						}
 					</div>
 				</div>
 				<div class="modal-footer">
@@ -42,6 +52,12 @@
 	[Parameter]
 	public string NoteText { get; set; } = string.Empty;
 	[Parameter]
+	public string NoteReminderHeader { get; set; } = "Reminder time:";
+	[Parameter]
+	public DateTime? RemindTime { get; set; }
+	[Parameter]
+	public string SetRemindTimeToNoteInfoMessage { get; set; } = "Adding reminder time to Note will remove it from your Notes and add it to Reminders";
+	[Parameter]
 	public string LeftFooterButtonTitle { get; set; } = "Close";
 	[Parameter]
 	public string RightFooterButtonTitle { get; set; } = "Save changes";
@@ -56,7 +72,7 @@
 	}
 	private Task SaveChanges()
 	{
-		var content = new NoteContent(NoteHeader, NoteText);
+		var content = new NoteContent(NoteHeader, NoteText, RemindTime);
 		return OnSaveChanges.InvokeAsync(content);
 	}
 }

@@ -35,6 +35,24 @@ namespace Notes_ViewModel
 			user_VM = new(user);
 			return true;
 		}
+		public Reminder_VM? ConvertNoteToReminder(Note_VM? note)
+		{
+			if(note is not null)
+			{
+				var reminder = new Reminder_VM
+				{
+					Id = TestRepository.GetNewReminderId(),
+					CreationDateTime = DateTime.Now,
+					Header = note.Header,
+					Body = note.Body,
+					NoteTags = note.NoteTags
+				};
+				user_VM?.UserNotes.Remove(note);
+				user_VM?.UserReminders.Add(reminder);
+				return reminder;
+			}
+			return null;
+		}
 		public IEnumerable<Note_VM> GetUserNotes()
 		{
 			if (user_VM is not null && user_VM.UserNotes is not null)

@@ -1,25 +1,25 @@
 ﻿
 <div class="note" @onclick=@(() => OnShowModalStateChanged(true))>
 	<div class="note-header text-center">
-		<span>@CardHeader</span>
+		<span>@cardHeader</span>
 	</div>
 	<hr class="note-hr" />
 	<div class="note-body">
 		<div class=@CardTextCSSClass>
-			<span>@CardText</span>
+			<span>@cardText</span>
 		</div>
-		@if (TimeToRemind is not null)
+		@if (timeToRemind is not null)
 		{
 			<div class="card-remind">
 				<hr class="note-hr" />
-				<span class=@RemindStaleTextColorCSSClass>@RemindMessage @TimeToRemind.ToString()</span>
+				<span class=@RemindStaleTextColorCSSClass>@RemindMessage @timeToRemind.ToString()</span>
 			</div>
 		}
 	</div>
 	<hr class="note-hr"/>
 	<div class="note-footer">
 		<div class="note-footer-tags">
-			@foreach (var tag in Tags ?? [])
+			@foreach (var tag in Note?.NoteTags ?? [])
 			{
 				if (ChildContent is not null)
 				{
@@ -50,34 +50,31 @@
 @if (EditModalIsOpen)
 {
 	ShowModalIsOpen = false;
-	<CardStateChangeModal ModalTitle=@ModalWindowTitle NoteHeader=@CardHeader NoteText=@CardText OnClose="OnEditModalStateChanged" OnSaveChanges="OnSaveChangesHandler" />
+	<CardStateChangeModal ModalTitle=@ModalWindowTitle NoteHeader=@cardHeader NoteText=@cardText OnClose="OnEditModalStateChanged"
+			OnSaveChanges="OnSaveChangesHandler" RemindTime=@timeToRemind />
 }
 else if (DeleteModalIsOpen)
 {
 	ShowModalIsOpen = false;
-	<ConfirmModalWindow OnClose="OnDeleteModalStateChanged" OnConfirm="(() => OnDeleteNote.InvokeAsync(NoteId))" />
+	<ConfirmModalWindow OnClose="OnDeleteModalStateChanged" OnConfirm="(() => OnDeleteNote.InvokeAsync(Note?.Id ?? 0))" />
 }
 else if (TagEditionModalIsOpen)
 {
 	ShowModalIsOpen = false;
 	<EditNoteTagsModal OnClose="OnEditTagsModalStateChanged" OnConfirm="CreateAndAddNewTag" OnChoiceMade="AddExistedTagToNote"
-					   OnSearchHandler="OnTagsSearch" NoteTags="Tags" OnTagUnbind="UnbindTag" />
+			OnSearchHandler="OnTagsSearch" NoteTags=@Note?.NoteTags OnTagUnbind="UnbindTag" />
 }
 else if (ShowModalIsOpen)
 {
-	<ShowCardModalWindow NoteHeader=@CardHeader NoteText=@CardText NoteTags="Tags" OnClose="OnShowModalStateChanged" />
+	<ShowCardModalWindow NoteHeader=@cardHeader NoteText=@cardText NoteTags=@Note?.NoteTags OnClose="OnShowModalStateChanged" />
 }
 
 
 @code {
 	[Parameter]
-	public int NoteId { get; set; }
+	public Note_VM? Note { get; set; }
 	[Parameter]
 	public string ModalWindowTitle { get; set; } = "Edit note";
-	[Parameter]
-	public string CardHeader { get; set; } = string.Empty;
-	[Parameter]
-	public string CardText { get; set; } = string.Empty;
 	//for note use default value, for reminder use "reminder-text" instead
 	[Parameter]
 	public string CardTextCSSClass { get; set; } = "note-text";
@@ -85,10 +82,6 @@ else if (ShowModalIsOpen)
 	public string RemindStaleTextColorCSSClass { get; set; } = string.Empty;
 	[Parameter]
 	public string RemindMessage { get; set; } = "Notification at: ";
-	[Parameter]
-	public DateTime? TimeToRemind { get; set; }
-	[Parameter]
-	public ICollection<Tag_VM>? Tags { get; set; }
 	[Parameter]
 	public RenderFragment<string>? ChildContent { get; set; }
 	[Parameter]
@@ -100,7 +93,12 @@ else if (ShowModalIsOpen)
 	public Func<string, IEnumerable<Tag_VM>>? OnTagsSearchHandler { get; set; }
 	[Parameter]
 	public Func<string, Tag_VM?>? OnCreateNewTag { get; set; }
+	[Parameter]
+	public Func<Note_VM, Reminder_VM?>? OnConvertNoteToReminder { get; set; }
 
+	private string cardHeader = string.Empty;
+	private string cardText = string.Empty;
+	private DateTime? timeToRemind;
 	private bool EditModalIsOpen { get; set; }
 	private bool ShowModalIsOpen { get; set; }
 	private bool DeleteModalIsOpen { get; set; }
@@ -109,28 +107,51 @@ else if (ShowModalIsOpen)
 	protected override void OnParametersSet()
 	{
 		base.OnParametersSet();
-		if(TimeToRemind > DateTime.Now)
+		cardHeader = Note?.Header ?? string.Empty;
+		cardText = Note?.Body ?? string.Empty;
+		timeToRemind = (Note as Reminder_VM)?.RemindTime;
+
+		if (timeToRemind is not null && timeToRemind > DateTime.Now)
 		{
 			RemindStaleTextColorCSSClass = string.Empty;
 		}
 	}
 	virtual public void OnSaveChangesHandler(NoteContent content)
 	{
-		CardHeader = content.NoteHeader;
-		CardText = content.NoteText;
+		if(Note is not null)
+		{
+			Note.Header = content.NoteHeader;
+			Note.Body = content.NoteText;
+			if (content.RemindDateTime is not null)
+			{
+				if (Note is not Reminder_VM)
+				{
+					var reminder = OnConvertNoteToReminder?.Invoke(Note);
+				}
+				else
+				{
+					(Note as Reminder_VM).RemindTime = (DateTime)content.RemindDateTime;
+				}
+				timeToRemind = content.RemindDateTime;
+			}
+		}
 		OnEditModalStateChanged(false);
 	}
 	public void CreateAndAddNewTag(string tagName)
 	{
 		var newTag = OnCreateNewTag?.Invoke(tagName); //creates and adds new tag to all user tags collection
-		if(newTag is not null)
+		AddExistedTagToNote(newTag);
+	}
+	private void AddExistedTagToNote(Tag_VM? tag)
+	{
+		if (tag is not null)
 		{
-			Tags?.Add(newTag); //adds created tag to list of this particular note collection
+			Note?.NoteTags?.Add(tag);
 		}
 	}
 	public void UnbindTag(Tag_VM tag)
 	{
-		Tags?.Remove(tag);
+		Note?.NoteTags?.Remove(tag);
 	}
 	public IEnumerable<Tag_VM> OnTagsSearch(string tagName)
 	{
@@ -142,10 +163,6 @@ else if (ShowModalIsOpen)
 		{
 			return [];
 		}
-	}
-	private void AddExistedTagToNote(Tag_VM tag)
-	{
-		Tags?.Add(tag);
 	}
 	private void OnEditModalStateChanged(bool state)
 	{
