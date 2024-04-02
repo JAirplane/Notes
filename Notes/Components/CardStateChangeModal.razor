@@ -21,7 +21,7 @@
 						<div class="col-12">
 							<InputDate class="w-100" Type="InputDateType.DateTimeLocal" @bind-Value="@RemindTime"/>
 						</div>
-						@if (RemindTime is null)
+					@if (ShowRemindTimeInfoMessage)
 						{
 							<div class="col-12">
 								<div class="info-message">
@@ -56,6 +56,8 @@
 	[Parameter]
 	public DateTime? RemindTime { get; set; }
 	[Parameter]
+	public bool ShowRemindTimeInfoMessage { get; set; }
+	[Parameter]
 	public string SetRemindTimeToNoteInfoMessage { get; set; } = "Adding reminder time to Note will remove it from your Notes and add it to Reminders";
 	[Parameter]
 	public string LeftFooterButtonTitle { get; set; } = "Close";
@@ -65,6 +67,7 @@
 	public EventCallback<bool> OnClose { get; set; }
 	[Parameter]
 	public EventCallback<NoteContent> OnSaveChanges { get; set; }
+	
 
 	private Task CloseModal()
 	{

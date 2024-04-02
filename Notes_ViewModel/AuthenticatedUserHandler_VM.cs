@@ -41,14 +41,14 @@ namespace Notes_ViewModel
 			{
 				var reminder = new Reminder_VM
 				{
-					Id = TestRepository.GetNewReminderId(),
-					CreationDateTime = DateTime.Now,
+					Id = TestRepository.GetNewNoteId(),
+					CreationDateTime = note.CreationDateTime,
 					Header = note.Header,
 					Body = note.Body,
 					NoteTags = note.NoteTags
 				};
 				user_VM?.UserNotes.Remove(note);
-				user_VM?.UserReminders.Add(reminder);
+				user_VM?.UserNotes.Add(reminder);
 				return reminder;
 			}
 			return null;
@@ -57,18 +57,18 @@ namespace Notes_ViewModel
 		{
 			if (user_VM is not null && user_VM.UserNotes is not null)
 			{
-				return user_VM.UserNotes;
+				return user_VM.UserNotes.Where(reminder => reminder is not Reminder_VM);
 			}
 			else
 			{
 				return [];
 			}
 		}
-		public IEnumerable<Reminder_VM> GetUserReminders()
+		public IEnumerable<Note_VM> GetUserReminders()
 		{
-			if (user_VM is not null && user_VM.UserReminders is not null)
+			if (user_VM is not null && user_VM.UserNotes is not null)
 			{
-				return user_VM.UserReminders;
+				return user_VM.UserNotes.Where(reminder => reminder is Reminder_VM);
 			}
 			else
 			{
@@ -100,13 +100,28 @@ namespace Notes_ViewModel
 		}
 		public void AddNewNote(NoteContent content)
 		{
-			var note = new Note_VM()
-			{ 
-				Id = TestRepository.GetNewNoteId(),
-				CreationDateTime = DateTime.Now,
-				Header = content.NoteHeader,
-				Body = content.NoteText
-			};
+			Note_VM? note;
+			if (content.RemindDateTime is null)
+			{
+				note = new Note_VM()
+				{
+					Id = TestRepository.GetNewNoteId(),
+					CreationDateTime = DateTime.Now,
+					Header = content.NoteHeader,
+					Body = content.NoteText
+				};
+			}
+			else
+			{
+				note = new Reminder_VM()
+				{
+					Id = TestRepository.GetNewNoteId(),
+					CreationDateTime = DateTime.Now,
+					Header = content.NoteHeader,
+					Body = content.NoteText,
+					RemindTime = content.RemindDateTime ?? DateTime.MinValue
+				};
+			}
 			user_VM?.UserNotes.Add(note);
 		}
 		public Tag_VM? AddNewTag(string tagName)

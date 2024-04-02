@@ -11,7 +11,6 @@ namespace Notes_ViewModel.Models_VM
 	{
 		public int Id { get; set; }
 		public List<Note_VM> UserNotes { get; set; } = [];
-		public List<Reminder_VM> UserReminders { get; set; } = [];
 		public HashSet<Tag_VM> UserTags { get; set; } = [];
 		public LoggedInUser_VM() { }
 		public LoggedInUser_VM(User user) :base(user.Сredentials.Login, user.Сredentials.Password,
@@ -20,11 +19,14 @@ namespace Notes_ViewModel.Models_VM
 			Id = user.Id;
 			foreach(Note note in user.UserNotes)
 			{
-				UserNotes.Add(new Note_VM(note));
-			}
-			foreach(Reminder reminder in user.UserReminders)
-			{
-				UserReminders.Add(new Reminder_VM(reminder));
+				if(note is Reminder reminder)
+				{
+					UserNotes.Add(new Reminder_VM(reminder));
+				}
+				else
+				{
+					UserNotes.Add(new Note_VM(note));
+				}
 			}
 			foreach(Tag tag in user.UserTags)
 			{
@@ -46,24 +48,17 @@ namespace Notes_ViewModel.Models_VM
 			var tag = UserTags.FirstOrDefault(tag => tag.Id.Equals(tagId));
 			if (tag != null)
 			{
+				foreach (var note in UserNotes)
+				{
+					var nTag = note.NoteTags.FirstOrDefault(tag => tag.Id.Equals(tagId));
+					if (nTag is not null)
+					{
+						note.NoteTags.Remove(nTag);
+					}
+				}
 				UserTags.Remove(tag);
 			}
-			foreach(var note in UserNotes)
-			{
-				var nTag = note.NoteTags.FirstOrDefault(tag => tag.Id.Equals(tagId));
-				if(nTag is not null)
-				{
-					note.NoteTags.Remove(nTag);
-				}
-			}
-			foreach (var reminder in UserReminders)
-			{
-				var rTag = reminder.NoteTags.FirstOrDefault(tag => tag.Id.Equals(tagId));
-				if(rTag is not null)
-				{
-					reminder.NoteTags.Remove(rTag);
-				}
-			}
+			
 		}
 	}
 }

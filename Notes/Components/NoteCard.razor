@@ -51,7 +51,7 @@
 {
 	ShowModalIsOpen = false;
 	<CardStateChangeModal ModalTitle=@ModalWindowTitle NoteHeader=@cardHeader NoteText=@cardText OnClose="OnEditModalStateChanged"
-			OnSaveChanges="OnSaveChangesHandler" RemindTime=@timeToRemind />
+						  OnSaveChanges="OnSaveChangesHandler" RemindTime=@timeToRemind ShowRemindTimeInfoMessage=@ShowRemindTimeInfoMessageDuringEdit />
 }
 else if (DeleteModalIsOpen)
 {
@@ -88,6 +88,8 @@ else if (ShowModalIsOpen)
 	public EventCallback OnEditNote { get; set; }
 	[Parameter]
 	public EventCallback<int> OnDeleteNote { get; set; }
+	[Parameter]
+	public EventCallback OnParentStateHasChanged { get; set; }
 
 	[Parameter]
 	public Func<string, IEnumerable<Tag_VM>>? OnTagsSearchHandler { get; set; }
@@ -103,6 +105,7 @@ else if (ShowModalIsOpen)
 	private bool ShowModalIsOpen { get; set; }
 	private bool DeleteModalIsOpen { get; set; }
 	private bool TagEditionModalIsOpen { get; set; }
+	private bool ShowRemindTimeInfoMessageDuringEdit { get; set; }
 
 	protected override void OnParametersSet()
 	{
@@ -110,6 +113,11 @@ else if (ShowModalIsOpen)
 		cardHeader = Note?.Header ?? string.Empty;
 		cardText = Note?.Body ?? string.Empty;
 		timeToRemind = (Note as Reminder_VM)?.RemindTime;
+
+		if(Note is not Reminder_VM)
+		{
+			ShowRemindTimeInfoMessageDuringEdit = true;
+		}
 
 		if (timeToRemind is not null && timeToRemind > DateTime.Now)
 		{
@@ -124,18 +132,23 @@ else if (ShowModalIsOpen)
 			Note.Body = content.NoteText;
 			if (content.RemindDateTime is not null)
 			{
-				if (Note is not Reminder_VM)
+				if (Note is Reminder_VM reminder)
 				{
-					var reminder = OnConvertNoteToReminder?.Invoke(Note);
+					reminder.RemindTime = content.RemindDateTime ?? DateTime.MinValue;
 				}
 				else
 				{
-					(Note as Reminder_VM).RemindTime = (DateTime)content.RemindDateTime;
+					var convertedReminder = OnConvertNoteToReminder?.Invoke(Note);
+					if(convertedReminder is not null)
+					{
+						convertedReminder.RemindTime = content.RemindDateTime ?? DateTime.MinValue;
+					}
 				}
 				timeToRemind = content.RemindDateTime;
 			}
 		}
 		OnEditModalStateChanged(false);
+		OnParentStateHasChanged.InvokeAsync();
 	}
 	public void CreateAndAddNewTag(string tagName)
 	{

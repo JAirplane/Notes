@@ -11,7 +11,6 @@ namespace Notes_Model
 	{
 		public int Id { get; set; }
 		public List<Note> UserNotes { get; set; } = [];
-		public List<Reminder> UserReminders { get; set; } = [];
 		public HashSet<Tag> UserTags { get; set; } = [];
 		public Credentials Сredentials { get; set; } = new();
 		public string Name { get; set; } = string.Empty;

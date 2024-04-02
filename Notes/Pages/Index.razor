@@ -16,7 +16,7 @@ else
 			@foreach(Note_VM note in handler_VM.GetUserNotes() ?? [])
 			{
 				<NoteCard Note="note" OnDeleteNote="handler_VM.DeleteUserNote" OnTagsSearchHandler="handler_VM.GetUserTagsByTagName"
-					OnCreateNewTag="handler_VM.AddNewTag" OnConvertNoteToReminder="handler_VM.ConvertNoteToReminder" />
+					OnCreateNewTag="handler_VM.AddNewTag" OnConvertNoteToReminder="handler_VM.ConvertNoteToReminder" OnParentStateHasChanged="StateHasChanged"/>
 			}
 	</div>
 }

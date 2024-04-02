@@ -11,7 +11,6 @@ namespace Notes_Model.Repository
 		private static List<User>? users;
 		private static int currentUserId = 0;
 		private static int currentNoteId = 0;
-		private static int currentReminderId = 0;
 		private static int currentTagId = 0;
 		static TestRepository()
 		{
@@ -83,52 +82,52 @@ namespace Notes_Model.Repository
 			users[0].UserNotes.Add(note6);
 			var reminder1 = new Reminder
 			{
-				Id = GetNewReminderId(),
+				Id = GetNewNoteId(),
 				Header = "Reminder header1",
 				Body = "This reminder created for test purposes",
 				RemindTime = DateTime.Now.AddHours(12)
 			};
-			users[0].UserReminders.Add(reminder1);
+			users[0].UserNotes.Add(reminder1);
 			var reminder2 = new Reminder
 			{
-				Id = GetNewReminderId(),
+				Id = GetNewNoteId(),
 				Header = "Reminder header2",
 				Body = "This reminder created for test purposes",
 				RemindTime = DateTime.Now.AddHours(-45)
 			};
-			users[0].UserReminders.Add(reminder2);
+			users[0].UserNotes.Add(reminder2);
 			var reminder3 = new Reminder
 			{
-				Id = GetNewReminderId(),
+				Id = GetNewNoteId(),
 				Header = "Reminder header3",
 				Body = "This reminder created for test purposes",
 				RemindTime = DateTime.Now.AddHours(-123)
 			};
-			users[0].UserReminders.Add(reminder3);
+			users[0].UserNotes.Add(reminder3);
 			var reminder4 = new Reminder
 			{
-				Id = GetNewReminderId(),
+				Id = GetNewNoteId(),
 				Header = "Reminder header4",
 				Body = "This reminder created for test purposes",
 				RemindTime = DateTime.Now.AddHours(-222)
 			};
-			users[0].UserReminders.Add(reminder4);
+			users[0].UserNotes.Add(reminder4);
 			var reminder5 = new Reminder
 			{
-				Id = GetNewReminderId(),
+				Id = GetNewNoteId(),
 				Header = "Reminder header5",
 				Body = "This reminder created for test purposes",
 				RemindTime = DateTime.Now.AddHours(288)
 			};
-			users[0].UserReminders.Add(reminder5);
+			users[0].UserNotes.Add(reminder5);
 			var reminder6 = new Reminder
 			{
-				Id = GetNewReminderId(),
+				Id = GetNewNoteId(),
 				Header = "Reminder header6",
 				Body = "This reminder created for test purposes",
 				RemindTime = DateTime.Now.AddHours(-3000)
 			};
-			users[0].UserReminders.Add(reminder6);
+			users[0].UserNotes.Add(reminder6);
 		}
 		public static List<User> GetAllUsers()
 		{
@@ -179,10 +178,6 @@ namespace Notes_Model.Repository
 		public static int GetNewNoteId()
 		{
 			return ++currentNoteId;
-		}
-		public static int GetNewReminderId()
-		{
-			return ++currentReminderId;
 		}
 		public static int GetNewTagId()
 		{
