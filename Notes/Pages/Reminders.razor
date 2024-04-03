@@ -9,6 +9,8 @@
 }
 else
 {
+	<CreateNote ModalWindowTitle=@CreateNoteModalWindowTitle OnCreate="handler_VM.AddNewNote" />
+
 	<h1 class="text-center">Your notes</h1>
 	<div class="note-container">
 		@foreach (Reminder_VM reminder in handler_VM.GetUserReminders() ?? [])

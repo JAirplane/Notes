@@ -79,3 +79,8 @@ a, .btn-link {
 	color: #059;
 	background-color: #BEF;
 }
+.notification-modal {
+	padding-block-start: 5px;
+	font-size: 14px;
+	color: lightgray;
+}

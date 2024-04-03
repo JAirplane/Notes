@@ -1,0 +1,77 @@
+﻿
+@page "/search"
+@page "/search/{TagName}"
+
+<SearchElement OnSearchHandler="handler_VM.GetUserTagsByTagName" OnChoiceMade="GetUserNotesByTag" OnCreateNewElement="OnConfirmHandler">
+	<ResultTemplate>
+		@context.TagName
+	</ResultTemplate>
+</SearchElement>
+
+<h1 class="text-center">Your notes</h1>
+<div class="note-container">
+	@foreach (Note_VM note in chosenNotes ?? [])
+	{
+		var textCSSClass = string.Empty;
+		var remindStaleCSS = string.Empty;
+		if(note is Reminder_VM)
+		{
+			textCSSClass = ReminderTextCSSClass;
+			remindStaleCSS = RemindStaleTextColorCSSClass;
+		}
+		else
+		{
+			textCSSClass = NoteTextCSSClass;
+		}
+		<NoteCard Note="note" OnDeleteNote="handler_VM.DeleteUserNote" OnTagsSearchHandler="handler_VM.GetUserTagsByTagName"
+				  OnCreateNewTag="handler_VM.AddNewTag" OnConvertNoteToReminder="handler_VM.ConvertNoteToReminder"
+				  CardTextCSSClass=@textCSSClass RemindStaleTextColorCSSClass=@remindStaleCSS OnParentStateHasChanged="StateHasChanged" />
+	}
+</div>
+
+@code {
+	[Parameter]
+	public string TagName { get; set; } = string.Empty;
+	[Parameter]
+	public string ReminderTextCSSClass { get; set; } = "reminder-text";
+	[Parameter]
+	public string NoteTextCSSClass { get; set; } = "note-text";
+	[Parameter]
+	public string RemindStaleTextColorCSSClass { get; set; } = "text-red";
+
+	private AuthenticatedUserHandler_VM? _handler_VM;
+	[Inject]
+	public AuthenticatedUserHandler_VM handler_VM
+	{
+		get => _handler_VM ?? throw new Exception("AuthenticatedUserHandler_VM is null");
+		set => _handler_VM = value ?? throw new Exception("AuthenticatedUserHandler_VM is null");
+	}
+	private IEnumerable<Note_VM>? chosenNotes;
+	private Tag_VM? sendedTag;
+
+	protected override void OnParametersSet()
+	{
+		base.OnParametersSet();
+		if(!string.IsNullOrWhiteSpace(TagName))
+		{
+			sendedTag = handler_VM.GetUserTagByName(TagName);
+			GetUserNotesByTag(sendedTag);
+		}
+	}
+	private void GetUserNotesByTag(Tag_VM? tag)
+	{
+		chosenNotes = null;
+		if (tag is not null)
+		{
+			chosenNotes = handler_VM.GetUserNotesByTag(tag);
+		}
+	}
+	private void OnConfirmHandler(string tagName)
+	{
+		if (!string.IsNullOrWhiteSpace(tagName))
+		{
+			sendedTag = handler_VM.GetUserTagByName(tagName);
+			GetUserNotesByTag(sendedTag);
+		}
+	}
+}

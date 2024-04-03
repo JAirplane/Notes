@@ -42,6 +42,8 @@
 .note-text {
 	overflow: hidden;
 	flex: 0 0 100%;
+	word-break: break-all;
+	padding-inline: 3px;
 }
 .reminder-text {
 	overflow: hidden;

@@ -75,6 +75,10 @@ namespace Notes_ViewModel
 				return [];
 			}
 		}
+		public IEnumerable<Note_VM>? GetUserNotesByTag(Tag_VM tag)
+		{
+			return user_VM?.UserNotes.Where(note => note.NoteTags.Contains(tag));
+		}
 		public IEnumerable<Tag_VM> GetUserTags()
 		{
 			if (user_VM is not null && user_VM.UserTags is not null)
@@ -150,6 +154,11 @@ namespace Notes_ViewModel
 		{
 			var tags = GetUserTags();
 			return tags.Where(tag => tag.TagName.Contains(tagName));
+		}
+		public Tag_VM? GetUserTagByName(string tagName)
+		{
+			var tags = GetUserTags();
+			return tags?.FirstOrDefault(tag => tag.TagName.Equals(tagName));
 		}
 		public void NullifyUser()
 		{

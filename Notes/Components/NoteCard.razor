@@ -66,7 +66,8 @@ else if (TagEditionModalIsOpen)
 }
 else if (ShowModalIsOpen)
 {
-	<ShowCardModalWindow NoteHeader=@cardHeader NoteText=@cardText NoteTags=@Note?.NoteTags OnClose="OnShowModalStateChanged" />
+	<ShowCardModalWindow NoteHeader=@cardHeader NoteText=@cardText NoteTags=@Note?.NoteTags OnClose="OnShowModalStateChanged"
+						 RemindTime="timeToRemind" RemindTextCSSClass=@RemindStaleTextColorCSSClass />
 }
 
 

@@ -13,15 +13,11 @@
 						<div class="col-12">
 							<InputText class="w-100" @bind-Value=NoteHeader />
 						</div>
-						<p class="my-1">@NoteTextHeader</p>
+						<p class="my-1">@NoteReminderHeader</p>
 						<div class="col-12">
-							<InputTextArea class="w-100" rows="10" @bind-Value=NoteText />
+							<InputDate class="w-100" Type="InputDateType.DateTimeLocal" @bind-Value="@RemindTime" />
 						</div>
-						<p class="mb-1">@NoteReminderHeader</p>
-						<div class="col-12">
-							<InputDate class="w-100" Type="InputDateType.DateTimeLocal" @bind-Value="@RemindTime"/>
-						</div>
-					@if (ShowRemindTimeInfoMessage)
+						@if (ShowRemindTimeInfoMessage)
 						{
 							<div class="col-12">
 								<div class="info-message">
@@ -30,6 +26,10 @@
 								</div>
 							</div>
 						}
+						<p class="my-1">@NoteTextHeader</p>
+						<div class="col-12">
+							<InputTextArea class="w-100" rows="10" @bind-Value=NoteText />
+						</div>
 					</div>
 				</div>
 				<div class="modal-footer">

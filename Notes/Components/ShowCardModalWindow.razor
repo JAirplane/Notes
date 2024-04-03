@@ -9,6 +9,15 @@
 			</div>
 			<div class="modal-body">
 				<span>@NoteText</span>
+				@if (RemindTime is not null)
+				{
+					<div class="card-remind">
+						<hr class="note-hr" />
+						<div class="notification-modal">
+							<span class=@RemindTextCSSClass>@RemindMessage @RemindTime.ToString()</span>
+						</div>
+					</div>
+				}
 			</div>
 			<div class="modal-footer modal-footer-start">
 				@foreach (var tag in NoteTags ?? Array.Empty<Tag_VM>())
@@ -32,6 +41,12 @@
 	public string NoteHeader { get; set; } = string.Empty;
 	[Parameter]
 	public string NoteText { get; set; } = string.Empty;
+	[Parameter]
+	public string RemindMessage { get; set; } = "Notification at: ";
+	[Parameter]
+	public DateTime? RemindTime { get; set; }
+	[Parameter]
+	public string RemindTextCSSClass { get; set; } = string.Empty;
 	[Parameter]
 	public IEnumerable<Tag_VM>? NoteTags { get; set; }
 	[Parameter]
