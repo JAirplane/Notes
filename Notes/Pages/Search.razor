@@ -2,15 +2,28 @@
 @page "/search"
 @page "/search/{TagName}"
 
-<SearchElement OnSearchHandler="handler_VM.GetUserTagsByTagName" OnChoiceMade="GetUserNotesByTag" OnCreateNewElement="OnConfirmHandler">
-	<ResultTemplate>
-		@context.TagName
-	</ResultTemplate>
-</SearchElement>
+<div class="search-container">
+	<div class="tag-search">
+		<SearchElement BindHeader=@SearchInputHeader OnChoiceMadeMessage=@TagChosenMessage CanCreateNewElement=@false OnSearchHandler="handler_VM.GetUserTagsByTagName"
+			OnChoiceMade="GetUserNotesByTag" OnCreateNewElement="OnConfirmHandler">
+			<ResultTemplate>
+				@context.TagName
+			</ResultTemplate>
+		</SearchElement>
+	</div>
+	<div class="radio-search-container">
+			@foreach(var option in Enum.GetValues<TagSearchOptions>())
+			{
+			<input type="radio" name="option" id="@option" @onchange=@(() => OnFilterChanged(option)) checked=@(option == TagSearchOptions.Both) />
+				<label for="@option">@option.ToString()</label>
+				<br>
+			}
+	</div>
+</div>
 
 <h1 class="text-center">Your notes</h1>
 <div class="note-container">
-	@foreach (Note_VM note in chosenNotes ?? [])
+	@foreach (Note_VM note in filteredNotes ?? [])
 	{
 		var textCSSClass = string.Empty;
 		var remindStaleCSS = string.Empty;
@@ -33,6 +46,10 @@
 	[Parameter]
 	public string TagName { get; set; } = string.Empty;
 	[Parameter]
+	public string SearchInputHeader { get; set; } = "Input tag:";
+	[Parameter]
+	public string TagChosenMessage { get; set; } = "Search completed successfully";
+	[Parameter]
 	public string ReminderTextCSSClass { get; set; } = "reminder-text";
 	[Parameter]
 	public string NoteTextCSSClass { get; set; } = "note-text";
@@ -47,14 +64,15 @@
 		set => _handler_VM = value ?? throw new Exception("AuthenticatedUserHandler_VM is null");
 	}
 	private IEnumerable<Note_VM>? chosenNotes;
+	private IEnumerable<Note_VM>? filteredNotes;
 	private Tag_VM? sendedTag;
+	private TagSearchOptions searchOptions = TagSearchOptions.Both;
 
 	protected override void OnParametersSet()
 	{
-		base.OnParametersSet();
 		if(!string.IsNullOrWhiteSpace(TagName))
 		{
-			sendedTag = handler_VM.GetUserTagByName(TagName);
+			sendedTag = handler_VM.GetUserTagByName("#" + TagName);
 			GetUserNotesByTag(sendedTag);
 		}
 	}
@@ -64,6 +82,7 @@
 		if (tag is not null)
 		{
 			chosenNotes = handler_VM.GetUserNotesByTag(tag);
+			OnFilterChanged(searchOptions);
 		}
 	}
 	private void OnConfirmHandler(string tagName)
@@ -72,6 +91,22 @@
 		{
 			sendedTag = handler_VM.GetUserTagByName(tagName);
 			GetUserNotesByTag(sendedTag);
+		}
+	}
+	private void OnFilterChanged(TagSearchOptions options)
+	{
+		searchOptions = options;
+		switch (searchOptions)
+		{
+			case TagSearchOptions.Notes:
+				filteredNotes = chosenNotes?.Where(note => note is not Reminder_VM);
+				break;
+			case TagSearchOptions.Reminders:
+				filteredNotes = chosenNotes?.Where(note => note is Reminder_VM);
+				break;
+			default:
+				filteredNotes = chosenNotes;
+				break;
 		}
 	}
 }

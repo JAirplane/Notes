@@ -12,9 +12,12 @@
 			@bind-value:event="oninput"
 			@onclick="HasResults"
 			@onfocusout="FocusOut" />
-		<div class="confirm-bind">
-			<button type="button" class="btn btn-primary" @onclick="(() => CreateNewElement(TagName))">@TagBindConfirmButtonTitle</button>
-		</div>
+		@if (CanCreateNewElement)
+		{
+			<div class="confirm-bind">
+				<button type="button" class="btn btn-primary" @onclick="(() => CreateNewElement(TagName))">@TagBindConfirmButtonTitle</button>
+			</div>
+		}
 	</div>
 	<div class="tag-search-results">
 		@if (isSearching)
@@ -71,6 +74,8 @@
 }
 
 @code {
+	[Parameter]
+	public bool CanCreateNewElement { get; set; } = true;
 	[Parameter]
 	public string BindHeader { get; set; } = "Bind tag:";
 	[Parameter]

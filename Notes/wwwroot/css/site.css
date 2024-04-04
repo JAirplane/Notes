@@ -84,3 +84,15 @@ a, .btn-link {
 	font-size: 14px;
 	color: lightgray;
 }
+.search-container{
+	display: inline-block;
+	min-inline-size: 600px;
+	max-inline-size: 700px;
+}
+.tag-search {
+	float: left;
+	max-inline-size: 580px;
+}
+.radio-search-container{
+	float:left;
+}
