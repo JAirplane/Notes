@@ -14,9 +14,23 @@ namespace Notes_Model.Repository
 		private static int currentTagId = 0;
 		static TestRepository()
 		{
+			var creds = new Credentials
+			{
+				Login = "admin",
+				Password = "admin"
+			};
+			var user = new User
+			{
+				Id = GetNewUserId(),
+				Сredentials = creds,
+				Name = "Eugene",
+				Surname = "Shevchenko",
+				Email = "eugeneshevchenko0@gmail.com",
+				Phone = "79615796948"
+			};
 			users =
 			[
-				new(GetNewUserId(), "admin", "admin", "Eugene", "Shevchenko", "eugeneshevchenko0@gmail.com", "79615796948")
+				user
 			];
 			users[0].UserTags.Add(new Tag { Id = GetNewTagId(), TagName = "#11111" });
 			users[0].UserTags.Add(new Tag { Id = GetNewTagId(), TagName = "#2222" });

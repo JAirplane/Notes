@@ -1,7 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace Notes_Model
 {
+	[Owned]
 	public class Credentials
 	{
 		public string Login { get; set; } = string.Empty;

@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
+using Microsoft.EntityFrameworkCore;
+using Notes_Model.PostgresDB;
 using Notes_ViewModel;
 
 var builder = WebApplication.CreateBuilder(args);

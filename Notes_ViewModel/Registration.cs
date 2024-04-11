@@ -32,8 +32,20 @@ namespace Notes_ViewModel
 		public async Task<bool> AddNewUserAsync()
 		{
 			if (NewUser is null) return false;
-			User_m = new User(TestRepository.GetNewUserId(), NewUser.Сredentials.LoginInput, NewUser.Сredentials.PasswordInput,
-				NewUser.Name, NewUser.Surname, NewUser.Email, NewUser.Phone);
+			Credentials creds = new()
+			{
+				Login = NewUser.Сredentials.LoginInput,
+				Password = NewUser.Сredentials.PasswordInput
+			};
+			User_m = new()
+			{
+				Id = TestRepository.GetNewUserId(),
+				Сredentials = creds,
+				Name = NewUser.Name,
+				Surname = NewUser.Surname,
+				Email = NewUser.Email,
+				Phone = NewUser.Phone
+			};
 			await TestRepository.AddUserAsync(User_m);
 			return true;
 		}
