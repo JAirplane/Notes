@@ -11,6 +11,7 @@ namespace Notes_ViewModel
 {
     public class Registration
 	{
+		private readonly NotesRepository repository = new();
 		public User_VM? NewUser { get; set; }
 		private User? User_m { get; set; }
 		public async Task<bool> LoginIsUniqueAsync()

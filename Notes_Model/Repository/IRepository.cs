@@ -9,6 +9,8 @@ namespace Notes_Model.Repository
 	public interface IRepository
 	{
 		public List<User> GetAllUsers();
+		public bool CheckUserLogin(string login);
+		public User? CheckUserCredentials(string login, string password, out bool loginIsValid);
 		public bool SaveUser(User newUser);
 		public User? GetUserByEmail(string email);
 		public User? GetUserById(int userId);

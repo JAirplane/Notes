@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.EntityFrameworkCore;
 using Notes_Model.PostgresDB;
+using Notes_Model.Repository;
 using Notes_ViewModel;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,6 +12,7 @@ builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddSingleton<UserAuthenticationState>();
 builder.Services.AddSingleton<AuthenticatedUserHandler_VM>();
+builder.Services.AddScoped<IRepository, NotesRepository>();
 
 var app = builder.Build();
 

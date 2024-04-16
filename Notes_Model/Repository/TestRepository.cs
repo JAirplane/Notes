@@ -14,15 +14,14 @@ namespace Notes_Model.Repository
 		private static int currentTagId = 0;
 		static TestRepository()
 		{
-			var creds = new Credentials
-			{
-				Login = "admin",
-				Password = "admin"
-			};
 			var user = new User
 			{
 				Id = GetNewUserId(),
-				Сredentials = creds,
+				Сredentials = new Credentials
+				{
+					Login = "admin",
+					Password = "admin"
+				},
 				Name = "Eugene",
 				Surname = "Shevchenko",
 				Email = "eugeneshevchenko0@gmail.com",
