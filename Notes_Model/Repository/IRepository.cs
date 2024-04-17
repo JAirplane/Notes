@@ -8,13 +8,16 @@ namespace Notes_Model.Repository
 {
 	public interface IRepository
 	{
+		public bool IsUserExists(int userId);
 		public List<User> GetAllUsers();
-		public bool CheckUserLogin(string login);
+		public bool IsEmailRegistered(string email);
+		public bool IsLoginRegistered(string login);
 		public User? CheckUserCredentials(string login, string password, out bool loginIsValid);
-		public bool SaveUser(User newUser);
-		public User? GetUserByEmail(string email);
+		public void AddNewUser(User newUser);
+		public int GetUserIdByEmail(string email);
 		public User? GetUserById(int userId);
-		public bool AddUserNote(int userId, Note note);
+		public bool ChangeUserPassword(int userId, string password);
+		public int AddUserNote(int userId, Note note);
 		public bool AddUserTag(int userId, Tag tag);
 		public bool AddTagToNote(int userId, int noteId, int tagId);
 		public bool DeleteUserNote(int userId, int noteId);

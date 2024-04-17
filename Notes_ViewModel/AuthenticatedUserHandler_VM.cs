@@ -12,7 +12,7 @@ namespace Notes_ViewModel
 {
 	public class AuthenticatedUserHandler_VM
 	{
-		private User? user;
+		private readonly NotesRepository repository = new();
 		private LoggedInUser_VM? user_VM;
 		public void SetUser(User? _user)
 		{
@@ -20,20 +20,7 @@ namespace Notes_ViewModel
 			{
 				throw new Exception("AuthenticatedUserHandler_VM.SetUser() got null");
 			}
-			user = _user;
-			if(!ConvertFromUserToUserVM())
-			{
-				throw new Exception("AuthenticatedUserHandler_VM.ConvertFromUserToUserVM() failed to convert user");
-			}
-		}
-		public bool ConvertFromUserToUserVM()
-		{
-			if (user is null)
-			{
-				return false;
-			}
-			user_VM = new(user);
-			return true;
+			user_VM = new(_user);
 		}
 		public Reminder_VM? ConvertNoteToReminder(Note_VM? note)
 		{
@@ -109,7 +96,6 @@ namespace Notes_ViewModel
 			{
 				note = new Note_VM()
 				{
-					Id = TestRepository.GetNewNoteId(),
 					CreationDateTime = DateTime.Now,
 					Header = content.NoteHeader,
 					Body = content.NoteText
@@ -119,7 +105,6 @@ namespace Notes_ViewModel
 			{
 				note = new Reminder_VM()
 				{
-					Id = TestRepository.GetNewNoteId(),
 					CreationDateTime = DateTime.Now,
 					Header = content.NoteHeader,
 					Body = content.NoteText,
@@ -127,6 +112,32 @@ namespace Notes_ViewModel
 				};
 			}
 			user_VM?.UserNotes.Add(note);
+			Note note_model = new()
+			{
+				CreationDateTime = note.CreationDateTime,
+				Header = note.Header,
+				Body = note.Body,
+			};
+			if(note is Reminder_VM reminder)
+			{
+				var rNote = note_model as Reminder;
+				if(rNote is not null)
+				{
+					rNote.RemindTime = reminder.RemindTime;
+				}
+			}
+			if(user_VM is not null)
+			{
+				int noteId = repository.AddUserNote(user_VM.Id, note_model);
+				if(noteId == -1)
+				{
+					//TODO: write error to log
+				}
+				else
+				{
+					note.Id = noteId;
+				}
+			}
 		}
 		public Tag_VM? AddNewTag(string tagName)
 		{

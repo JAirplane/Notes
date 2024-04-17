@@ -12,42 +12,37 @@ namespace Notes_ViewModel
     public class Registration
 	{
 		private readonly NotesRepository repository = new();
-		public User_VM? NewUser { get; set; }
-		private User? User_m { get; set; }
-		public async Task<bool> LoginIsUniqueAsync()
+		public User_VM NewUser { get; set; } = new();
+		public bool LoginIsUnique()
 		{
 			if (NewUser is null || string.IsNullOrEmpty(NewUser.Сredentials.LoginInput)) return false;
-			List<User> userCollection = await TestRepository.GetAllUsersAsync();
-			var matchUser = userCollection.FirstOrDefault(user => user.Сredentials.Login.Equals(NewUser.Сredentials.LoginInput));
-			if (matchUser is null) return true;
-			return false;
+			var loginAlreadyInDB = repository.IsLoginRegistered(NewUser.Сredentials.LoginInput);
+			if(loginAlreadyInDB) return false;
+			return true;
 		}
-		public async Task<bool> EmailIsUniqueAsync()
+		public bool EmailIsUnique()
 		{
 			if (NewUser is null || string.IsNullOrEmpty(NewUser.Email)) return false;
-			List<User> userCollection = await TestRepository.GetAllUsersAsync();
-			var matchUser = userCollection.FirstOrDefault(user => user.Email.Equals(NewUser.Email));
-			if (matchUser is null) return true;
-			return false;
+			var emailAlreadyInDB = repository.IsEmailRegistered(NewUser.Email);
+			if (emailAlreadyInDB) return false;
+			return true;
 		}
-		public async Task<bool> AddNewUserAsync()
+		public bool AddNewUser()
 		{
 			if (NewUser is null) return false;
-			Credentials creds = new()
+			User user_model = new()
 			{
-				Login = NewUser.Сredentials.LoginInput,
-				Password = NewUser.Сredentials.PasswordInput
-			};
-			User_m = new()
-			{
-				Id = TestRepository.GetNewUserId(),
-				Сredentials = creds,
+				Сredentials = new Credentials()
+				{
+					Login = NewUser.Сredentials.LoginInput,
+					Password = NewUser.Сredentials.PasswordInput
+				},
 				Name = NewUser.Name,
 				Surname = NewUser.Surname,
 				Email = NewUser.Email,
 				Phone = NewUser.Phone
 			};
-			await TestRepository.AddUserAsync(User_m);
+			repository.AddNewUser(user_model);
 			return true;
 		}
 	}

@@ -49,14 +49,16 @@
 	public EventCallback<int> OnUserFound { get; set; }
 
 	private PasswordResetEmail reset = new();
+
 	private EmailInput_VM passwordChange = new();
 	private EmailService emailService = new();
+
 	private bool userExistanceChecked;
 	private int userId = -1;
 
-	virtual async public void SendEmailAsync()
+	virtual async public Task SendEmailAsync()
 	{
-		SetEmail();
+		passwordChange.Email = reset.Email;
 		userId = passwordChange.GetUserIdByEmail();
 		userExistanceChecked = true;
 		if(userId != -1)
@@ -67,9 +69,4 @@
 			await OnEmailSent.InvokeAsync(code);
 		}
 	}
-	virtual public void SetEmail()
-	{
-		passwordChange.Email = reset.Email;
-	}
-	
 }

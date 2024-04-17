@@ -10,21 +10,55 @@ namespace Notes_Model.Repository
 {
 	public class NotesRepository : IRepository
 	{
+		public bool IsUserExists(int userId)
+		{
+			using NotesContext db = new();
+			var user = db.Users.Where(user => user.Id == userId).FirstOrDefault();
+			return user != null;
+		}
 		public bool AddTagToNote(int userId, int noteId, int tagId)
 		{
 			throw new NotImplementedException();
 		}
 
-		public bool AddUserNote(int userId, Note note)
+		public int AddUserNote(int userId, Note note)
 		{
-			throw new NotImplementedException();
+			if(note is null)
+			{
+				//TODO: write to log
+				return -1;
+			}
+			if(!IsUserExists(userId))
+			{
+				//TODO: write to log
+				return -1;
+			}
+			note.UserId = userId;
+			using NotesContext db = new();
+			db.UserNotes.Add(note);
+			db.SaveChanges();
+			return note.Id;
 		}
 
 		public bool AddUserTag(int userId, Tag tag)
 		{
 			throw new NotImplementedException();
 		}
-		public bool CheckUserLogin(string login)
+		public bool IsEmailRegistered(string email)
+		{
+			if (string.IsNullOrEmpty(email))
+			{
+				return false;
+			}
+			using NotesContext db = new();
+			var user = db.Users.Where(user => user.Email.Equals(email)).FirstOrDefault();
+			if (user is null)
+			{
+				return false;
+			}
+			return true;
+		}
+		public bool IsLoginRegistered(string login)
 		{
 			if(string.IsNullOrEmpty(login))
 			{
@@ -41,7 +75,7 @@ namespace Notes_Model.Repository
 
 		public User? CheckUserCredentials(string login, string password, out bool loginIsValid)
 		{
-			loginIsValid = CheckUserLogin(login);
+			loginIsValid = IsLoginRegistered(login);
 			if (string.IsNullOrEmpty(password))
 			{
 				return null;
@@ -74,9 +108,19 @@ namespace Notes_Model.Repository
 			throw new NotImplementedException();
 		}
 
-		public User? GetUserByEmail(string email)
+		public int GetUserIdByEmail(string email)
 		{
-			throw new NotImplementedException();
+			if (string.IsNullOrEmpty(email))
+			{
+				return -1;
+			}
+			using NotesContext db = new();
+			var user = db.Users.Where(user => user.Email.Equals(email)).FirstOrDefault();
+			if(user is null)
+			{
+				return -1;
+			}
+			return user.Id;
 		}
 
 		public User? GetUserById(int userId)
@@ -84,9 +128,11 @@ namespace Notes_Model.Repository
 			throw new NotImplementedException();
 		}
 
-		public bool SaveUser(User newUser)
+		public void AddNewUser(User newUser)
 		{
-			throw new NotImplementedException();
+			using NotesContext db = new();
+			db.Users.Add(newUser);
+			_ = db.SaveChanges();
 		}
 
 		public bool UpdateNoteHeader(int userId, int noteId, string header)
@@ -103,5 +149,24 @@ namespace Notes_Model.Repository
 		{
 			throw new NotImplementedException();
 		}
+
+		public bool ChangeUserPassword(int userId, string password)
+		{
+			if(string.IsNullOrEmpty(password))
+			{
+				return false;
+			}
+			using NotesContext db = new();
+			var user = db.Users.Where(user => user.Id == userId).FirstOrDefault();
+			if(user is null)
+			{
+				return false;
+			}
+			user.Сredentials.Password = password;
+			db.SaveChanges();
+			return true;
+		}
+
+		
 	}
 }

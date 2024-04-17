@@ -10,15 +10,11 @@ namespace Notes_ViewModel
 {
 	public class EmailInput_VM
 	{
+		private readonly NotesRepository repository = new();
 		public string Email { get; set; } = string.Empty;
 		public int GetUserIdByEmail()
 		{
-			var user = TestRepository.GetUserByEmail(Email);
-			if (user is not null)
-			{
-				return user.Id;
-			}
-			return -1;
+			return repository.GetUserIdByEmail(Email);
 		}
 		virtual public string GetSecureCode()
 		{

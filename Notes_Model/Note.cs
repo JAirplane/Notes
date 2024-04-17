@@ -13,5 +13,9 @@ namespace Notes_Model
 		public string Header { get; set; } = string.Empty;
 		public string Body { get; set; } = string.Empty;
 		public HashSet<Tag> NoteTags { get; set; } = [];
+
+		public int UserId { get; set; }
+		public User? User { get; set; }
+
 	}
 }

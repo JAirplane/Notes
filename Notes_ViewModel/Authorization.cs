@@ -29,23 +29,6 @@ namespace Notes_ViewModel
 				}
 			}
 		}
-		//public async Task GetUserByCredentialsAsync()
-		//{
-		//	if (!string.IsNullOrEmpty(CredentialsVM.LoginInput) && !string.IsNullOrEmpty(CredentialsVM.PasswordInput))
-		//	{
-		//		List<User> userCollection = await TestRepository.GetAllUsersAsync();
-		//		var matchUser = userCollection.FirstOrDefault(user => user.Сredentials.Login.Equals(CredentialsVM.LoginInput));
-		//		if(matchUser is not null)
-		//		{
-		//			ValidLogin = true;
-		//			if(matchUser.Сredentials.Password.Equals(CredentialsVM.PasswordInput))
-		//			{
-		//				ValidPassword = true;
-		//				ValidUser = matchUser;
-		//			}
-		//		}
-		//	}
-		//}
 		public int GetUserId()
 		{
 			if (ValidUser is null) return -1;

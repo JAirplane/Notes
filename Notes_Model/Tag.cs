@@ -12,6 +12,8 @@ namespace Notes_Model
 		public string TagName { get; set; } = string.Empty;
 		public List<Note> Notes { get; set; } = [];
 
+		public int UserId { get; set; }
+		public User? User { get; set; }
 		public override bool Equals(object? obj)
 		{
 			if (obj is not null)

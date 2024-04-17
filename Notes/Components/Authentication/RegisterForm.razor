@@ -105,33 +105,36 @@
 	}
 	public void SetRegistrationData()
 	{
-		var _user = new User_VM();
-		_user.Сredentials.LoginInput = userData.LoginInput;
-		_user.Сredentials.PasswordInput = userData.PasswordInput;
-		_user.Name = userData.Name;
-		_user.Surname = userData.Surname;
-		_user.Email = userData.Email;
-		_user.Phone = userData.Phone;
-		registration.NewUser = _user;
+		registration.NewUser.Сredentials.LoginInput = userData.LoginInput;
+		registration.NewUser.Сredentials.PasswordInput = userData.PasswordInput;
+		registration.NewUser.Name = userData.Name;
+		registration.NewUser.Surname = userData.Surname;
+		registration.NewUser.Email = userData.Email;
+		registration.NewUser.Phone = userData.Phone;
 	}
-	virtual async public Task SendUserData()
+	virtual public void SendUserData()
 	{
 		SetRegistrationData();
-		loginIsUnique = await registration.LoginIsUniqueAsync();
+		loginIsUnique = registration.LoginIsUnique();
 		if(!loginIsUnique)
 		{
 			UserExistedMessage = LoginAlreadyExistMessage;
 			userExistanceChecked = true;
 			return;
 		}
-		emailIsUnique = await registration.EmailIsUniqueAsync();
+		emailIsUnique = registration.EmailIsUnique();
 		if(!emailIsUnique)
 		{
 			UserExistedMessage = EmailAlreadyExistMessage;
 			userExistanceChecked = true;
 			return;
 		}
-		await registration.AddNewUserAsync();
+		var userCreated = registration.AddNewUser();
+		if(!userCreated)
+		{
+			Console.WriteLine("user creation failed");
+			//TODO: log error
+		}
 		navManager.NavigateTo("/");
 	}
 }

@@ -9,21 +9,16 @@ namespace Notes_ViewModel
 {
 	public class ChangePassword_VM
 	{
+		private readonly NotesRepository repository = new();
 		public int UserId { get; set; }
 		public string NewPassword { get; set; } = string.Empty;
-		public async Task<bool> SetNewPasswordAsync()
+		public bool SetNewPassword()
 		{
 			if (string.IsNullOrEmpty(NewPassword))
 			{
 				return false;
 			}
-			var user = await TestRepository.GetUserByIdAsync(UserId);
-			if(user != null)
-			{
-				user.Сredentials.Password = NewPassword;
-				return true;
-			}
-			return false;
+			return repository.ChangeUserPassword(UserId, NewPassword);
 		}
 	}
 }
