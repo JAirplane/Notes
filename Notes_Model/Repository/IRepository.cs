@@ -18,9 +18,9 @@ namespace Notes_Model.Repository
 		public User? GetUserById(int userId);
 		public bool ChangeUserPassword(int userId, string password);
 		public int AddUserNote(int userId, Note note);
-		public bool AddUserTag(int userId, Tag tag);
+		public int AddUserTag(int userId, Tag tag);
 		public bool AddTagToNote(int userId, int noteId, int tagId);
-		public bool DeleteUserNote(int userId, int noteId);
+		public bool DeleteUserNote(int noteId);
 		public bool DeleteUserTag(int userId, int tagId);
 		public bool DeleteTagFromNote(int userId, int noteId, int tagId);
 		public bool UpdateNoteHeader(int userId, int noteId, string header);

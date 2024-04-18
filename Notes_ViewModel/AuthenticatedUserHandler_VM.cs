@@ -13,7 +13,7 @@ namespace Notes_ViewModel
 	public class AuthenticatedUserHandler_VM
 	{
 		private readonly NotesRepository repository = new();
-		private LoggedInUser_VM? user_VM;
+		private LoggedInUser_VM user_VM = new();
 		public void SetUser(User? _user)
 		{
 			if(_user is null)
@@ -42,14 +42,11 @@ namespace Notes_ViewModel
 		}
 		public IEnumerable<Note_VM> GetUserNotes()
 		{
-			if (user_VM is not null && user_VM.UserNotes is not null)
+			if (user_VM.UserNotes is not null)
 			{
-				return user_VM.UserNotes.Where(reminder => reminder is not Reminder_VM);
+				return user_VM.UserNotes.Where(note => note is not Reminder_VM);
 			}
-			else
-			{
-				return [];
-			}
+			return [];
 		}
 		public IEnumerable<Note_VM> GetUserReminders()
 		{
@@ -68,75 +65,57 @@ namespace Notes_ViewModel
 		}
 		public IEnumerable<Tag_VM> GetUserTags()
 		{
-			if (user_VM is not null && user_VM.UserTags is not null)
-			{
-				return user_VM.UserTags;
-			}
-			else
-			{
-				return [];
-			}
+			return user_VM.UserTags;
 		}
 		public void DeleteUserNote(int noteId)
 		{
-			if (user_VM is not null)
+			bool isDeleted = user_VM.DeleteNoteById(noteId);
+			if (!isDeleted)
 			{
-				bool isDeleted = user_VM.DeleteNoteById(noteId);
-				//TODO: Delete from user and save changes in db
-				if (!isDeleted)
-				{
-					throw new Exception($"AuthenticatedUserHandler_VM.DeleteUserNote(noteId = {noteId}) failed");
-				}
+				//TODO: to log file
+			}
+			bool isDeletedFromDb = repository.DeleteUserNote(noteId);
+			if (!isDeletedFromDb)
+			{
+				//TODO: to log file
 			}
 		}
 		public void AddNewNote(NoteContent content)
 		{
 			Note_VM? note;
+			Note? note_model;
 			if (content.RemindDateTime is null)
 			{
-				note = new Note_VM()
-				{
-					CreationDateTime = DateTime.Now,
-					Header = content.NoteHeader,
-					Body = content.NoteText
-				};
+				note = new();
+				note_model = new();
 			}
 			else
 			{
 				note = new Reminder_VM()
 				{
-					CreationDateTime = DateTime.Now,
-					Header = content.NoteHeader,
-					Body = content.NoteText,
-					RemindTime = content.RemindDateTime ?? DateTime.MinValue
+					RemindTime = (DateTime)content.RemindDateTime
+				};
+				note_model = new Reminder()
+				{
+					RemindTime = DateTime.SpecifyKind((DateTime)content.RemindDateTime, DateTimeKind.Utc)
 				};
 			}
-			user_VM?.UserNotes.Add(note);
-			Note note_model = new()
+			note.CreationDateTime = DateTime.Now;
+			note.Header = content.NoteHeader;
+			note.Body = content.NoteText;
+			user_VM.UserNotes.Add(note);
+
+			note_model.CreationDateTime = DateTime.SpecifyKind(note.CreationDateTime, DateTimeKind.Utc);
+			note_model.Header = note.Header;
+			note_model.Body = note.Body;
+			int noteId = repository.AddUserNote(user_VM.Id, note_model);
+			if(noteId == -1)
 			{
-				CreationDateTime = note.CreationDateTime,
-				Header = note.Header,
-				Body = note.Body,
-			};
-			if(note is Reminder_VM reminder)
-			{
-				var rNote = note_model as Reminder;
-				if(rNote is not null)
-				{
-					rNote.RemindTime = reminder.RemindTime;
-				}
+				//TODO: write error to log
 			}
-			if(user_VM is not null)
+			else
 			{
-				int noteId = repository.AddUserNote(user_VM.Id, note_model);
-				if(noteId == -1)
-				{
-					//TODO: write error to log
-				}
-				else
-				{
-					note.Id = noteId;
-				}
+				note.Id = noteId;
 			}
 		}
 		public Tag_VM? AddNewTag(string tagName)
@@ -147,34 +126,33 @@ namespace Notes_ViewModel
 			{
 				fixedTagName = fixedTagName[..30];
 			}
-			var tag = new Tag { Id = TestRepository.GetNewTagId(), TagName = fixedTagName };
-			user?.UserTags.Add(tag);
+			var tag = new Tag
+			{
+				TagName = fixedTagName
+			};
+			repository.AddUserTag(user_VM.Id, tag);
 			var tag_vm = new Tag_VM(tag);
-			user_VM?.UserTags.Add(tag_vm);
+			user_VM.UserTags.Add(tag_vm);
 			return tag_vm;
 		}
 		public void DeleteUserTag(int tagId)
 		{
-			if (user_VM is not null)
-			{
-				user_VM.DeleteTagById(tagId);
-				//TODO: Delete from user and save changes in db
-			}
+			user_VM.DeleteTagById(tagId);
+			//TODO: Delete from user and save changes in db
 		}
+		//return all tags that contains tagName
 		public IEnumerable<Tag_VM> GetUserTagsByTagName(string tagName)
 		{
-			var tags = GetUserTags();
-			return tags.Where(tag => tag.TagName.Contains(tagName));
+			return GetUserTags().Where(tag => tag.TagName.Contains(tagName));
 		}
+		//return one tag with name equals to tagName
 		public Tag_VM? GetUserTagByName(string tagName)
 		{
-			var tags = GetUserTags();
-			return tags?.FirstOrDefault(tag => tag.TagName.Equals(tagName));
+			return GetUserTags().FirstOrDefault(tag => tag.TagName.Equals(tagName));
 		}
 		public void NullifyUser()
 		{
-			user_VM = null;
-			user = null;
+			user_VM = new();
 		}
 	}
 }

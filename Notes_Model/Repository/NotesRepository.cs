@@ -23,11 +23,6 @@ namespace Notes_Model.Repository
 
 		public int AddUserNote(int userId, Note note)
 		{
-			if(note is null)
-			{
-				//TODO: write to log
-				return -1;
-			}
 			if(!IsUserExists(userId))
 			{
 				//TODO: write to log
@@ -40,9 +35,18 @@ namespace Notes_Model.Repository
 			return note.Id;
 		}
 
-		public bool AddUserTag(int userId, Tag tag)
+		public int AddUserTag(int userId, Tag tag)
 		{
-			throw new NotImplementedException();
+			if (!IsUserExists(userId))
+			{
+				//TODO: write to log
+				return -1;
+			}
+			tag.UserId = userId;
+			using NotesContext db = new();
+			db.UserTags.Add(tag);
+			db.SaveChanges();
+			return tag.Id;
 		}
 		public bool IsEmailRegistered(string email)
 		{
@@ -93,9 +97,17 @@ namespace Notes_Model.Repository
 			throw new NotImplementedException();
 		}
 
-		public bool DeleteUserNote(int userId, int noteId)
+		public bool DeleteUserNote(int noteId)
 		{
-			throw new NotImplementedException();
+			using NotesContext db = new();
+			var note = db.UserNotes.Where(note => note.Id == noteId).FirstOrDefault();
+			if(note is null)
+			{
+				return false;
+			}
+			db.UserNotes.Remove(note);
+			db.SaveChanges();
+			return true;
 		}
 
 		public bool DeleteUserTag(int userId, int tagId)
