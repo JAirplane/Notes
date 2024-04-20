@@ -11,7 +11,7 @@ namespace Notes_ViewModel
 {
     public class Registration
 	{
-		private readonly NotesRepository repository = new();
+		private readonly IRepository repository = new NotesRepository();
 		public User_VM NewUser { get; set; } = new();
 		public bool LoginIsUnique()
 		{

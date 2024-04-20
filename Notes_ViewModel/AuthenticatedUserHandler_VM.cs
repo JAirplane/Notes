@@ -12,7 +12,7 @@ namespace Notes_ViewModel
 {
 	public class AuthenticatedUserHandler_VM
 	{
-		private readonly NotesRepository repository = new();
+		private readonly IRepository repository = new NotesRepository();
 		private LoggedInUser_VM user_VM = new();
 		public void SetUser(User? _user)
 		{
@@ -22,23 +22,22 @@ namespace Notes_ViewModel
 			}
 			user_VM = new(_user);
 		}
-		public Reminder_VM? ConvertNoteToReminder(Note_VM? note)
+		//Remind time is wrong here, need to be updated further
+		public int ConvertNoteToReminder(Note_VM? note)
 		{
 			if(note is not null)
 			{
-				var reminder = new Reminder_VM
+				DeleteUserNote(note.Id);
+				NoteContent content = new()
 				{
-					Id = TestRepository.GetNewNoteId(),
-					CreationDateTime = note.CreationDateTime,
-					Header = note.Header,
-					Body = note.Body,
-					NoteTags = note.NoteTags
+					NoteHeader = note.Header,
+					NoteText = note.Body,
+					RemindDateTime = DateTime.Now,
 				};
-				user_VM?.UserNotes.Remove(note);
-				user_VM?.UserNotes.Add(reminder);
-				return reminder;
+				int reminderId = AddNewNote(content);
+				return reminderId;
 			}
-			return null;
+			return -1;
 		}
 		public IEnumerable<Note_VM> GetUserNotes()
 		{
@@ -80,7 +79,7 @@ namespace Notes_ViewModel
 				//TODO: to log file
 			}
 		}
-		public void AddNewNote(NoteContent content)
+		public int AddNewNote(NoteContent content)
 		{
 			Note_VM? note;
 			Note? note_model;
@@ -100,15 +99,16 @@ namespace Notes_ViewModel
 					RemindTime = DateTime.SpecifyKind((DateTime)content.RemindDateTime, DateTimeKind.Utc)
 				};
 			}
+			note_model.CreationDateTime = DateTime.SpecifyKind(note.CreationDateTime, DateTimeKind.Utc);
+			note_model.Header = note.Header;
+			note_model.Body = note.Body;
+			int noteId = repository.AddUserNote(user_VM.Id, note_model);
+
 			note.CreationDateTime = DateTime.Now;
 			note.Header = content.NoteHeader;
 			note.Body = content.NoteText;
 			user_VM.UserNotes.Add(note);
 
-			note_model.CreationDateTime = DateTime.SpecifyKind(note.CreationDateTime, DateTimeKind.Utc);
-			note_model.Header = note.Header;
-			note_model.Body = note.Body;
-			int noteId = repository.AddUserNote(user_VM.Id, note_model);
 			if(noteId == -1)
 			{
 				//TODO: write error to log
@@ -117,6 +117,7 @@ namespace Notes_ViewModel
 			{
 				note.Id = noteId;
 			}
+			return noteId;
 		}
 		public Tag_VM? AddNewTag(string tagName)
 		{

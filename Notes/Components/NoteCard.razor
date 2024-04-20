@@ -97,7 +97,7 @@ else if (ShowModalIsOpen)
 	[Parameter]
 	public Func<string, Tag_VM?>? OnCreateNewTag { get; set; }
 	[Parameter]
-	public Func<Note_VM, Reminder_VM?>? OnConvertNoteToReminder { get; set; }
+	public Func<Note_VM, int>? OnConvertNoteToReminder { get; set; }
 
 	private string cardHeader = string.Empty;
 	private string cardText = string.Empty;

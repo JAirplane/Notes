@@ -9,7 +9,7 @@ namespace Notes_ViewModel
 {
 	public class ChangePassword_VM
 	{
-		private readonly NotesRepository repository = new();
+		private readonly IRepository repository = new NotesRepository();
 		public int UserId { get; set; }
 		public string NewPassword { get; set; } = string.Empty;
 		public bool SetNewPassword()

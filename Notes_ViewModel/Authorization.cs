@@ -11,7 +11,7 @@ namespace Notes_ViewModel
 {
     public class Authorization
 	{
-		private readonly NotesRepository repository = new();
+		private readonly IRepository repository = new NotesRepository();
 		public Credentials_VM CredentialsVM { get; set; } = new();
 
 		public User? ValidUser { get; set; }

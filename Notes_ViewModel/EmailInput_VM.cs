@@ -10,7 +10,7 @@ namespace Notes_ViewModel
 {
 	public class EmailInput_VM
 	{
-		private readonly NotesRepository repository = new();
+		private readonly IRepository repository = new NotesRepository();
 		public string Email { get; set; } = string.Empty;
 		public int GetUserIdByEmail()
 		{

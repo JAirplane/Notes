@@ -15,5 +15,12 @@ namespace Notes_ViewModel.Models_VM
 		{
 			RemindTime = reminder.RemindTime;
 		}
+		public Reminder_VM(Note_VM note)
+		{
+			CreationDateTime = note.CreationDateTime;
+			Header = note.Header;
+			Body = note.Body;
+			NoteTags = note.NoteTags;
+		}
 	}
 }
