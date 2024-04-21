@@ -19,12 +19,13 @@ namespace Notes_Model.Repository
 		public bool ChangeUserPassword(int userId, string password);
 		public int AddUserNote(int userId, Note note);
 		public int AddUserTag(int userId, Tag tag);
-		public bool AddTagToNote(int userId, int noteId, int tagId);
+		public bool AddTagToNote(int noteId, int tagId);
 		public bool DeleteUserNote(int noteId);
 		public bool DeleteUserTag(int userId, int tagId);
-		public bool DeleteTagFromNote(int userId, int noteId, int tagId);
-		public bool UpdateNoteHeader(int userId, int noteId, string header);
-		public bool UpdateNoteText(int userId, int noteId, string text);
+		public bool RemoveTagFromNote(int noteId, int tagId);
+		public bool UpdateNoteHeader(int noteId, string header);
+		public bool UpdateNoteText(int noteId, string text);
+		public bool UpdateRemindTime(int reminderId, DateTime remindTime);
 		public bool UpdateTagName(int userId, int tagId, string name);
 	}
 }

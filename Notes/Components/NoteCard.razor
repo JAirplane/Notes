@@ -61,7 +61,7 @@ else if (DeleteModalIsOpen)
 else if (TagEditionModalIsOpen)
 {
 	ShowModalIsOpen = false;
-	<EditNoteTagsModal OnClose="OnEditTagsModalStateChanged" OnConfirm="CreateAndAddNewTag" OnChoiceMade="AddExistedTagToNote"
+	<EditNoteTagsModal OnClose="OnEditTagsModalStateChanged" OnConfirm="CreateAndAddNewTag" OnChoiceMade="AddExistingTagToNote"
 			OnSearchHandler="OnTagsSearch" NoteTags=@Note?.NoteTags OnTagUnbind="UnbindTag" />
 }
 else if (ShowModalIsOpen)
@@ -86,7 +86,7 @@ else if (ShowModalIsOpen)
 	[Parameter]
 	public RenderFragment<string>? ChildContent { get; set; }
 	[Parameter]
-	public EventCallback OnEditNote { get; set; }
+	public Func<int, NoteContent, bool>? OnEditNote { get; set; }
 	[Parameter]
 	public EventCallback<int> OnDeleteNote { get; set; }
 	[Parameter]
@@ -97,7 +97,7 @@ else if (ShowModalIsOpen)
 	[Parameter]
 	public Func<string, Tag_VM?>? OnCreateNewTag { get; set; }
 	[Parameter]
-	public Func<Note_VM, int>? OnConvertNoteToReminder { get; set; }
+	public Action<int, int>? OnAddExistingTag { get; set; }
 
 	private string cardHeader = string.Empty;
 	private string cardText = string.Empty;
@@ -129,22 +129,9 @@ else if (ShowModalIsOpen)
 	{
 		if(Note is not null)
 		{
-			Note.Header = content.NoteHeader;
-			Note.Body = content.NoteText;
+			OnEditNote?.Invoke(Note.Id, content);
 			if (content.RemindDateTime is not null)
 			{
-				if (Note is Reminder_VM reminder)
-				{
-					reminder.RemindTime = content.RemindDateTime ?? DateTime.MinValue;
-				}
-				else
-				{
-					var convertedReminder = OnConvertNoteToReminder?.Invoke(Note);
-					if(convertedReminder is not null)
-					{
-						convertedReminder.RemindTime = content.RemindDateTime ?? DateTime.MinValue;
-					}
-				}
 				timeToRemind = content.RemindDateTime;
 			}
 		}
@@ -154,13 +141,23 @@ else if (ShowModalIsOpen)
 	public void CreateAndAddNewTag(string tagName)
 	{
 		var newTag = OnCreateNewTag?.Invoke(tagName); //creates and adds new tag to all user tags collection
-		AddExistedTagToNote(newTag);
-	}
-	private void AddExistedTagToNote(Tag_VM? tag)
-	{
-		if (tag is not null)
+		if(Note is null)
 		{
-			Note?.NoteTags?.Add(tag);
+			//TODO: to log
+			return;
+		}
+		if(newTag is null)
+		{
+			//TODO: to log
+			return;
+		}
+		OnAddExistingTag?.Invoke(Note.Id, newTag.Id);
+	}
+	public void AddExistingTagToNote(Tag_VM? tag)
+	{
+		if (tag is not null && Note is not null)
+		{
+			OnAddExistingTag?.Invoke(Note.Id, tag.Id);
 		}
 	}
 	public void UnbindTag(Tag_VM tag)

@@ -3,6 +3,8 @@ using Notes_Model.PostgresDB;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata;
+using System.Reflection.PortableExecutable;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -16,25 +18,6 @@ namespace Notes_Model.Repository
 			var user = db.Users.Where(user => user.Id == userId).FirstOrDefault();
 			return user != null;
 		}
-		public bool AddTagToNote(int userId, int noteId, int tagId)
-		{
-			throw new NotImplementedException();
-		}
-
-		public int AddUserNote(int userId, Note note)
-		{
-			if(!IsUserExists(userId))
-			{
-				//TODO: write to log
-				return -1;
-			}
-			note.UserId = userId;
-			using NotesContext db = new();
-			db.UserNotes.Add(note);
-			db.SaveChanges();
-			return note.Id;
-		}
-
 		public int AddUserTag(int userId, Tag tag)
 		{
 			if (!IsUserExists(userId))
@@ -47,6 +30,57 @@ namespace Notes_Model.Repository
 			db.UserTags.Add(tag);
 			db.SaveChanges();
 			return tag.Id;
+		}
+		public bool AddTagToNote(int noteId, int tagId)
+		{
+			using NotesContext db = new();
+			var tag = db.UserTags.Where(tag => tag.Id == tagId).FirstOrDefault();
+			var note = db.UserNotes.Where(note => note.Id == noteId).FirstOrDefault();
+			if (tag is null)
+			{
+				//TODO: write to log
+				return false;
+			}
+			if (note is null)
+			{
+				//TODO: write to log
+				return false;
+			}
+			note.NoteTags.Add(tag);
+			db.SaveChanges();
+			return true;
+		}
+		public bool RemoveTagFromNote(int noteId, int tagId)
+		{
+			using NotesContext db = new();
+			var tag = db.UserTags.Where(tag => tag.Id == tagId).FirstOrDefault();
+			var note = db.UserNotes.Where(note => note.Id == noteId).FirstOrDefault();
+			if (tag is null)
+			{
+				//TODO: write to log
+				return false;
+			}
+			if (note is null)
+			{
+				//TODO: write to log
+				return false;
+			}
+			note.NoteTags.Remove(tag);
+			db.SaveChanges();
+			return true;
+		}
+		public int AddUserNote(int userId, Note note)
+		{
+			if(!IsUserExists(userId))
+			{
+				//TODO: write to log
+				return -1;
+			}
+			note.UserId = userId;
+			using NotesContext db = new();
+			db.UserNotes.Add(note);
+			db.SaveChanges();
+			return note.Id;
 		}
 		public bool IsEmailRegistered(string email)
 		{
@@ -92,10 +126,7 @@ namespace Notes_Model.Repository
 				.FirstOrDefault();
 		}
 
-		public bool DeleteTagFromNote(int userId, int noteId, int tagId)
-		{
-			throw new NotImplementedException();
-		}
+		
 
 		public bool DeleteUserNote(int noteId)
 		{
@@ -147,16 +178,35 @@ namespace Notes_Model.Repository
 			_ = db.SaveChanges();
 		}
 
-		public bool UpdateNoteHeader(int userId, int noteId, string header)
+		public bool UpdateNoteHeader(int noteId, string header)
 		{
-			throw new NotImplementedException();
+			using NotesContext db = new();
+			var note = db.UserNotes.Where(note => note.Id == noteId).FirstOrDefault();
+			if (note is null) return false;
+			note.Header = header;
+			db.SaveChanges();
+			return true;
 		}
 
-		public bool UpdateNoteText(int userId, int noteId, string text)
+		public bool UpdateNoteText(int noteId, string text)
 		{
-			throw new NotImplementedException();
+			using NotesContext db = new();
+			var note = db.UserNotes.Where(note => note.Id == noteId).FirstOrDefault();
+			if (note is null) return false;
+			note.Body = text;
+			db.SaveChanges();
+			return true;
 		}
-
+		//works for reminders only, converts DateTime to utc
+		public bool UpdateRemindTime(int reminderId, DateTime remindTime)
+		{
+			using NotesContext db = new();
+			var reminder = db.UserReminders.Where(reminder => reminder.Id == reminderId).FirstOrDefault();
+			if (reminder is null) return false;
+			reminder.RemindTime = DateTime.SpecifyKind(remindTime, DateTimeKind.Utc);
+			db.SaveChanges();
+			return true;
+		}
 		public bool UpdateTagName(int userId, int tagId, string name)
 		{
 			throw new NotImplementedException();

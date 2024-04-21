@@ -34,8 +34,7 @@ namespace Notes_ViewModel
 					NoteText = note.Body,
 					RemindDateTime = DateTime.Now,
 				};
-				int reminderId = AddNewNote(content);
-				return reminderId;
+				return AddNewNote(content);
 			}
 			return -1;
 		}
@@ -104,7 +103,6 @@ namespace Notes_ViewModel
 			note_model.Body = note.Body;
 			int noteId = repository.AddUserNote(user_VM.Id, note_model);
 
-			note.CreationDateTime = DateTime.Now;
 			note.Header = content.NoteHeader;
 			note.Body = content.NoteText;
 			user_VM.UserNotes.Add(note);
@@ -118,6 +116,42 @@ namespace Notes_ViewModel
 				note.Id = noteId;
 			}
 			return noteId;
+		}
+		public bool UpdateNoteData(int noteId, NoteContent content)
+		{
+			var note = user_VM.UserNotes.Where(note => note.Id == noteId).FirstOrDefault();
+			if(note is null)
+			{
+				//TODO: to log
+				return false;
+			}
+			note.Header = content.NoteHeader;
+			note.Body = content.NoteText;
+			if(note is not Reminder_VM && content.RemindDateTime is not null)
+			{
+				int reminderId = ConvertNoteToReminder(note);
+				if (reminderId == -1) return false;
+				repository.UpdateRemindTime(reminderId, (DateTime)content.RemindDateTime);
+				return true;
+			}
+			repository.UpdateNoteHeader(noteId, content.NoteHeader);
+			repository.UpdateNoteText(noteId, content.NoteText);
+			if(note is Reminder_VM reminder)
+			{
+				if(content.RemindDateTime is null)
+				{
+					//TODO: to log
+					return false;
+				}
+				reminder.RemindTime = (DateTime)content.RemindDateTime;
+				bool remindTimeUpdatedInDB = repository.UpdateRemindTime(noteId, (DateTime)content.RemindDateTime);
+				if(!remindTimeUpdatedInDB)
+				{
+					//TODO: to log
+					return false;
+				}
+			}
+			return true;
 		}
 		public Tag_VM? AddNewTag(string tagName)
 		{
@@ -135,6 +169,40 @@ namespace Notes_ViewModel
 			var tag_vm = new Tag_VM(tag);
 			user_VM.UserTags.Add(tag_vm);
 			return tag_vm;
+		}
+		public void AddExistingTagToNote(int noteId, int tagId)
+		{
+			var note = user_VM.UserNotes.Where(note => note.Id == noteId).FirstOrDefault();
+			if(note is null)
+			{
+				//TODO: to log
+				return;
+			}
+			var tag = user_VM.UserTags.Where(tag => tag.Id == tagId).FirstOrDefault();
+			if (tag is null)
+			{
+				//TODO: to log
+				return;
+			}
+			note.NoteTags.Add(tag);
+			repository.AddTagToNote(noteId, tagId);
+		}
+		public void RemoveExistingTagFromNote(int noteId, int tagId)
+		{
+			var note = user_VM.UserNotes.Where(note => note.Id == noteId).FirstOrDefault();
+			if (note is null)
+			{
+				//TODO: to log
+				return;
+			}
+			var tag = user_VM.UserTags.Where(tag => tag.Id == tagId).FirstOrDefault();
+			if (tag is null)
+			{
+				//TODO: to log
+				return;
+			}
+			note.NoteTags.Remove(tag);
+			repository.RemoveTagFromNote(noteId, tagId);
 		}
 		public void DeleteUserTag(int tagId)
 		{
