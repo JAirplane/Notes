@@ -14,13 +14,19 @@ namespace Notes_ViewModel
 	{
 		private readonly IRepository repository = new NotesRepository();
 		private LoggedInUser_VM user_VM = new();
-		public void SetUser(User? _user)
+		public void SetUser(int userId)
 		{
-			if(_user is null)
+			if(userId == -1)
 			{
-				throw new Exception("AuthenticatedUserHandler_VM.SetUser() got null");
+				throw new Exception("AuthenticatedUserHandler_VM.SetUser() got bad userId");
 			}
-			user_VM = new(_user);
+			var user = repository.GetUserById(userId);
+			if(user is null)
+			{
+				//TODO: to log file
+				return;
+			}
+			user_VM = new LoggedInUser_VM(user);
 		}
 		//Remind time is wrong here, need to be updated further
 		public int ConvertNoteToReminder(Note_VM? note)
@@ -207,7 +213,11 @@ namespace Notes_ViewModel
 		public void DeleteUserTag(int tagId)
 		{
 			user_VM.DeleteTagById(tagId);
-			//TODO: Delete from user and save changes in db
+			bool tagDeleted = repository.DeleteUserTag(tagId);
+			if(!tagDeleted)
+			{
+				//TODO: to log file
+			}
 		}
 		//return all tags that contains tagName
 		public IEnumerable<Tag_VM> GetUserTagsByTagName(string tagName)

@@ -143,11 +143,11 @@
 		resultMessageTimer.Interval = ResultMessageTimerInterval;
 		resultMessageTimer.AutoReset = false;
 		resultMessageTimer.Elapsed += (object? sender, ElapsedEventArgs args) =>
-											{
-												showResultingMessage = false;
-												resultMessageTimer.Stop();
-												InvokeAsync(StateHasChanged);
-											};
+									{
+										showResultingMessage = false;
+										resultMessageTimer.Stop();
+										InvokeAsync(StateHasChanged);
+									};
 	}
 	protected async void Search(object? sender, ElapsedEventArgs args)
 	{

@@ -125,9 +125,6 @@ namespace Notes_Model.Repository
 					.ThenInclude(note => note.NoteTags)
 				.FirstOrDefault();
 		}
-
-		
-
 		public bool DeleteUserNote(int noteId)
 		{
 			using NotesContext db = new();
@@ -140,17 +137,18 @@ namespace Notes_Model.Repository
 			db.SaveChanges();
 			return true;
 		}
-
-		public bool DeleteUserTag(int userId, int tagId)
+		public bool DeleteUserTag(int tagId)
 		{
-			throw new NotImplementedException();
+			using NotesContext db = new();
+			var tag = db.UserTags.Where(tag => tag.Id == tagId).FirstOrDefault();
+			if (tag is null)
+			{
+				return false;
+			}
+			db.UserTags.Remove(tag);
+			db.SaveChanges();
+			return true;
 		}
-
-		public List<User> GetAllUsers()
-		{
-			throw new NotImplementedException();
-		}
-
 		public int GetUserIdByEmail(string email)
 		{
 			if (string.IsNullOrEmpty(email))

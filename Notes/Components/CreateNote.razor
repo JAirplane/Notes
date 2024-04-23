@@ -13,6 +13,8 @@
 	public string ModalWindowTitle { get; set; } = string.Empty;
 	[Parameter]
 	public Func<NoteContent, int>? OnCreate { get; set; }
+	[Parameter]
+	public EventCallback OnParentStateHasChanged { get; set; }
 
 	private bool CreateModalWindowIsOpen;
 
@@ -25,5 +27,6 @@
 	{
 		OnCreate?.Invoke(content);
 		OnCreateModalStateChanged(false);
+		OnParentStateHasChanged.InvokeAsync();
 	}
 }

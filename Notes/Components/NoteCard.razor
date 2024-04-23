@@ -98,6 +98,8 @@ else if (ShowModalIsOpen)
 	public Func<string, Tag_VM?>? OnCreateNewTag { get; set; }
 	[Parameter]
 	public Action<int, int>? OnAddExistingTag { get; set; }
+	[Parameter]
+	public Action<int, int>? OnRemoveTag { get; set; }
 
 	private string cardHeader = string.Empty;
 	private string cardText = string.Empty;
@@ -162,7 +164,17 @@ else if (ShowModalIsOpen)
 	}
 	public void UnbindTag(Tag_VM tag)
 	{
-		Note?.NoteTags?.Remove(tag);
+		if (Note is null)
+		{
+			//TODO: to log
+			return;
+		}
+		if (tag is null)
+		{
+			//TODO: to log
+			return;
+		}
+		OnRemoveTag?.Invoke(Note.Id, tag.Id);
 	}
 	public IEnumerable<Tag_VM> OnTagsSearch(string tagName)
 	{

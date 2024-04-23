@@ -5,7 +5,7 @@
 <div class="search-container">
 	<div class="tag-search">
 		<SearchElement BindHeader=@SearchInputHeader OnChoiceMadeMessage=@TagChosenMessage CanCreateNewElement=@false OnSearchHandler="handler_VM.GetUserTagsByTagName"
-			OnChoiceMade="GetUserNotesByTag" OnCreateNewElement="OnConfirmHandler">
+			OnChoiceMade="GetUserNotesByTag">
 			<ResultTemplate>
 				@context.TagName
 			</ResultTemplate>
@@ -14,7 +14,7 @@
 	<div class="radio-search-container">
 			@foreach(var option in Enum.GetValues<TagSearchOptions>())
 			{
-			<input type="radio" name="option" id="@option" @onchange=@(() => OnFilterChanged(option)) checked=@(option == TagSearchOptions.Both) />
+				<input type="radio" name="option" id="@option" @onchange=@(() => OnFilterChanged(option)) checked=@(option == TagSearchOptions.Both) />
 				<label for="@option">@option.ToString()</label>
 				<br>
 			}
@@ -36,8 +36,8 @@
 		{
 			textCSSClass = NoteTextCSSClass;
 		}
-		<NoteCard Note="note" OnDeleteNote="handler_VM.DeleteUserNote" OnTagsSearchHandler="handler_VM.GetUserTagsByTagName"
-				  OnCreateNewTag="handler_VM.AddNewTag" OnConvertNoteToReminder="handler_VM.ConvertNoteToReminder"
+		<NoteCard Note="note" OnEditNote="handler_VM.UpdateNoteData" OnDeleteNote="handler_VM.DeleteUserNote" OnTagsSearchHandler="handler_VM.GetUserTagsByTagName"
+				  OnCreateNewTag="handler_VM.AddNewTag" OnAddExistingTag="handler_VM.AddExistingTagToNote" OnRemoveTag="handler_VM.RemoveExistingTagFromNote"
 				  CardTextCSSClass=@textCSSClass RemindStaleTextColorCSSClass=@remindStaleCSS OnParentStateHasChanged="StateHasChanged" />
 	}
 </div>
@@ -85,14 +85,14 @@
 			OnFilterChanged(searchOptions);
 		}
 	}
-	private void OnConfirmHandler(string tagName)
-	{
-		if (!string.IsNullOrWhiteSpace(tagName))
-		{
-			sendedTag = handler_VM.GetUserTagByName(tagName);
-			GetUserNotesByTag(sendedTag);
-		}
-	}
+	// private void OnConfirmHandler(string tagName)
+	// {
+	// 	if (!string.IsNullOrWhiteSpace(tagName))
+	// 	{
+	// 		sendedTag = handler_VM.GetUserTagByName(tagName);
+	// 		GetUserNotesByTag(sendedTag);
+	// 	}
+	// }
 	private void OnFilterChanged(TagSearchOptions options)
 	{
 		searchOptions = options;
