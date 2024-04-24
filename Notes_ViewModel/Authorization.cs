@@ -14,25 +14,20 @@ namespace Notes_ViewModel
 		private readonly IRepository repository = new NotesRepository();
 		public Credentials_VM CredentialsVM { get; set; } = new();
 
-		public User? ValidUser { get; set; }
+		public int ValidUserId { get; set; } = -1;
 		public bool ValidLogin { get; set; }
 		public bool ValidPassword { get; set; }
 		public void CheckUser()
 		{
 			if (!string.IsNullOrEmpty(CredentialsVM.LoginInput) && !string.IsNullOrEmpty(CredentialsVM.PasswordInput))
 			{
-				ValidUser = repository.CheckUserCredentials(CredentialsVM.LoginInput, CredentialsVM.PasswordInput, out bool validLogin);
+				ValidUserId = repository.CheckUserCredentials(CredentialsVM.LoginInput, CredentialsVM.PasswordInput, out bool validLogin);
 				ValidLogin = validLogin;
-				if(ValidUser != null)
+				if(ValidUserId != -1)
 				{
 					ValidPassword = true;
 				}
 			}
-		}
-		public int GetUserId()
-		{
-			if (ValidUser is null) return -1;
-			return ValidUser.Id;
 		}
 	}
 }

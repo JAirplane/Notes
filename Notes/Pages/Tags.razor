@@ -2,7 +2,7 @@
 
 <CreateTag ModalWindowTitle=@CreateTagModalTitle OnCreate="handler_VM.AddNewTag" ParentComponentStateHasChanged="StateHasChanged"/>
 
-<UserTagsForm Tags="handler_VM.GetUserTags()" OnDeleteTagHandler="handler_VM.DeleteUserTag"/>
+<UserTagsForm Tags="handler_VM.GetUserTags()" OnEditTagHandler="handler_VM.UpdateTagData" OnDeleteTagHandler="handler_VM.DeleteUserTag" />
 
 @code {
 	private AuthenticatedUserHandler_VM? _handler_VM;

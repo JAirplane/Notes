@@ -35,6 +35,8 @@ else if(isDeleteModalOpen)
 	[Parameter]
 	public string DeleteButtonTitle { get; set; } = "Delete tag";
 	[Parameter]
+	public Action<int, string>? OnEdit { get; set; }
+	[Parameter]
 	public EventCallback<int> OnDelete { get; set; }
 
 	private bool isEditModalOpen;
@@ -59,6 +61,7 @@ else if(isDeleteModalOpen)
 				tagName = tagName[..30];
 			}
 			Tag.TagName = "#" + tagName;
+			OnEdit?.Invoke(Tag.Id, tagName);
 		}
 		EditModalStateChanged(false);
 	}

@@ -29,7 +29,7 @@
 				@if (authorization.ValidPassword)
 				{
 					authState.UserLoggedIn = true;
-					handler_VM.SetUser(authorization.ValidUser?.Id ?? -1);
+					handler_VM.SetUser(authorization.ValidUserId);
 					navManager.NavigateTo("/main");
 				}
 				else

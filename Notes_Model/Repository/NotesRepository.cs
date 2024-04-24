@@ -111,19 +111,18 @@ namespace Notes_Model.Repository
 			return true;
 		}
 
-		public User? CheckUserCredentials(string login, string password, out bool loginIsValid)
+		public int CheckUserCredentials(string login, string password, out bool loginIsValid)
 		{
 			loginIsValid = IsLoginRegistered(login);
+			if (!loginIsValid) return -1;
 			if (string.IsNullOrEmpty(password))
 			{
-				return null;
+				return -1;
 			}
 			using NotesContext db = new();
-			return db.Users.Where(user => user.Сredentials.Password.Equals(password))
-				.Include(user => user.UserTags)
-				.Include(user => user.UserNotes)
-					.ThenInclude(note => note.NoteTags)
-				.FirstOrDefault();
+			var user = db.Users.Where(user => user.Сredentials.Password.Equals(password)).FirstOrDefault();
+			if (user is null) return -1;
+			return user.Id;
 		}
 		public bool DeleteUserNote(int noteId)
 		{
@@ -164,9 +163,14 @@ namespace Notes_Model.Repository
 			return user.Id;
 		}
 
-		public User? GetUserById(int userId)
+		public User? GetUser(int userId)
 		{
-			throw new NotImplementedException();
+			using NotesContext db = new();
+			return db.Users.Where(user => user.Id.Equals(userId))
+				.Include(user => user.UserTags)
+				.Include(user => user.UserNotes)
+					.ThenInclude(note => note.NoteTags)
+				.FirstOrDefault();
 		}
 
 		public void AddNewUser(User newUser)
@@ -205,9 +209,14 @@ namespace Notes_Model.Repository
 			db.SaveChanges();
 			return true;
 		}
-		public bool UpdateTagName(int userId, int tagId, string name)
+		public bool UpdateTagName(int tagId, string name)
 		{
-			throw new NotImplementedException();
+			using NotesContext db = new();
+			var tag = db.UserTags.Where(tag => tag.Id == tagId).FirstOrDefault();
+			if (tag is null) return false;
+			tag.TagName = name;
+			db.SaveChanges();
+			return true;
 		}
 
 		public bool ChangeUserPassword(int userId, string password)

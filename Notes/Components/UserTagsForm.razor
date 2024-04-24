@@ -4,7 +4,7 @@
 <div class="tag-container">
 	@foreach (var tag in Tags ?? [])
 	{
-		<IndividualTagForm Tag=@tag OnDelete="OnDeleteTag"/>
+		<IndividualTagForm Tag=@tag OnEdit="OnEditTag" OnDelete="OnDeleteTag" />
 	}
 </div>
 
@@ -14,10 +14,16 @@
 	[Parameter]
 	public IEnumerable<Tag_VM>? Tags { get; set; }
 	[Parameter]
+	public Action<int, string>? OnEditTagHandler { get; set; }
+	[Parameter]
 	public EventCallback<int> OnDeleteTagHandler { get; set; }
 
-	private async Task OnDeleteTag(int id)
+	private async Task OnDeleteTag(int tagId)
 	{
-		await OnDeleteTagHandler.InvokeAsync(id);
+		await OnDeleteTagHandler.InvokeAsync(tagId);
+	}
+	private void OnEditTag(int tagId, string newTagName)
+	{
+		OnEditTagHandler?.Invoke(tagId, newTagName);
 	}
 }

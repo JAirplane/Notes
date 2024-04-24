@@ -20,7 +20,7 @@ namespace Notes_ViewModel
 			{
 				throw new Exception("AuthenticatedUserHandler_VM.SetUser() got bad userId");
 			}
-			var user = repository.GetUserById(userId);
+			var user = repository.GetUser(userId);
 			if(user is null)
 			{
 				//TODO: to log file
@@ -105,8 +105,8 @@ namespace Notes_ViewModel
 				};
 			}
 			note_model.CreationDateTime = DateTime.SpecifyKind(note.CreationDateTime, DateTimeKind.Utc);
-			note_model.Header = note.Header;
-			note_model.Body = note.Body;
+			note_model.Header = content.NoteHeader;
+			note_model.Body = content.NoteText;
 			int noteId = repository.AddUserNote(user_VM.Id, note_model);
 
 			note.Header = content.NoteHeader;
@@ -215,6 +215,21 @@ namespace Notes_ViewModel
 			user_VM.DeleteTagById(tagId);
 			bool tagDeleted = repository.DeleteUserTag(tagId);
 			if(!tagDeleted)
+			{
+				//TODO: to log file
+			}
+		}
+		public void UpdateTagData(int tagId, string tagName)
+		{
+			var tag = user_VM.UserTags.Where(tag => tag.Id == tagId).FirstOrDefault();
+			if(tag is null)
+			{
+				//TODO: to log file
+				return;
+			}
+			tag.TagName = tagName;
+			bool updated = repository.UpdateTagName(tagId, tagName);
+			if(!updated)
 			{
 				//TODO: to log file
 			}

@@ -11,10 +11,10 @@ namespace Notes_Model.Repository
 		public bool IsUserExists(int userId);
 		public bool IsEmailRegistered(string email);
 		public bool IsLoginRegistered(string login);
-		public User? CheckUserCredentials(string login, string password, out bool loginIsValid);
+		public int CheckUserCredentials(string login, string password, out bool loginIsValid);
 		public void AddNewUser(User newUser);
 		public int GetUserIdByEmail(string email);
-		public User? GetUserById(int userId);
+		public User? GetUser(int userId);
 		public bool ChangeUserPassword(int userId, string password);
 		public int AddUserNote(int userId, Note note);
 		public int AddUserTag(int userId, Tag tag);
@@ -25,6 +25,6 @@ namespace Notes_Model.Repository
 		public bool UpdateNoteHeader(int noteId, string header);
 		public bool UpdateNoteText(int noteId, string text);
 		public bool UpdateRemindTime(int reminderId, DateTime remindTime);
-		public bool UpdateTagName(int userId, int tagId, string name);
+		public bool UpdateTagName(int tagId, string name);
 	}
 }
