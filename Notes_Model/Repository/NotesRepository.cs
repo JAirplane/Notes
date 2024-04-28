@@ -54,7 +54,7 @@ namespace Notes_Model.Repository
 		{
 			using NotesContext db = new();
 			var tag = db.UserTags.Where(tag => tag.Id == tagId).FirstOrDefault();
-			var note = db.UserNotes.Where(note => note.Id == noteId).FirstOrDefault();
+			var note = db.UserNotes.Include(note => note.NoteTags).Where(note => note.Id == noteId).FirstOrDefault();
 			if (tag is null)
 			{
 				//TODO: write to log

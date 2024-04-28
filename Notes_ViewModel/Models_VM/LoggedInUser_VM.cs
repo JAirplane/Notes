@@ -17,20 +17,32 @@ namespace Notes_ViewModel.Models_VM
 			user.Name, user.Surname, user.Email, user.Phone)
 		{
 			Id = user.Id;
-			foreach(Note note in user.UserNotes)
+			foreach (Tag tag in user.UserTags)
 			{
+				UserTags.Add(new Tag_VM(tag));
+			}
+			foreach (Note note in user.UserNotes)
+			{
+				Note_VM? note_VM = null;
 				if(note is Reminder reminder)
 				{
-					UserNotes.Add(new Reminder_VM(reminder));
+					note_VM = new Reminder_VM(reminder);
 				}
 				else
 				{
-					UserNotes.Add(new Note_VM(note));
+					note_VM = new Note_VM(note);
 				}
-			}
-			foreach(Tag tag in user.UserTags)
-			{
-				UserTags.Add(new Tag_VM(tag));
+				UserNotes.Add(note_VM);
+				foreach(Tag tag in note.NoteTags)
+				{
+					Tag_VM? tag_VM = UserTags.Where(_tag => _tag.Id == tag.Id).FirstOrDefault();
+					if(tag_VM is null)
+					{
+						//TODO: to log
+						return;
+					}
+					note_VM.NoteTags.Add(tag_VM);
+				}
 			}
 		}
 		public bool DeleteNoteById(int noteId)

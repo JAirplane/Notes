@@ -227,6 +227,11 @@ namespace Notes_ViewModel
 				//TODO: to log file
 				return;
 			}
+			if (tagName.Length > 30)
+			{
+				tagName = tagName[..30];
+			}
+			tagName = "#" + tagName;
 			tag.TagName = tagName;
 			bool updated = repository.UpdateTagName(tagId, tagName);
 			if(!updated)
