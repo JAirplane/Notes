@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Notes_ViewModel.Logger;
 
 namespace Notes_ViewModel
 {
@@ -14,19 +15,33 @@ namespace Notes_ViewModel
 	{
 		private readonly IRepository repository = new NotesRepository();
 		private LoggedInUser_VM user_VM = new();
+		private readonly INotesLogger notesLogger = new NotesLogger();
+		public AuthenticatedUserHandler_VM() { }
+		public AuthenticatedUserHandler_VM(IRepository repo, INotesLogger logger)
+		{
+			repository = repo;
+			notesLogger = logger;
+		}
 		public void SetUser(int userId)
 		{
-			if(userId == -1)
+			try
 			{
-				throw new Exception("AuthenticatedUserHandler_VM.SetUser() got bad userId");
+				if (userId == -1)
+				{
+					throw new Exception("AuthenticatedUserHandler_VM.SetUser() got bad userId");
+				}
+				var user = repository.GetUser(userId);
+				if (user is null)
+				{
+					notesLogger.Log("AuthenticatedUserHandler_VM -> SetUser(): User was not found in DB.");
+					return;
+				}
+				user_VM = new LoggedInUser_VM(user);
 			}
-			var user = repository.GetUser(userId);
-			if(user is null)
+			catch(Exception ex)
 			{
-				//TODO: to log file
-				return;
+				notesLogger.Log(ex.Message);
 			}
-			user_VM = new LoggedInUser_VM(user);
 		}
 		//Remind time is wrong here, need to be updated further
 		public int ConvertNoteToReminder(Note_VM? note, DateTime remindTime)
@@ -42,6 +57,7 @@ namespace Notes_ViewModel
 				};
 				return AddNewNote(content);
 			}
+			notesLogger.Log("AuthenticatedUserHandler_VM -> ConvertNoteToReminder() got null Note_VM argument.");
 			return -1;
 		}
 		public IEnumerable<Note_VM> GetUserNotes()
@@ -65,7 +81,7 @@ namespace Notes_ViewModel
 		}
 		public IEnumerable<Note_VM>? GetUserNotesByTag(Tag_VM tag)
 		{
-			return user_VM?.UserNotes.Where(note => note.NoteTags.Contains(tag));
+			return user_VM.UserNotes.Where(note => note.NoteTags.Contains(tag));
 		}
 		public IEnumerable<Tag_VM> GetUserTags()
 		{
@@ -73,15 +89,19 @@ namespace Notes_ViewModel
 		}
 		public void DeleteUserNote(int noteId)
 		{
-			bool isDeleted = user_VM.DeleteNoteById(noteId);
-			if (!isDeleted)
+			var note = user_VM.UserNotes.FirstOrDefault(note => note.Id.Equals(noteId));
+			if (note != null)
 			{
-				//TODO: to log file
+				user_VM.UserNotes.Remove(note);
+			}
+			else
+			{
+				notesLogger.Log("AuthenticatedUserHandler_VM -> DeleteUserNote(): Note was not found in User_VM.");
 			}
 			bool isDeletedFromDb = repository.DeleteUserNote(noteId);
 			if (!isDeletedFromDb)
 			{
-				//TODO: to log file
+				notesLogger.Log("AuthenticatedUserHandler_VM -> DeleteUserNote() -> repository.DeleteUserNote: Note was not found in DB.");
 			}
 		}
 		public int AddNewNote(NoteContent content)
@@ -115,7 +135,7 @@ namespace Notes_ViewModel
 
 			if(noteId == -1)
 			{
-				//TODO: write error to log
+				notesLogger.Log("AuthenticatedUserHandler_VM -> AddNewNote() -> repository.AddUserNote: user was not found in DB.");
 			}
 			else
 			{
@@ -128,7 +148,7 @@ namespace Notes_ViewModel
 			var note = user_VM.UserNotes.Where(note => note.Id == noteId).FirstOrDefault();
 			if(note is null)
 			{
-				//TODO: to log
+				notesLogger.Log("AuthenticatedUserHandler_VM -> UpdateNoteData(): Note was not found in User_VM.");
 				return false;
 			}
 			note.Header = content.NoteHeader;
@@ -139,20 +159,30 @@ namespace Notes_ViewModel
 				if (reminderId == -1) return false;
 				return true;
 			}
-			repository.UpdateNoteHeader(noteId, content.NoteHeader);
-			repository.UpdateNoteText(noteId, content.NoteText);
+			bool headerUpdated = repository.UpdateNoteHeader(noteId, content.NoteHeader);
+			if(!headerUpdated)
+			{
+				notesLogger.Log("AuthenticatedUserHandler_VM -> UpdateNoteData() -> repository.UpdateNoteHeader: Update failed. Note was not found in DB.");
+				return false;
+			}
+			bool textUpdated = repository.UpdateNoteText(noteId, content.NoteText);
+			if(!textUpdated)
+			{
+				notesLogger.Log("AuthenticatedUserHandler_VM -> UpdateNoteData() -> repository.UpdateNoteText: Update failed. Note was not found in DB.");
+				return false;
+			}
 			if(note is Reminder_VM reminder)
 			{
 				if(content.RemindDateTime is null)
 				{
-					//TODO: to log
+					notesLogger.Log("AuthenticatedUserHandler_VM -> UpdateNoteData(): Reminder got null RemindTime to update.");
 					return false;
 				}
 				reminder.RemindTime = (DateTime)content.RemindDateTime;
 				bool remindTimeUpdatedInDB = repository.UpdateRemindTime(noteId, (DateTime)content.RemindDateTime);
 				if(!remindTimeUpdatedInDB)
 				{
-					//TODO: to log
+					notesLogger.Log("AuthenticatedUserHandler_VM -> UpdateNoteData() -> repository.UpdateRemindTime: Update failed. Note was not found in DB.");
 					return false;
 				}
 			}
@@ -160,7 +190,11 @@ namespace Notes_ViewModel
 		}
 		public Tag_VM? AddNewTag(string tagName)
 		{
-			if (tagName.Length == 0 || string.IsNullOrWhiteSpace(tagName)) return null;
+			if (tagName.Length == 0 || string.IsNullOrWhiteSpace(tagName))
+			{
+				notesLogger.Log("AuthenticatedUserHandler_VM -> AddNewTag(): tagName argument is empty or whitespace.");
+				return null;
+			}
 			var fixedTagName = "#" + tagName;
 			if(fixedTagName.Length > 30)
 			{
@@ -170,7 +204,11 @@ namespace Notes_ViewModel
 			{
 				TagName = fixedTagName
 			};
-			repository.AddUserTag(user_VM.Id, tag);
+			int tagId = repository.AddUserTag(user_VM.Id, tag);
+			if(tagId == -1)
+			{
+				notesLogger.Log("AuthenticatedUserHandler_VM -> AddNewTag() -> repository.AddUserTag(): User was not found in DB.");
+			}
 			var tag_vm = new Tag_VM(tag);
 			user_VM.UserTags.Add(tag_vm);
 			return tag_vm;
@@ -180,42 +218,65 @@ namespace Notes_ViewModel
 			var note = user_VM.UserNotes.Where(note => note.Id == noteId).FirstOrDefault();
 			if(note is null)
 			{
-				//TODO: to log
+				notesLogger.Log("AuthenticatedUserHandler_VM -> AddExistingTagToNote(): Note was not found in User_VM.");
 				return;
 			}
 			var tag = user_VM.UserTags.Where(tag => tag.Id == tagId).FirstOrDefault();
 			if (tag is null)
 			{
-				//TODO: to log
+				notesLogger.Log("AuthenticatedUserHandler_VM -> AddExistingTagToNote(): Tag was not found in User_VM.");
 				return;
 			}
 			note.NoteTags.Add(tag);
-			repository.AddTagToNote(noteId, tagId);
+			bool addedSuccessfully = repository.AddTagToNote(noteId, tagId);
+			if(!addedSuccessfully)
+			{
+				notesLogger.Log("AuthenticatedUserHandler_VM -> AddExistingTagToNote() -> repository.AddTagToNote(): Note or tag was not found in DB.");
+			}
 		}
 		public void RemoveExistingTagFromNote(int noteId, int tagId)
 		{
 			var note = user_VM.UserNotes.Where(note => note.Id == noteId).FirstOrDefault();
 			if (note is null)
 			{
-				//TODO: to log
+				notesLogger.Log("AuthenticatedUserHandler_VM -> AddExistingTagToNote(): Note was not found in User_VM.");
 				return;
 			}
 			var tag = user_VM.UserTags.Where(tag => tag.Id == tagId).FirstOrDefault();
 			if (tag is null)
 			{
-				//TODO: to log
+				notesLogger.Log("AuthenticatedUserHandler_VM -> AddExistingTagToNote(): Tag was not found in User_VM.");
 				return;
 			}
 			note.NoteTags.Remove(tag);
-			repository.RemoveTagFromNote(noteId, tagId);
+			bool addedSuccessfully = repository.RemoveTagFromNote(noteId, tagId);
+			if (!addedSuccessfully)
+			{
+				notesLogger.Log("AuthenticatedUserHandler_VM -> RemoveExistingTagFromNote() -> repository.RemoveTagFromNote(): Note or tag was not found in DB.");
+			}
 		}
 		public void DeleteUserTag(int tagId)
 		{
-			user_VM.DeleteTagById(tagId);
+			var tag = user_VM.UserTags.FirstOrDefault(tag => tag.Id.Equals(tagId));
+			if (tag is null)
+			{
+				notesLogger.Log("AuthenticatedUserHandler_VM -> DeleteUserTag(): Tag was not found in User_VM.");
+				return;
+			}	
+			foreach (var note in user_VM.UserNotes)
+			{
+				var nTag = note.NoteTags.FirstOrDefault(tag => tag.Id.Equals(tagId));
+				if (nTag is not null)
+				{
+					note.NoteTags.Remove(nTag);
+				}
+			}
+			user_VM.UserTags.Remove(tag);
+
 			bool tagDeleted = repository.DeleteUserTag(tagId);
 			if(!tagDeleted)
 			{
-				//TODO: to log file
+				notesLogger.Log("AuthenticatedUserHandler_VM -> DeleteUserTag() -> repository.DeleteUserTag(): Tag was not found in DB.");
 			}
 		}
 		public void UpdateTagData(int tagId, string tagName)
@@ -223,7 +284,7 @@ namespace Notes_ViewModel
 			var tag = user_VM.UserTags.Where(tag => tag.Id == tagId).FirstOrDefault();
 			if(tag is null)
 			{
-				//TODO: to log file
+				notesLogger.Log("AuthenticatedUserHandler_VM -> UpdateTagData(): Tag was not found in User_VM collection.");
 				return;
 			}
 			if (tagName.Length > 30)
@@ -235,7 +296,7 @@ namespace Notes_ViewModel
 			bool updated = repository.UpdateTagName(tagId, tagName);
 			if(!updated)
 			{
-				//TODO: to log file
+				notesLogger.Log("AuthenticatedUserHandler_VM -> UpdateTagData() -> repository.UpdateTagName(): Tag was not found in DB.");
 			}
 		}
 		//return all tags that contains tagName

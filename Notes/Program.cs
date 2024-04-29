@@ -4,15 +4,17 @@ using Microsoft.EntityFrameworkCore;
 using Notes_Model.PostgresDB;
 using Notes_Model.Repository;
 using Notes_ViewModel;
+using Notes_ViewModel.Logger;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
-builder.Services.AddSingleton<UserAuthenticationState>();
-builder.Services.AddSingleton<AuthenticatedUserHandler_VM>();
+builder.Services.AddScoped<UserAuthenticationState>();
+builder.Services.AddScoped<AuthenticatedUserHandler_VM>();
 builder.Services.AddScoped<IRepository, NotesRepository>();
+builder.Services.AddScoped<INotesLogger, NotesLogger>();
 
 var app = builder.Build();
 

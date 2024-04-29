@@ -22,7 +22,6 @@ namespace Notes_Model.Repository
 		{
 			if (!IsUserExists(userId))
 			{
-				//TODO: write to log
 				return -1;
 			}
 			tag.UserId = userId;
@@ -38,12 +37,10 @@ namespace Notes_Model.Repository
 			var note = db.UserNotes.Where(note => note.Id == noteId).FirstOrDefault();
 			if (tag is null)
 			{
-				//TODO: write to log
 				return false;
 			}
 			if (note is null)
 			{
-				//TODO: write to log
 				return false;
 			}
 			note.NoteTags.Add(tag);
@@ -57,12 +54,10 @@ namespace Notes_Model.Repository
 			var note = db.UserNotes.Include(note => note.NoteTags).Where(note => note.Id == noteId).FirstOrDefault();
 			if (tag is null)
 			{
-				//TODO: write to log
 				return false;
 			}
 			if (note is null)
 			{
-				//TODO: write to log
 				return false;
 			}
 			note.NoteTags.Remove(tag);
@@ -73,7 +68,6 @@ namespace Notes_Model.Repository
 		{
 			if(!IsUserExists(userId))
 			{
-				//TODO: write to log
 				return -1;
 			}
 			note.UserId = userId;
@@ -175,9 +169,10 @@ namespace Notes_Model.Repository
 
 		public void AddNewUser(User newUser)
 		{
+			if (newUser == null) return;
 			using NotesContext db = new();
 			db.Users.Add(newUser);
-			_ = db.SaveChanges();
+			db.SaveChanges();
 		}
 
 		public bool UpdateNoteHeader(int noteId, string header)
@@ -235,7 +230,5 @@ namespace Notes_Model.Repository
 			db.SaveChanges();
 			return true;
 		}
-
-		
 	}
 }

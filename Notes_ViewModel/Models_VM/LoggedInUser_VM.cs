@@ -36,41 +36,12 @@ namespace Notes_ViewModel.Models_VM
 				foreach(Tag tag in note.NoteTags)
 				{
 					Tag_VM? tag_VM = UserTags.Where(_tag => _tag.Id == tag.Id).FirstOrDefault();
-					if(tag_VM is null)
+					if(tag_VM is not null)
 					{
-						//TODO: to log
-						return;
-					}
-					note_VM.NoteTags.Add(tag_VM);
-				}
-			}
-		}
-		public bool DeleteNoteById(int noteId)
-		{
-			var note = UserNotes.FirstOrDefault(note => note.Id.Equals(noteId));
-			if (note != null)
-			{
-				UserNotes.Remove(note);
-				return true;
-			}
-			return false;
-		}
-		public void DeleteTagById(int tagId)
-		{
-			var tag = UserTags.FirstOrDefault(tag => tag.Id.Equals(tagId));
-			if (tag != null)
-			{
-				foreach (var note in UserNotes)
-				{
-					var nTag = note.NoteTags.FirstOrDefault(tag => tag.Id.Equals(tagId));
-					if (nTag is not null)
-					{
-						note.NoteTags.Remove(nTag);
+						note_VM.NoteTags.Add(tag_VM);
 					}
 				}
-				UserTags.Remove(tag);
 			}
-			
 		}
 	}
 }

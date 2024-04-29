@@ -1,0 +1,338 @@
+dbug: 29.04.2024 21:45:22.280 CoreEventId.ShadowPropertyCreated[10600] (Microsoft.EntityFrameworkCore.Model.Validation) 
+      The property 'NoteTag (Dictionary<string, object>).NoteTagsId' was created in shadow state because there are no eligible CLR members with a matching name.
+dbug: 29.04.2024 21:45:22.281 CoreEventId.ShadowPropertyCreated[10600] (Microsoft.EntityFrameworkCore.Model.Validation) 
+      The property 'NoteTag (Dictionary<string, object>).NotesId' was created in shadow state because there are no eligible CLR members with a matching name.
+dbug: 29.04.2024 21:45:22.281 CoreEventId.ShadowPropertyCreated[10600] (Microsoft.EntityFrameworkCore.Model.Validation) 
+      The property 'Credentials.UserId' was created in shadow state because there are no eligible CLR members with a matching name.
+dbug: 29.04.2024 21:45:22.281 CoreEventId.ShadowPropertyCreated[10600] (Microsoft.EntityFrameworkCore.Model.Validation) 
+      The property 'Note.Discriminator' was created in shadow state because there are no eligible CLR members with a matching name.
+dbug: 29.04.2024 21:45:22.400 CoreEventId.ContextInitialized[10403] (Microsoft.EntityFrameworkCore.Infrastructure) 
+      Entity Framework Core 8.0.4 initialized 'NotesContext' using provider 'Microsoft.EntityFrameworkCore.SqlServer:8.0.4' with options: None
+dbug: 29.04.2024 21:45:22.448 CoreEventId.QueryCompilationStarting[10111] (Microsoft.EntityFrameworkCore.Query) 
+      Compiling query expression: 
+      'DbSet<User>()
+          .Where(user => user.Сredentials.Login.Equals(__login_0))
+          .FirstOrDefault()'
+dbug: 29.04.2024 21:45:22.495 CoreEventId.NavigationBaseIncluded[10112] (Microsoft.EntityFrameworkCore.Query) 
+      Including navigation: 'User.Сredentials'.
+dbug: 29.04.2024 21:45:22.627 CoreEventId.QueryExecutionPlanned[10107] (Microsoft.EntityFrameworkCore.Query) 
+      Generated query execution expression: 
+      'queryContext => new SingleQueryingEnumerable<User>(
+          (RelationalQueryContext)queryContext, 
+          RelationalCommandCache.QueryExpression(
+              Client Projections:
+                  0 -> Dictionary<IProperty, int> { [Property: User.Id (int) Required PK AfterSave:Throw ValueGenerated.OnAdd, 0], [Property: User.Email (string) Required, 1], [Property: User.Name (string) Required, 2], [Property: User.Phone (string) Required, 3], [Property: User.Surname (string) Required, 4] }
+                  1 -> Dictionary<IProperty, int> { [Property: Credentials.UserId (no field, int) Shadow Required PK FK AfterSave:Throw, 0], [Property: Credentials.Login (string) Required, 5], [Property: Credentials.Password (string) Required, 6] }
+              SELECT TOP(1) u.Id, u.Email, u.Name, u.Phone, u.Surname, u.Сredentials_Login, u.Сredentials_Password
+              FROM Users AS u
+              WHERE u.Сredentials_Login == @__login_0), 
+          null, 
+          Func<QueryContext, DbDataReader, ResultContext, SingleQueryResultCoordinator, User>, 
+          Notes_Model.PostgresDB.NotesContext, 
+          False, 
+          False, 
+          True
+      )
+          .SingleOrDefault()'
+dbug: 29.04.2024 21:45:22.649 RelationalEventId.ConnectionCreating[20005] (Microsoft.EntityFrameworkCore.Database.Connection) 
+      Creating DbConnection.
+dbug: 29.04.2024 21:45:22.664 RelationalEventId.ConnectionCreated[20006] (Microsoft.EntityFrameworkCore.Database.Connection) 
+      Created DbConnection. (13ms).
+dbug: 29.04.2024 21:45:22.665 RelationalEventId.ConnectionOpening[20000] (Microsoft.EntityFrameworkCore.Database.Connection) 
+      Opening connection to database 'NotesDB' on server '(localdb)\mssqllocaldb'.
+dbug: 29.04.2024 21:45:25.426 RelationalEventId.ConnectionOpened[20001] (Microsoft.EntityFrameworkCore.Database.Connection) 
+      Opened connection to database 'NotesDB' on server '(localdb)\mssqllocaldb'.
+dbug: 29.04.2024 21:45:25.427 RelationalEventId.CommandCreating[20103] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Creating DbCommand for 'ExecuteReader'.
+dbug: 29.04.2024 21:45:25.430 RelationalEventId.CommandCreated[20104] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Created DbCommand for 'ExecuteReader' (2ms).
+dbug: 29.04.2024 21:45:25.436 RelationalEventId.CommandInitialized[20106] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Initialized DbCommand for 'ExecuteReader' (8ms).
+dbug: 29.04.2024 21:45:25.440 RelationalEventId.CommandExecuting[20100] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executing DbCommand [Parameters=[@__login_0='?' (Size = 4000)], CommandType='Text', CommandTimeout='30']
+      SELECT TOP(1) [u].[Id], [u].[Email], [u].[Name], [u].[Phone], [u].[Surname], [u].[Сredentials_Login], [u].[Сredentials_Password]
+      FROM [Users] AS [u]
+      WHERE [u].[Сredentials_Login] = @__login_0
+info: 29.04.2024 21:45:25.475 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (36ms) [Parameters=[@__login_0='?' (Size = 4000)], CommandType='Text', CommandTimeout='30']
+      SELECT TOP(1) [u].[Id], [u].[Email], [u].[Name], [u].[Phone], [u].[Surname], [u].[Сredentials_Login], [u].[Сredentials_Password]
+      FROM [Users] AS [u]
+      WHERE [u].[Сredentials_Login] = @__login_0
+dbug: 29.04.2024 21:45:25.501 CoreEventId.StartedTracking[10806] (Microsoft.EntityFrameworkCore.ChangeTracking) 
+      Context 'NotesContext' started tracking 'User' entity. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see key values.
+dbug: 29.04.2024 21:45:25.519 CoreEventId.ReferenceChangeDetected[10805] (Microsoft.EntityFrameworkCore.ChangeTracking) 
+      The navigation 'User.Сredentials' was detected as changed. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see key values.
+dbug: 29.04.2024 21:45:25.520 CoreEventId.StartedTracking[10806] (Microsoft.EntityFrameworkCore.ChangeTracking) 
+      Context 'NotesContext' started tracking 'Credentials' entity. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see key values.
+dbug: 29.04.2024 21:45:25.528 RelationalEventId.DataReaderClosing[20301] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Closing data reader to 'NotesDB' on server '(localdb)\mssqllocaldb'.
+dbug: 29.04.2024 21:45:25.532 RelationalEventId.DataReaderDisposing[20300] (Microsoft.EntityFrameworkCore.Database.Command) 
+      A data reader for 'NotesDB' on server '(localdb)\mssqllocaldb' is being disposed after spending 54ms reading results.
+dbug: 29.04.2024 21:45:25.533 RelationalEventId.ConnectionClosing[20002] (Microsoft.EntityFrameworkCore.Database.Connection) 
+      Closing connection to database 'NotesDB' on server '(localdb)\mssqllocaldb'.
+dbug: 29.04.2024 21:45:25.536 RelationalEventId.ConnectionClosed[20003] (Microsoft.EntityFrameworkCore.Database.Connection) 
+      Closed connection to database 'NotesDB' on server '(localdb)\mssqllocaldb' (3ms).
+dbug: 29.04.2024 21:45:25.537 CoreEventId.ContextDisposed[10407] (Microsoft.EntityFrameworkCore.Infrastructure) 
+      'NotesContext' disposed.
+dbug: 29.04.2024 21:45:25.539 RelationalEventId.ConnectionDisposing[20007] (Microsoft.EntityFrameworkCore.Database.Connection) 
+      Disposing connection to database 'NotesDB' on server '(localdb)\mssqllocaldb'.
+dbug: 29.04.2024 21:45:25.540 RelationalEventId.ConnectionDisposed[20008] (Microsoft.EntityFrameworkCore.Database.Connection) 
+      Disposed connection to database '' on server '' (0ms).
+dbug: 29.04.2024 21:45:25.555 CoreEventId.ContextInitialized[10403] (Microsoft.EntityFrameworkCore.Infrastructure) 
+      Entity Framework Core 8.0.4 initialized 'NotesContext' using provider 'Microsoft.EntityFrameworkCore.SqlServer:8.0.4' with options: None
+dbug: 29.04.2024 21:45:25.555 CoreEventId.QueryCompilationStarting[10111] (Microsoft.EntityFrameworkCore.Query) 
+      Compiling query expression: 
+      'DbSet<User>()
+          .Where(user => user.Сredentials.Password.Equals(__password_0))
+          .FirstOrDefault()'
+dbug: 29.04.2024 21:45:25.556 CoreEventId.NavigationBaseIncluded[10112] (Microsoft.EntityFrameworkCore.Query) 
+      Including navigation: 'User.Сredentials'.
+dbug: 29.04.2024 21:45:25.560 CoreEventId.QueryExecutionPlanned[10107] (Microsoft.EntityFrameworkCore.Query) 
+      Generated query execution expression: 
+      'queryContext => new SingleQueryingEnumerable<User>(
+          (RelationalQueryContext)queryContext, 
+          RelationalCommandCache.QueryExpression(
+              Client Projections:
+                  0 -> Dictionary<IProperty, int> { [Property: User.Id (int) Required PK AfterSave:Throw ValueGenerated.OnAdd, 0], [Property: User.Email (string) Required, 1], [Property: User.Name (string) Required, 2], [Property: User.Phone (string) Required, 3], [Property: User.Surname (string) Required, 4] }
+                  1 -> Dictionary<IProperty, int> { [Property: Credentials.UserId (no field, int) Shadow Required PK FK AfterSave:Throw, 0], [Property: Credentials.Login (string) Required, 5], [Property: Credentials.Password (string) Required, 6] }
+              SELECT TOP(1) u.Id, u.Email, u.Name, u.Phone, u.Surname, u.Сredentials_Login, u.Сredentials_Password
+              FROM Users AS u
+              WHERE u.Сredentials_Password == @__password_0), 
+          null, 
+          Func<QueryContext, DbDataReader, ResultContext, SingleQueryResultCoordinator, User>, 
+          Notes_Model.PostgresDB.NotesContext, 
+          False, 
+          False, 
+          True
+      )
+          .SingleOrDefault()'
+dbug: 29.04.2024 21:45:25.561 RelationalEventId.ConnectionCreating[20005] (Microsoft.EntityFrameworkCore.Database.Connection) 
+      Creating DbConnection.
+dbug: 29.04.2024 21:45:25.561 RelationalEventId.ConnectionCreated[20006] (Microsoft.EntityFrameworkCore.Database.Connection) 
+      Created DbConnection. (0ms).
+dbug: 29.04.2024 21:45:25.561 RelationalEventId.ConnectionOpening[20000] (Microsoft.EntityFrameworkCore.Database.Connection) 
+      Opening connection to database 'NotesDB' on server '(localdb)\mssqllocaldb'.
+dbug: 29.04.2024 21:45:25.561 RelationalEventId.ConnectionOpened[20001] (Microsoft.EntityFrameworkCore.Database.Connection) 
+      Opened connection to database 'NotesDB' on server '(localdb)\mssqllocaldb'.
+dbug: 29.04.2024 21:45:25.561 RelationalEventId.CommandCreating[20103] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Creating DbCommand for 'ExecuteReader'.
+dbug: 29.04.2024 21:45:25.561 RelationalEventId.CommandCreated[20104] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Created DbCommand for 'ExecuteReader' (0ms).
+dbug: 29.04.2024 21:45:25.561 RelationalEventId.CommandInitialized[20106] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Initialized DbCommand for 'ExecuteReader' (0ms).
+dbug: 29.04.2024 21:45:25.561 RelationalEventId.CommandExecuting[20100] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executing DbCommand [Parameters=[@__password_0='?' (Size = 4000)], CommandType='Text', CommandTimeout='30']
+      SELECT TOP(1) [u].[Id], [u].[Email], [u].[Name], [u].[Phone], [u].[Surname], [u].[Сredentials_Login], [u].[Сredentials_Password]
+      FROM [Users] AS [u]
+      WHERE [u].[Сredentials_Password] = @__password_0
+info: 29.04.2024 21:45:25.563 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (2ms) [Parameters=[@__password_0='?' (Size = 4000)], CommandType='Text', CommandTimeout='30']
+      SELECT TOP(1) [u].[Id], [u].[Email], [u].[Name], [u].[Phone], [u].[Surname], [u].[Сredentials_Login], [u].[Сredentials_Password]
+      FROM [Users] AS [u]
+      WHERE [u].[Сredentials_Password] = @__password_0
+dbug: 29.04.2024 21:45:25.563 CoreEventId.StartedTracking[10806] (Microsoft.EntityFrameworkCore.ChangeTracking) 
+      Context 'NotesContext' started tracking 'User' entity. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see key values.
+dbug: 29.04.2024 21:45:25.563 CoreEventId.ReferenceChangeDetected[10805] (Microsoft.EntityFrameworkCore.ChangeTracking) 
+      The navigation 'User.Сredentials' was detected as changed. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see key values.
+dbug: 29.04.2024 21:45:25.563 CoreEventId.StartedTracking[10806] (Microsoft.EntityFrameworkCore.ChangeTracking) 
+      Context 'NotesContext' started tracking 'Credentials' entity. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see key values.
+dbug: 29.04.2024 21:45:25.564 RelationalEventId.DataReaderClosing[20301] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Closing data reader to 'NotesDB' on server '(localdb)\mssqllocaldb'.
+dbug: 29.04.2024 21:45:25.564 RelationalEventId.DataReaderDisposing[20300] (Microsoft.EntityFrameworkCore.Database.Command) 
+      A data reader for 'NotesDB' on server '(localdb)\mssqllocaldb' is being disposed after spending 0ms reading results.
+dbug: 29.04.2024 21:45:25.564 RelationalEventId.ConnectionClosing[20002] (Microsoft.EntityFrameworkCore.Database.Connection) 
+      Closing connection to database 'NotesDB' on server '(localdb)\mssqllocaldb'.
+dbug: 29.04.2024 21:45:25.564 RelationalEventId.ConnectionClosed[20003] (Microsoft.EntityFrameworkCore.Database.Connection) 
+      Closed connection to database 'NotesDB' on server '(localdb)\mssqllocaldb' (0ms).
+dbug: 29.04.2024 21:45:25.564 CoreEventId.ContextDisposed[10407] (Microsoft.EntityFrameworkCore.Infrastructure) 
+      'NotesContext' disposed.
+dbug: 29.04.2024 21:45:25.564 RelationalEventId.ConnectionDisposing[20007] (Microsoft.EntityFrameworkCore.Database.Connection) 
+      Disposing connection to database 'NotesDB' on server '(localdb)\mssqllocaldb'.
+dbug: 29.04.2024 21:45:25.564 RelationalEventId.ConnectionDisposed[20008] (Microsoft.EntityFrameworkCore.Database.Connection) 
+      Disposed connection to database '' on server '' (0ms).
+dbug: 29.04.2024 21:45:25.606 CoreEventId.ContextInitialized[10403] (Microsoft.EntityFrameworkCore.Infrastructure) 
+      Entity Framework Core 8.0.4 initialized 'NotesContext' using provider 'Microsoft.EntityFrameworkCore.SqlServer:8.0.4' with options: None
+dbug: 29.04.2024 21:45:25.609 CoreEventId.QueryCompilationStarting[10111] (Microsoft.EntityFrameworkCore.Query) 
+      Compiling query expression: 
+      'DbSet<User>()
+          .Where(user => user.Id.Equals(__userId_0))
+          .Include(user => user.UserTags)
+          .Include(user => user.UserNotes)
+          .ThenInclude(note => note.NoteTags)
+          .FirstOrDefault()'
+dbug: 29.04.2024 21:45:25.612 CoreEventId.NavigationBaseIncluded[10112] (Microsoft.EntityFrameworkCore.Query) 
+      Including navigation: 'User.Сredentials'.
+dbug: 29.04.2024 21:45:25.613 CoreEventId.NavigationBaseIncluded[10112] (Microsoft.EntityFrameworkCore.Query) 
+      Including navigation: 'User.UserTags'.
+dbug: 29.04.2024 21:45:25.613 CoreEventId.NavigationBaseIncluded[10112] (Microsoft.EntityFrameworkCore.Query) 
+      Including navigation: 'User.UserNotes'.
+dbug: 29.04.2024 21:45:25.615 CoreEventId.NavigationBaseIncluded[10112] (Microsoft.EntityFrameworkCore.Query) 
+      Including navigation: 'Note.NoteTags'.
+warn: 29.04.2024 21:45:25.676 RelationalEventId.MultipleCollectionIncludeWarning[20504] (Microsoft.EntityFrameworkCore.Query) 
+      Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+dbug: 29.04.2024 21:45:25.679 CoreEventId.QueryExecutionPlanned[10107] (Microsoft.EntityFrameworkCore.Query) 
+      Generated query execution expression: 
+      'queryContext => new SingleQueryingEnumerable<User>(
+          (RelationalQueryContext)queryContext, 
+          RelationalCommandCache.QueryExpression(
+              Client Projections:
+                  0 -> Dictionary<IProperty, int> { [Property: User.Id (int) Required PK AfterSave:Throw ValueGenerated.OnAdd, 0], [Property: User.Email (string) Required, 1], [Property: User.Name (string) Required, 2], [Property: User.Phone (string) Required, 3], [Property: User.Surname (string) Required, 4] }
+                  1 -> Dictionary<IProperty, int> { [Property: Credentials.UserId (no field, int) Shadow Required PK FK AfterSave:Throw, 0], [Property: Credentials.Login (string) Required, 5], [Property: Credentials.Password (string) Required, 6] }
+                  2 -> 0
+                  3 -> Dictionary<IProperty, int> { [Property: Tag.Id (int) Required PK AfterSave:Throw ValueGenerated.OnAdd, 7], [Property: Tag.TagName (string) Required, 8], [Property: Tag.UserId (int) Required FK Index, 9] }
+                  4 -> 7
+                  5 -> Dictionary<IProperty, int> { [Property: Note.Id (int) Required PK AfterSave:Throw ValueGenerated.OnAdd, 10], [Property: Note.Body (string) Required, 11], [Property: Note.CreationDateTime (DateTime) Required, 12], [Property: Note.Discriminator (no field, string) Shadow Required AfterSave:Throw MaxLength(8), 13], [Property: Note.Header (string) Required, 14], [Property: Note.UserId (int) Required FK Index, 15], [Property: Reminder.RemindTime (DateTime) Required, 16] }
+                  6 -> 10
+                  7 -> Dictionary<IProperty, int> { [Property: NoteTag (Dictionary<string, object>).NoteTagsId (no field, int) Indexer Required PK FK AfterSave:Throw, 17], [Property: NoteTag (Dictionary<string, object>).NotesId (no field, int) Indexer Required PK FK Index AfterSave:Throw, 18] }
+                  8 -> Dictionary<IProperty, int> { [Property: Tag.Id (int) Required PK AfterSave:Throw ValueGenerated.OnAdd, 19], [Property: Tag.TagName (string) Required, 20], [Property: Tag.UserId (int) Required FK Index, 21] }
+                  9 -> 17
+                  10 -> 18
+                  11 -> 19
+              SELECT t.Id, t.Email, t.Name, t.Phone, t.Surname, t.Сredentials_Login, t.Сredentials_Password, u0.Id, u0.TagName, u0.UserId, t0.Id, t0.Body, t0.CreationDateTime, t0.Discriminator, t0.Header, t0.UserId, t0.RemindTime, t0.NoteTagsId, t0.NotesId, t0.Id0, t0.TagName, t0.UserId0
+              FROM 
+              (
+                  SELECT TOP(1) u.Id, u.Email, u.Name, u.Phone, u.Surname, u.Сredentials_Login, u.Сredentials_Password
+                  FROM Users AS u
+                  WHERE u.Id == @__userId_0
+              ) AS t
+              LEFT JOIN UserTags AS u0 ON t.Id == u0.UserId
+              LEFT JOIN 
+              (
+                  SELECT u1.Id, u1.Body, u1.CreationDateTime, u1.Discriminator, u1.Header, u1.UserId, u1.RemindTime, t1.NoteTagsId, t1.NotesId, t1.Id AS Id0, t1.TagName, t1.UserId AS UserId0
+                  FROM UserNotes AS u1
+                  LEFT JOIN 
+                  (
+                      SELECT n.NoteTagsId, n.NotesId, u2.Id, u2.TagName, u2.UserId
+                      FROM NoteTag AS n
+                      INNER JOIN UserTags AS u2 ON n.NoteTagsId == u2.Id
+                  ) AS t1 ON u1.Id == t1.NotesId
+              ) AS t0 ON t.Id == t0.UserId
+              ORDER BY t.Id ASC, u0.Id ASC, t0.Id ASC, t0.NoteTagsId ASC, t0.NotesId ASC), 
+          null, 
+          Func<QueryContext, DbDataReader, ResultContext, SingleQueryResultCoordinator, User>, 
+          Notes_Model.PostgresDB.NotesContext, 
+          False, 
+          False, 
+          True
+      )
+          .SingleOrDefault()'
+dbug: 29.04.2024 21:45:25.681 RelationalEventId.ConnectionCreating[20005] (Microsoft.EntityFrameworkCore.Database.Connection) 
+      Creating DbConnection.
+dbug: 29.04.2024 21:45:25.681 RelationalEventId.ConnectionCreated[20006] (Microsoft.EntityFrameworkCore.Database.Connection) 
+      Created DbConnection. (0ms).
+dbug: 29.04.2024 21:45:25.681 RelationalEventId.ConnectionOpening[20000] (Microsoft.EntityFrameworkCore.Database.Connection) 
+      Opening connection to database 'NotesDB' on server '(localdb)\mssqllocaldb'.
+dbug: 29.04.2024 21:45:25.681 RelationalEventId.ConnectionOpened[20001] (Microsoft.EntityFrameworkCore.Database.Connection) 
+      Opened connection to database 'NotesDB' on server '(localdb)\mssqllocaldb'.
+dbug: 29.04.2024 21:45:25.681 RelationalEventId.CommandCreating[20103] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Creating DbCommand for 'ExecuteReader'.
+dbug: 29.04.2024 21:45:25.681 RelationalEventId.CommandCreated[20104] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Created DbCommand for 'ExecuteReader' (0ms).
+dbug: 29.04.2024 21:45:25.681 RelationalEventId.CommandInitialized[20106] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Initialized DbCommand for 'ExecuteReader' (0ms).
+dbug: 29.04.2024 21:45:25.682 RelationalEventId.CommandExecuting[20100] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executing DbCommand [Parameters=[@__userId_0='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      SELECT [t].[Id], [t].[Email], [t].[Name], [t].[Phone], [t].[Surname], [t].[Сredentials_Login], [t].[Сredentials_Password], [u0].[Id], [u0].[TagName], [u0].[UserId], [t0].[Id], [t0].[Body], [t0].[CreationDateTime], [t0].[Discriminator], [t0].[Header], [t0].[UserId], [t0].[RemindTime], [t0].[NoteTagsId], [t0].[NotesId], [t0].[Id0], [t0].[TagName], [t0].[UserId0]
+      FROM (
+          SELECT TOP(1) [u].[Id], [u].[Email], [u].[Name], [u].[Phone], [u].[Surname], [u].[Сredentials_Login], [u].[Сredentials_Password]
+          FROM [Users] AS [u]
+          WHERE [u].[Id] = @__userId_0
+      ) AS [t]
+      LEFT JOIN [UserTags] AS [u0] ON [t].[Id] = [u0].[UserId]
+      LEFT JOIN (
+          SELECT [u1].[Id], [u1].[Body], [u1].[CreationDateTime], [u1].[Discriminator], [u1].[Header], [u1].[UserId], [u1].[RemindTime], [t1].[NoteTagsId], [t1].[NotesId], [t1].[Id] AS [Id0], [t1].[TagName], [t1].[UserId] AS [UserId0]
+          FROM [UserNotes] AS [u1]
+          LEFT JOIN (
+              SELECT [n].[NoteTagsId], [n].[NotesId], [u2].[Id], [u2].[TagName], [u2].[UserId]
+              FROM [NoteTag] AS [n]
+              INNER JOIN [UserTags] AS [u2] ON [n].[NoteTagsId] = [u2].[Id]
+          ) AS [t1] ON [u1].[Id] = [t1].[NotesId]
+      ) AS [t0] ON [t].[Id] = [t0].[UserId]
+      ORDER BY [t].[Id], [u0].[Id], [t0].[Id], [t0].[NoteTagsId], [t0].[NotesId]
+info: 29.04.2024 21:45:25.692 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (11ms) [Parameters=[@__userId_0='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      SELECT [t].[Id], [t].[Email], [t].[Name], [t].[Phone], [t].[Surname], [t].[Сredentials_Login], [t].[Сredentials_Password], [u0].[Id], [u0].[TagName], [u0].[UserId], [t0].[Id], [t0].[Body], [t0].[CreationDateTime], [t0].[Discriminator], [t0].[Header], [t0].[UserId], [t0].[RemindTime], [t0].[NoteTagsId], [t0].[NotesId], [t0].[Id0], [t0].[TagName], [t0].[UserId0]
+      FROM (
+          SELECT TOP(1) [u].[Id], [u].[Email], [u].[Name], [u].[Phone], [u].[Surname], [u].[Сredentials_Login], [u].[Сredentials_Password]
+          FROM [Users] AS [u]
+          WHERE [u].[Id] = @__userId_0
+      ) AS [t]
+      LEFT JOIN [UserTags] AS [u0] ON [t].[Id] = [u0].[UserId]
+      LEFT JOIN (
+          SELECT [u1].[Id], [u1].[Body], [u1].[CreationDateTime], [u1].[Discriminator], [u1].[Header], [u1].[UserId], [u1].[RemindTime], [t1].[NoteTagsId], [t1].[NotesId], [t1].[Id] AS [Id0], [t1].[TagName], [t1].[UserId] AS [UserId0]
+          FROM [UserNotes] AS [u1]
+          LEFT JOIN (
+              SELECT [n].[NoteTagsId], [n].[NotesId], [u2].[Id], [u2].[TagName], [u2].[UserId]
+              FROM [NoteTag] AS [n]
+              INNER JOIN [UserTags] AS [u2] ON [n].[NoteTagsId] = [u2].[Id]
+          ) AS [t1] ON [u1].[Id] = [t1].[NotesId]
+      ) AS [t0] ON [t].[Id] = [t0].[UserId]
+      ORDER BY [t].[Id], [u0].[Id], [t0].[Id], [t0].[NoteTagsId], [t0].[NotesId]
+dbug: 29.04.2024 21:45:25.692 CoreEventId.StartedTracking[10806] (Microsoft.EntityFrameworkCore.ChangeTracking) 
+      Context 'NotesContext' started tracking 'User' entity. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see key values.
+dbug: 29.04.2024 21:45:25.692 CoreEventId.ReferenceChangeDetected[10805] (Microsoft.EntityFrameworkCore.ChangeTracking) 
+      The navigation 'User.Сredentials' was detected as changed. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see key values.
+dbug: 29.04.2024 21:45:25.692 CoreEventId.StartedTracking[10806] (Microsoft.EntityFrameworkCore.ChangeTracking) 
+      Context 'NotesContext' started tracking 'Credentials' entity. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see key values.
+dbug: 29.04.2024 21:45:25.702 CoreEventId.StartedTracking[10806] (Microsoft.EntityFrameworkCore.ChangeTracking) 
+      Context 'NotesContext' started tracking 'Tag' entity. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see key values.
+dbug: 29.04.2024 21:45:25.708 CoreEventId.StartedTracking[10806] (Microsoft.EntityFrameworkCore.ChangeTracking) 
+      Context 'NotesContext' started tracking 'Note' entity. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see key values.
+dbug: 29.04.2024 21:45:25.722 CoreEventId.StartedTracking[10806] (Microsoft.EntityFrameworkCore.ChangeTracking) 
+      Context 'NotesContext' started tracking 'NoteTag' entity. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see key values.
+dbug: 29.04.2024 21:45:25.723 CoreEventId.StartedTracking[10806] (Microsoft.EntityFrameworkCore.ChangeTracking) 
+      Context 'NotesContext' started tracking 'Tag' entity. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see key values.
+dbug: 29.04.2024 21:45:25.724 CoreEventId.StartedTracking[10806] (Microsoft.EntityFrameworkCore.ChangeTracking) 
+      Context 'NotesContext' started tracking 'NoteTag' entity. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see key values.
+dbug: 29.04.2024 21:45:25.724 CoreEventId.StartedTracking[10806] (Microsoft.EntityFrameworkCore.ChangeTracking) 
+      Context 'NotesContext' started tracking 'Tag' entity. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see key values.
+dbug: 29.04.2024 21:45:25.724 CoreEventId.StartedTracking[10806] (Microsoft.EntityFrameworkCore.ChangeTracking) 
+      Context 'NotesContext' started tracking 'NoteTag' entity. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see key values.
+dbug: 29.04.2024 21:45:25.724 CoreEventId.StartedTracking[10806] (Microsoft.EntityFrameworkCore.ChangeTracking) 
+      Context 'NotesContext' started tracking 'Tag' entity. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see key values.
+dbug: 29.04.2024 21:45:25.724 CoreEventId.StartedTracking[10806] (Microsoft.EntityFrameworkCore.ChangeTracking) 
+      Context 'NotesContext' started tracking 'Note' entity. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see key values.
+dbug: 29.04.2024 21:45:25.724 CoreEventId.StartedTracking[10806] (Microsoft.EntityFrameworkCore.ChangeTracking) 
+      Context 'NotesContext' started tracking 'NoteTag' entity. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see key values.
+dbug: 29.04.2024 21:45:25.724 CoreEventId.StartedTracking[10806] (Microsoft.EntityFrameworkCore.ChangeTracking) 
+      Context 'NotesContext' started tracking 'NoteTag' entity. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see key values.
+dbug: 29.04.2024 21:45:25.725 CoreEventId.StartedTracking[10806] (Microsoft.EntityFrameworkCore.ChangeTracking) 
+      Context 'NotesContext' started tracking 'Reminder' entity. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see key values.
+dbug: 29.04.2024 21:45:25.727 CoreEventId.StartedTracking[10806] (Microsoft.EntityFrameworkCore.ChangeTracking) 
+      Context 'NotesContext' started tracking 'NoteTag' entity. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see key values.
+dbug: 29.04.2024 21:45:25.727 CoreEventId.StartedTracking[10806] (Microsoft.EntityFrameworkCore.ChangeTracking) 
+      Context 'NotesContext' started tracking 'NoteTag' entity. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see key values.
+dbug: 29.04.2024 21:45:25.727 CoreEventId.StartedTracking[10806] (Microsoft.EntityFrameworkCore.ChangeTracking) 
+      Context 'NotesContext' started tracking 'Tag' entity. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see key values.
+dbug: 29.04.2024 21:45:25.728 CoreEventId.StartedTracking[10806] (Microsoft.EntityFrameworkCore.ChangeTracking) 
+      Context 'NotesContext' started tracking 'Reminder' entity. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see key values.
+dbug: 29.04.2024 21:45:25.728 CoreEventId.StartedTracking[10806] (Microsoft.EntityFrameworkCore.ChangeTracking) 
+      Context 'NotesContext' started tracking 'Note' entity. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see key values.
+dbug: 29.04.2024 21:45:25.728 CoreEventId.StartedTracking[10806] (Microsoft.EntityFrameworkCore.ChangeTracking) 
+      Context 'NotesContext' started tracking 'NoteTag' entity. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see key values.
+dbug: 29.04.2024 21:45:25.728 CoreEventId.StartedTracking[10806] (Microsoft.EntityFrameworkCore.ChangeTracking) 
+      Context 'NotesContext' started tracking 'NoteTag' entity. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see key values.
+dbug: 29.04.2024 21:45:25.728 CoreEventId.StartedTracking[10806] (Microsoft.EntityFrameworkCore.ChangeTracking) 
+      Context 'NotesContext' started tracking 'NoteTag' entity. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see key values.
+dbug: 29.04.2024 21:45:25.728 CoreEventId.StartedTracking[10806] (Microsoft.EntityFrameworkCore.ChangeTracking) 
+      Context 'NotesContext' started tracking 'Tag' entity. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see key values.
+dbug: 29.04.2024 21:45:25.728 CoreEventId.StartedTracking[10806] (Microsoft.EntityFrameworkCore.ChangeTracking) 
+      Context 'NotesContext' started tracking 'Tag' entity. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see key values.
+dbug: 29.04.2024 21:45:25.729 CoreEventId.StartedTracking[10806] (Microsoft.EntityFrameworkCore.ChangeTracking) 
+      Context 'NotesContext' started tracking 'Tag' entity. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see key values.
+dbug: 29.04.2024 21:45:25.729 CoreEventId.StartedTracking[10806] (Microsoft.EntityFrameworkCore.ChangeTracking) 
+      Context 'NotesContext' started tracking 'Tag' entity. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see key values.
+dbug: 29.04.2024 21:45:25.729 RelationalEventId.DataReaderClosing[20301] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Closing data reader to 'NotesDB' on server '(localdb)\mssqllocaldb'.
+dbug: 29.04.2024 21:45:25.729 RelationalEventId.DataReaderDisposing[20300] (Microsoft.EntityFrameworkCore.Database.Command) 
+      A data reader for 'NotesDB' on server '(localdb)\mssqllocaldb' is being disposed after spending 37ms reading results.
+dbug: 29.04.2024 21:45:25.729 RelationalEventId.ConnectionClosing[20002] (Microsoft.EntityFrameworkCore.Database.Connection) 
+      Closing connection to database 'NotesDB' on server '(localdb)\mssqllocaldb'.
+dbug: 29.04.2024 21:45:25.729 RelationalEventId.ConnectionClosed[20003] (Microsoft.EntityFrameworkCore.Database.Connection) 
+      Closed connection to database 'NotesDB' on server '(localdb)\mssqllocaldb' (0ms).
+dbug: 29.04.2024 21:45:25.729 CoreEventId.ContextDisposed[10407] (Microsoft.EntityFrameworkCore.Infrastructure) 
+      'NotesContext' disposed.
+dbug: 29.04.2024 21:45:25.729 RelationalEventId.ConnectionDisposing[20007] (Microsoft.EntityFrameworkCore.Database.Connection) 
+      Disposing connection to database 'NotesDB' on server '(localdb)\mssqllocaldb'.
+dbug: 29.04.2024 21:45:25.729 RelationalEventId.ConnectionDisposed[20008] (Microsoft.EntityFrameworkCore.Database.Connection) 
+      Disposed connection to database '' on server '' (0ms).
