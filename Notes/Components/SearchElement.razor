@@ -206,6 +206,7 @@
 	}
 	public async void CreateNewElement(string elementName)
 	{
+		if (string.IsNullOrWhiteSpace(elementName)) return;
 		TagName = string.Empty;
 		resultingMessage = OnCreateNewElementMessage;
 		await OnCreateNewElement.InvokeAsync(elementName);

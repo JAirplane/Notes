@@ -29,7 +29,7 @@ namespace Notes_ViewModel
 			user_VM = new LoggedInUser_VM(user);
 		}
 		//Remind time is wrong here, need to be updated further
-		public int ConvertNoteToReminder(Note_VM? note)
+		public int ConvertNoteToReminder(Note_VM? note, DateTime remindTime)
 		{
 			if(note is not null)
 			{
@@ -38,7 +38,7 @@ namespace Notes_ViewModel
 				{
 					NoteHeader = note.Header,
 					NoteText = note.Body,
-					RemindDateTime = DateTime.Now,
+					RemindDateTime = remindTime,
 				};
 				return AddNewNote(content);
 			}
@@ -135,9 +135,8 @@ namespace Notes_ViewModel
 			note.Body = content.NoteText;
 			if(note is not Reminder_VM && content.RemindDateTime is not null)
 			{
-				int reminderId = ConvertNoteToReminder(note);
+				int reminderId = ConvertNoteToReminder(note, (DateTime)content.RemindDateTime);
 				if (reminderId == -1) return false;
-				repository.UpdateRemindTime(reminderId, (DateTime)content.RemindDateTime);
 				return true;
 			}
 			repository.UpdateNoteHeader(noteId, content.NoteHeader);
@@ -161,7 +160,7 @@ namespace Notes_ViewModel
 		}
 		public Tag_VM? AddNewTag(string tagName)
 		{
-			if (tagName.Length == 0) return null;
+			if (tagName.Length == 0 || string.IsNullOrWhiteSpace(tagName)) return null;
 			var fixedTagName = "#" + tagName;
 			if(fixedTagName.Length > 30)
 			{
