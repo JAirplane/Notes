@@ -110,6 +110,8 @@ else if (ShowModalIsOpen)
 	private bool TagEditionModalIsOpen { get; set; }
 	private bool ShowRemindTimeInfoMessageDuringEdit { get; set; }
 
+	private readonly Logger logger = LogManager.GetCurrentClassLogger();
+
 	protected override void OnParametersSet()
 	{
 		base.OnParametersSet();
@@ -129,13 +131,15 @@ else if (ShowModalIsOpen)
 	}
 	virtual public void OnSaveChangesHandler(NoteContent content)
 	{
-		if(Note is not null)
+		if (Note is null)
 		{
-			OnEditNote?.Invoke(Note.Id, content);
-			if (content.RemindDateTime is not null)
-			{
-				timeToRemind = content.RemindDateTime;
-			}
+			logger.Error($"NoteCard -> OnSaveChangesHandler() Note is null. Time: {DateTime.Now}");
+			return;
+		}
+		OnEditNote?.Invoke(Note.Id, content);
+		if (content.RemindDateTime is not null)
+		{
+			timeToRemind = content.RemindDateTime;
 		}
 		OnEditModalStateChanged(false);
 		OnParentStateHasChanged.InvokeAsync();
@@ -145,33 +149,40 @@ else if (ShowModalIsOpen)
 		var newTag = OnCreateNewTag?.Invoke(tagName); //creates and adds new tag to all user tags collection
 		if(Note is null)
 		{
-			//TODO: to log
+			logger.Error($"NoteCard -> CreateAndAddNewTag() Note is null. Time: {DateTime.Now}");
 			return;
 		}
 		if(newTag is null)
 		{
-			//TODO: to log
+			logger.Error($"NoteCard -> CreateAndAddNewTag() OnCreateNewTag returned null tag created. Time: {DateTime.Now}");
 			return;
 		}
 		AddExistingTagToNote(newTag);
 	}
 	public void AddExistingTagToNote(Tag_VM? tag)
 	{
-		if (tag is not null && Note is not null)
+		if (Note is null)
 		{
-			OnAddExistingTag?.Invoke(Note.Id, tag.Id);
+			logger.Error($"NoteCard -> AddExistingTagToNote() Note is null. Time: {DateTime.Now}");
+			return;
 		}
+		if (tag is null)
+		{
+			logger.Error($"NoteCard -> AddExistingTagToNote() null tag argument. Time: {DateTime.Now}");
+			return;
+		}
+		OnAddExistingTag?.Invoke(Note.Id, tag.Id);
 	}
 	public void UnbindTag(Tag_VM tag)
 	{
 		if (Note is null)
 		{
-			//TODO: to log
+			logger.Error($"NoteCard -> UnbindTag() Note is null. Time: {DateTime.Now}");
 			return;
 		}
 		if (tag is null)
 		{
-			//TODO: to log
+			logger.Error($"NoteCard -> UnbindTag() null tag argument. Time: {DateTime.Now}");
 			return;
 		}
 		OnRemoveTag?.Invoke(Note.Id, tag.Id);

@@ -96,6 +96,8 @@
 	private bool emailIsUnique;
 	private string UserExistedMessage { get; set; } = string.Empty;
 
+	private readonly Logger logger = LogManager.GetCurrentClassLogger();
+
 	protected override async Task OnAfterRenderAsync(bool firstRender)
 	{
 		if (firstRender)
@@ -132,8 +134,7 @@
 		var userCreated = registration.AddNewUser();
 		if(!userCreated)
 		{
-			Console.WriteLine("user creation failed");
-			//TODO: log error
+			logger.Error($"RegisterForm -> SendUserData() user creation failed. Time: {DateTime.Now}");
 		}
 		navManager.NavigateTo("/");
 	}
