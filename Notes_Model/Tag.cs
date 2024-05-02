@@ -13,7 +13,6 @@ namespace Notes_Model
 		public List<Note> Notes { get; set; } = [];
 
 		public int UserId { get; set; }
-		public User? User { get; set; }
 		public override bool Equals(object? obj)
 		{
 			if (obj is not null)

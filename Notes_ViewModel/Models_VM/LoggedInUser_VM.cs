@@ -12,6 +12,7 @@ namespace Notes_ViewModel.Models_VM
 		public int Id { get; set; }
 		public List<Note_VM> UserNotes { get; set; } = [];
 		public HashSet<Tag_VM> UserTags { get; set; } = [];
+		public bool NotificationPermission { get; set; } = false;
 		public LoggedInUser_VM() { }
 		public LoggedInUser_VM(User user) :base(user.Сredentials.Login, user.Сredentials.Password,
 			user.Name, user.Surname, user.Email, user.Phone)

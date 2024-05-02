@@ -1,46 +1,55 @@
 ﻿
 @page "/search"
 @page "/search/{TagName}"
+@inject UserAuthenticationState authState
 
-<div class="search-container">
-	<div class="tag-search">
-		<SearchElement BindHeader=@SearchInputHeader OnChoiceMadeMessage=@TagChosenMessage CanCreateNewElement=@false OnSearchHandler="handler_VM.GetUserTagsByTagName"
-			OnChoiceMade="GetUserNotesByTag">
-			<ResultTemplate>
-				@context.TagName
-			</ResultTemplate>
-		</SearchElement>
-	</div>
-	<div class="radio-search-container">
-			@foreach(var option in Enum.GetValues<TagSearchOptions>())
+@if (!authState.UserLoggedIn)
+{
+	<NotAuthorizedForm />
+}
+else
+{
+	<div class="search-container">
+		<div class="tag-search">
+			<SearchElement BindHeader=@SearchInputHeader OnChoiceMadeMessage=@TagChosenMessage CanCreateNewElement=@false OnSearchHandler="handler_VM.GetUserTagsByTagName"
+						   OnChoiceMade="GetUserNotesByTag">
+				<ResultTemplate>
+					@context.TagName
+				</ResultTemplate>
+			</SearchElement>
+		</div>
+		<div class="radio-search-container">
+			@foreach (var option in Enum.GetValues<TagSearchOptions>())
 			{
 				<input type="radio" name="option" id="@option" @onchange=@(() => OnFilterChanged(option)) checked=@(option == TagSearchOptions.Both) />
 				<label for="@option">@option.ToString()</label>
 				<br>
 			}
+		</div>
 	</div>
-</div>
 
-<h1 class="text-center">Your notes</h1>
-<div class="note-container">
-	@foreach (Note_VM note in filteredNotes ?? [])
-	{
-		var textCSSClass = string.Empty;
-		var remindStaleCSS = string.Empty;
-		if(note is Reminder_VM)
+	<h1 class="text-center">Your notes</h1>
+	<div class="note-container">
+		@foreach (Note_VM note in filteredNotes ?? [])
 		{
-			textCSSClass = ReminderTextCSSClass;
-			remindStaleCSS = RemindStaleTextColorCSSClass;
+			var textCSSClass = string.Empty;
+			var remindStaleCSS = string.Empty;
+			if (note is Reminder_VM)
+			{
+				textCSSClass = ReminderTextCSSClass;
+				remindStaleCSS = RemindStaleTextColorCSSClass;
+			}
+			else
+			{
+				textCSSClass = NoteTextCSSClass;
+			}
+			<NoteCard Note="note" OnEditNote="handler_VM.UpdateNoteData" OnDeleteNote="handler_VM.DeleteUserNote" OnTagsSearchHandler="handler_VM.GetUserTagsByTagName"
+					  OnCreateNewTag="handler_VM.AddNewTag" OnAddExistingTag="handler_VM.AddExistingTagToNote" OnRemoveTag="handler_VM.RemoveExistingTagFromNote"
+					  CardTextCSSClass=@textCSSClass RemindStaleTextColorCSSClass=@remindStaleCSS OnParentStateHasChanged="StateHasChanged" />
 		}
-		else
-		{
-			textCSSClass = NoteTextCSSClass;
-		}
-		<NoteCard Note="note" OnEditNote="handler_VM.UpdateNoteData" OnDeleteNote="handler_VM.DeleteUserNote" OnTagsSearchHandler="handler_VM.GetUserTagsByTagName"
-				  OnCreateNewTag="handler_VM.AddNewTag" OnAddExistingTag="handler_VM.AddExistingTagToNote" OnRemoveTag="handler_VM.RemoveExistingTagFromNote"
-				  CardTextCSSClass=@textCSSClass RemindStaleTextColorCSSClass=@remindStaleCSS OnParentStateHasChanged="StateHasChanged" />
-	}
-</div>
+	</div>
+}
+
 
 @code {
 	[Parameter]

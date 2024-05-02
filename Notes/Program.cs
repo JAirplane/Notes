@@ -6,6 +6,8 @@ using Notes_Model.Repository;
 using Notes_ViewModel;
 using NLog;
 using NLog.Web;
+using Majorsoft.Blazor.Components.CssEvents;
+using Majorsoft.Blazor.Components.Notifications;
 
 var logger = LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
 logger.Debug("init main");
@@ -20,6 +22,8 @@ try
 	builder.Services.AddScoped<UserAuthenticationState>();
 	builder.Services.AddScoped<AuthenticatedUserHandler_VM>();
 	builder.Services.AddScoped<IRepository, NotesRepository>();
+	builder.Services.AddCssEvents();
+	builder.Services.AddNotifications();
 	builder.Logging.ClearProviders();
 	builder.Host.UseNLog();
 

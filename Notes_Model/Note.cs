@@ -15,7 +15,6 @@ namespace Notes_Model
 		public HashSet<Tag> NoteTags { get; set; } = [];
 
 		public int UserId { get; set; }
-		public User? User { get; set; }
 
 	}
 }

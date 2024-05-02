@@ -39,19 +39,25 @@ namespace Notes_ViewModel
 		//Remind time is wrong here, need to be updated further
 		public int ConvertNoteToReminder(Note_VM? note, DateTime remindTime)
 		{
-			if (note is not null)
+			if(note is null)
 			{
-				DeleteUserNote(note.Id);
-				NoteContent content = new()
-				{
-					NoteHeader = note.Header,
-					NoteText = note.Body,
-					RemindDateTime = remindTime,
-				};
-				return AddNewNote(content);
+				logger.Error($"AuthenticatedUserHandler_VM -> ConvertNoteToReminder() got null Note_VM argument. Time: {DateTime.Now}");
+				return -1;
 			}
-			logger.Error($"AuthenticatedUserHandler_VM -> ConvertNoteToReminder() got null Note_VM argument. Time: {DateTime.Now}");
-			return -1;
+			if (string.IsNullOrWhiteSpace(note.Header))
+			{
+				return -1;
+			}
+			NoteContent content = new()
+			{
+				NoteHeader = note.Header,
+				NoteText = note.Body,
+				RemindDateTime = remindTime,
+			};
+			int reminderId = AddNewNote(content);
+			if(reminderId == -1) return -1;
+			DeleteUserNote(note.Id);
+			return reminderId;
 		}
 		public IEnumerable<Note_VM> GetUserNotes()
 		{
@@ -99,6 +105,10 @@ namespace Notes_ViewModel
 		}
 		public int AddNewNote(NoteContent content)
 		{
+			if (string.IsNullOrWhiteSpace(content.NoteHeader))
+			{
+				return -1;
+			}
 			Note_VM? note;
 			Note? note_model;
 			if (content.RemindDateTime is null)
@@ -142,6 +152,10 @@ namespace Notes_ViewModel
 			if(note is null)
 			{
 				logger.Error($"AuthenticatedUserHandler_VM -> UpdateNoteData(): Note was not found in User_VM. Time: {DateTime.Now}");
+				return false;
+			}
+			if(string.IsNullOrWhiteSpace(content.NoteHeader))
+			{
 				return false;
 			}
 			note.Header = content.NoteHeader;
@@ -274,6 +288,7 @@ namespace Notes_ViewModel
 		}
 		public void UpdateTagData(int tagId, string tagName)
 		{
+			if (string.IsNullOrWhiteSpace(tagName)) return;
 			var tag = user_VM.UserTags.Where(tag => tag.Id == tagId).FirstOrDefault();
 			if(tag is null)
 			{
