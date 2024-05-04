@@ -9,7 +9,7 @@
 }
 else
 {
-	<CreateNote ModalWindowTitle=@CreateNoteModalWindowTitle OnCreate="handler_VM.AddNewNote" />
+	<CreateNote ModalWindowTitle=@CreateNoteModalWindowTitle OnCreate="handler_VM.AddNewNote" OnParentStateHasChanged="StateHasChanged" />
 
 	<h1 class="text-center">Your notes</h1>
 	<div class="note-container">

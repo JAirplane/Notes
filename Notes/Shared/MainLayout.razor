@@ -21,9 +21,11 @@
 			</article>
 		</main>
 	</div>
+	<Notification @ref=notification />
 </CascadingValue>
 
 @code{
+	private Notification? notification;
 	private AuthenticatedUserHandler_VM? _handler_VM;
 	[Inject]
 	public AuthenticatedUserHandler_VM handler_VM
@@ -31,10 +33,37 @@
 		get => _handler_VM ?? throw new Exception("AuthenticatedUserHandler_VM is null");
 		set => _handler_VM = value ?? throw new Exception("AuthenticatedUserHandler_VM is null");
 	}
+	protected override async Task OnAfterRenderAsync(bool firstRender)
+	{
+		if (firstRender)
+		{
+			await RunAllNotifications();
+			handler_VM.RunNotification = RunNotification;
+		}
+	}
 	public void SignOut()
 	{
 		authState.UserLoggedIn = false;
 		handler_VM.NullifyUser();
 		navManager.NavigateTo("/");
+	}
+	public async Task RunNotification(Reminder_VM reminder)
+	{
+		if (reminder is null) return;
+		if (reminder.RemindTime < DateTime.Now) return;
+		var timeDiff = reminder.RemindTime - DateTime.Now;
+		//delayed by timeDiff
+		if(notification is not null)
+		{
+			await notification.ShowSimpeNotification(reminder.Header, timeDiff);
+		}
+	}
+	public async Task RunAllNotifications()
+	{
+		var reminderCollection = handler_VM.GetUserReminders();
+		foreach(var note in reminderCollection)
+		{
+			await RunNotification((Reminder_VM)note);
+		}
 	}
 }

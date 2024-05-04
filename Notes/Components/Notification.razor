@@ -1,0 +1,60 @@
+﻿@inject IHtmlNotificationService _notificationService
+@implements IAsyncDisposable
+
+@code {
+	[Parameter]
+	public string _notificationTitle { get; set; } = "Notes notification";
+	[Parameter]
+	public string _notificationBody { get; set; } = string.Empty;
+	[Parameter]
+	public string _notificationIcon { get; set; } = "blazor.components.png";
+
+	public async Task ShowSimpeNotification(string notificationBody, TimeSpan delay)
+	{
+		await Task.Delay((int)delay.TotalMilliseconds);
+		await SetNotificationBody(notificationBody);
+		var options = new HtmlNotificationOptions(_notificationTitle)
+		{
+			Body = _notificationBody,
+			Icon = _notificationIcon,
+			Vibrate = new int[] { 100, 200, 100 },
+			//events
+			OnOpenCallback = OnOpen,
+			OnCloseCallback = OnClose,
+			OnErrorCallback = OnError,
+			OnClickCallback = OnClick,
+		};
+
+		var id = await _notificationService.ShowsAsync(options);
+	}
+
+	public async Task SetNotificationBody(string body)
+	{
+		await Task.Run(() => _notificationBody = body);
+	}
+
+	public async Task OnOpen(Guid id)
+	{
+		//TODO: handle Alert event
+	}
+	public async Task OnClose(Guid id)
+	{
+		//TODO: handle Alert event
+	}
+	public async Task OnError(Guid id)
+	{
+		//TODO: handle Alert event
+	}
+	public async Task OnClick(Guid id)
+	{
+		//TODO: handle Alert event
+	}
+
+	public async ValueTask DisposeAsync()
+	{
+		if (_notificationService is not null)
+		{
+			await _notificationService.DisposeAsync();
+		}
+	}
+}

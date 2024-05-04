@@ -15,12 +15,12 @@ else
 
 	<h1 class="text-center">Your notes</h1>
 	<div class="note-container">
-			@foreach(Note_VM note in handler_VM.GetUserNotes() ?? [])
-			{
-				<NoteCard Note="note" OnEditNote="handler_VM.UpdateNoteData" OnDeleteNote="handler_VM.DeleteUserNote" OnTagsSearchHandler="handler_VM.GetUserTagsByTagName"
-					OnCreateNewTag="handler_VM.AddNewTag" OnAddExistingTag="handler_VM.AddExistingTagToNote" OnRemoveTag="handler_VM.RemoveExistingTagFromNote"
-					OnParentStateHasChanged="StateHasChanged"/>
-			}
+		@foreach(Note_VM note in handler_VM.GetUserNotes() ?? [])
+		{
+			<NoteCard Note="note" OnEditNote="handler_VM.UpdateNoteData" OnDeleteNote="handler_VM.DeleteUserNote" OnTagsSearchHandler="handler_VM.GetUserTagsByTagName"
+				OnCreateNewTag="handler_VM.AddNewTag" OnAddExistingTag="handler_VM.AddExistingTagToNote" OnRemoveTag="handler_VM.RemoveExistingTagFromNote"
+				OnParentStateHasChanged="StateHasChanged"/>
+		}
 	</div>
 }
 

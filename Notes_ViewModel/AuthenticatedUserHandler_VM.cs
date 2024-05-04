@@ -11,6 +11,7 @@ namespace Notes_ViewModel
 		private readonly IRepository repository;
 		private LoggedInUser_VM user_VM = new();
 		private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+		public Func<Reminder_VM, Task>? RunNotification;
 		public AuthenticatedUserHandler_VM(IRepository repo)
 		{
 			repository = repo;
@@ -135,8 +136,12 @@ namespace Notes_ViewModel
 			note.Header = content.NoteHeader;
 			note.Body = content.NoteText;
 			user_VM.UserNotes.Add(note);
+			if(note is Reminder_VM reminder)
+			{
+				RunNotification?.Invoke(reminder);
+			}
 
-			if(noteId == -1)
+			if (noteId == -1)
 			{
 				logger.Error($"AuthenticatedUserHandler_VM -> AddNewNote() -> repository.AddUserNote: user was not found in DB. Time: {DateTime.Now}");
 			}

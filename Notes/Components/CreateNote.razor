@@ -25,7 +25,7 @@
 	}
 	private void OnCreateNewNote(NoteContent content)
 	{
-		OnCreate?.Invoke(content);
+		int? noteId = OnCreate?.Invoke(content);
 		OnCreateModalStateChanged(false);
 		OnParentStateHasChanged.InvokeAsync();
 	}
