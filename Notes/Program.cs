@@ -19,9 +19,10 @@ try
 	// Add services to the container.
 	builder.Services.AddRazorPages();
 	builder.Services.AddServerSideBlazor();
-	builder.Services.AddScoped<UserAuthenticationState>();
+	builder.Services.AddScoped<UserState>();
 	builder.Services.AddScoped<AuthenticatedUserHandler_VM>();
 	builder.Services.AddScoped<IRepository, NotesRepository>();
+	builder.Services.AddScoped<INotificationCancellation, NotificationManager>();
 	builder.Services.AddCssEvents();
 	builder.Services.AddNotifications();
 	builder.Logging.ClearProviders();

@@ -1,36 +1,55 @@
 ﻿@inject IHtmlNotificationService _notificationService
 @implements IAsyncDisposable
 
+
+
 @code {
 	[Parameter]
-	public string _notificationTitle { get; set; } = "Notes notification";
-	[Parameter]
-	public string _notificationBody { get; set; } = string.Empty;
+	public string _notificationTitle { get; set; } = "Notes.com notification";
 	[Parameter]
 	public string _notificationIcon { get; set; } = "blazor.components.png";
+	[Parameter]
+	public bool NotificationPermitted { get; set; }
 
-	public async Task ShowSimpeNotification(string notificationBody, TimeSpan delay)
+	private string _notificationHeader { get; set; } = string.Empty;
+	private string _notificationText { get; set; } = string.Empty;
+
+	public async Task ShowSimpeNotification(string notificationHeader, string notificationText, TimeSpan delay, CancellationToken token)
 	{
-		await Task.Delay((int)delay.TotalMilliseconds);
-		await SetNotificationBody(notificationBody);
-		var options = new HtmlNotificationOptions(_notificationTitle)
+		if (NotificationPermitted)
 		{
-			Body = _notificationBody,
-			Icon = _notificationIcon,
-			Vibrate = new int[] { 100, 200, 100 },
-			//events
-			OnOpenCallback = OnOpen,
-			OnCloseCallback = OnClose,
-			OnErrorCallback = OnError,
-			OnClickCallback = OnClick,
-		};
+			if (notificationHeader.Length > 30)
+			{
+				notificationHeader = notificationHeader.Substring(0, 27) + "...";
+			}
+			await Task.Delay((int)delay.TotalMilliseconds, token);
+			if(token.IsCancellationRequested)
+			{
+				return;
+			}
+			await SetNotificationBody(notificationHeader, notificationText);
+			var options = new HtmlNotificationOptions(_notificationTitle)
+				{
+					Body = _notificationHeader + Environment.NewLine + _notificationText,
+					Icon = _notificationIcon,
+					Vibrate = new int[] { 100, 200, 100 },
+					//events
+					OnOpenCallback = OnOpen,
+					OnCloseCallback = OnClose,
+					OnErrorCallback = OnError,
+					OnClickCallback = OnClick,
+				};
 
-		var id = await _notificationService.ShowsAsync(options);
+			var id = await _notificationService.ShowsAsync(options);
+		}
 	}
-
-	public async Task SetNotificationBody(string body)
-	{
-		await Task.Run(() => _notificationBody = body);
+	public async Task SetNotificationBody(string header, string text)
+		{
+			await Task.Run(() =>
+			{
+				_notificationHeader = header;
+				_notificationText = text;
+			});
 	}
 
 	public async Task OnOpen(Guid id)

@@ -1,26 +1,27 @@
 ﻿@inject IHtmlNotificationService _notificationService
+@inject UserState authState
 @implements IAsyncDisposable
 
 @code {
-	protected override async Task OnAfterRenderAsync(bool firstRender)
-	{
-		if (firstRender)
-		{
-			_notificationSupported = await _notificationService.IsBrowserSupportedAsync();
-			_htmlNotificationPermission = await _notificationService.CheckPermissionAsync();
-			StateHasChanged();
-			if (_htmlNotificationPermission != HtmlNotificationPermissionTypes.Denied &&
-				_htmlNotificationPermission != HtmlNotificationPermissionTypes.Granted)
-			{
-				await RequestPermission();
-			}
-		}
-	}
-
 	//HTML5 notification
 	private bool _notificationSupported;
 	private HtmlNotificationPermissionTypes _htmlNotificationPermission;
 
+	protected override async Task OnParametersSetAsync()
+	{
+		_notificationSupported = await _notificationService.IsBrowserSupportedAsync();
+		_htmlNotificationPermission = await _notificationService.CheckPermissionAsync();
+		if (_htmlNotificationPermission == HtmlNotificationPermissionTypes.Granted)
+		{
+			authState.NotificationPermission = true;
+		}
+		StateHasChanged();
+		if (_htmlNotificationPermission != HtmlNotificationPermissionTypes.Denied &&
+			_htmlNotificationPermission != HtmlNotificationPermissionTypes.Granted)
+		{
+			await RequestPermission();
+		}
+	}
 	private async Task RequestPermission()
 	{
 		await _notificationService.RequestPermissionAsync(res =>

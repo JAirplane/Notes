@@ -1,7 +1,8 @@
 ﻿@inherits LayoutComponentBase
 
-@inject UserAuthenticationState authState
+@inject UserState authState
 @inject NavigationManager navManager
+@inject NotificationManager tokenSources
 
 <PageTitle>Notes</PageTitle>
 
@@ -21,7 +22,7 @@
 			</article>
 		</main>
 	</div>
-	<Notification @ref=notification />
+	<Notification @ref=notification NotificationPermitted=@authState.NotificationPermission />
 </CascadingValue>
 
 @code{
@@ -37,8 +38,8 @@
 	{
 		if (firstRender)
 		{
-			await RunAllNotifications();
 			handler_VM.RunNotification = RunNotification;
+			await RunAllNotifications();
 		}
 	}
 	public void SignOut()
@@ -53,9 +54,11 @@
 		if (reminder.RemindTime < DateTime.Now) return;
 		var timeDiff = reminder.RemindTime - DateTime.Now;
 		//delayed by timeDiff
+		CancellationTokenSource tokenSource = new();
+		tokenSources.AddTokenSource(reminder.Id, tokenSource);
 		if(notification is not null)
 		{
-			await notification.ShowSimpeNotification(reminder.Header, timeDiff);
+			await notification.ShowSimpeNotification(reminder.Header, reminder.Body, timeDiff, tokenSource.Token);
 		}
 	}
 	public async Task RunAllNotifications()

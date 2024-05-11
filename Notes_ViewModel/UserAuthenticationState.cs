@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace Notes_ViewModel
 {
-	public class UserAuthenticationState
+	public class UserState
 	{
-		public bool UserLoggedIn{ get; set; }
+		public bool UserLoggedIn { get; set; }
+		public bool NotificationPermission {get;set;}
 	}
 }

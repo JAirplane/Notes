@@ -9,12 +9,14 @@ namespace Notes_ViewModel
 	public class AuthenticatedUserHandler_VM
 	{
 		private readonly IRepository repository;
+		private readonly INotificationCancellation notificationCancellation;
 		private LoggedInUser_VM user_VM = new();
 		private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 		public Func<Reminder_VM, Task>? RunNotification;
-		public AuthenticatedUserHandler_VM(IRepository repo)
+		public AuthenticatedUserHandler_VM(IRepository repo, INotificationCancellation cancellation)
 		{
 			repository = repo;
+			notificationCancellation = cancellation;
 		}
 		public void SetUser(int userId)
 		{
@@ -98,6 +100,14 @@ namespace Notes_ViewModel
 			{
 				logger.Error($"AuthenticatedUserHandler_VM -> DeleteUserNote(): Note was not found in User_VM. Time: {DateTime.Now}");
 			}
+			if(note is Reminder_VM)
+			{
+				var cancelled = notificationCancellation.CancelNotification(note.Id);
+				if(!cancelled)
+				{
+					logger.Error($"AuthenticatedUserHandler_VM -> DeleteUserNote(): Notification cancellation failed. Time: {DateTime.Now}");
+				}
+			}
 			bool isDeletedFromDb = repository.DeleteUserNote(noteId);
 			if (!isDeletedFromDb)
 			{
@@ -159,42 +169,80 @@ namespace Notes_ViewModel
 				logger.Error($"AuthenticatedUserHandler_VM -> UpdateNoteData(): Note was not found in User_VM. Time: {DateTime.Now}");
 				return false;
 			}
-			if(string.IsNullOrWhiteSpace(content.NoteHeader))
+			var headerUpdated = UpdateNoteHeader(note, content.NoteHeader);
+			var textUpdated = UpdateNoteText(note, content.NoteText);
+			
+			UpdateRemindTime(note, content.RemindDateTime);
+			if (headerUpdated && textUpdated) return true;
+			return false;
+		}
+		public bool UpdateNoteHeader(Note_VM note, string newHeader)
+		{
+			if (string.IsNullOrWhiteSpace(newHeader))
 			{
 				return false;
 			}
-			note.Header = content.NoteHeader;
-			note.Body = content.NoteText;
-			if(note is not Reminder_VM && content.RemindDateTime is not null)
+			if (!note.Header.Equals(newHeader))
 			{
-				int reminderId = ConvertNoteToReminder(note, (DateTime)content.RemindDateTime);
-				if (reminderId == -1) return false;
-				return true;
-			}
-			bool headerUpdated = repository.UpdateNoteHeader(noteId, content.NoteHeader);
-			if(!headerUpdated)
-			{
-				logger.Error($"AuthenticatedUserHandler_VM -> UpdateNoteData() -> repository.UpdateNoteHeader: Update failed. Note was not found in DB. Time: {DateTime.Now}");
-				return false;
-			}
-			bool textUpdated = repository.UpdateNoteText(noteId, content.NoteText);
-			if(!textUpdated)
-			{
-				logger.Error($"AuthenticatedUserHandler_VM -> UpdateNoteData() -> repository.UpdateNoteText: Update failed. Note was not found in DB. Time: {DateTime.Now}");
-				return false;
-			}
-			if(note is Reminder_VM reminder)
-			{
-				if(content.RemindDateTime is null)
+				note.Header = newHeader;
+				bool headerUpdated = repository.UpdateNoteHeader(note.Id, newHeader);
+				if (!headerUpdated)
 				{
-					logger.Error($"AuthenticatedUserHandler_VM -> UpdateNoteData(): Reminder got null RemindTime to update. Time: {DateTime.Now}");
+					logger.Error($"AuthenticatedUserHandler_VM -> UpdateNoteHeader() -> repository.UpdateNoteHeader: Update failed. Note was not found in DB. Time: {DateTime.Now}");
 					return false;
 				}
-				reminder.RemindTime = (DateTime)content.RemindDateTime;
-				bool remindTimeUpdatedInDB = repository.UpdateRemindTime(noteId, (DateTime)content.RemindDateTime);
-				if(!remindTimeUpdatedInDB)
+				return true;
+			}
+			return false;
+		}
+		public bool UpdateNoteText(Note_VM note, string newText)
+		{
+			if (!note.Body.Equals(newText))
+			{
+				note.Body = newText;
+				bool textUpdated = repository.UpdateNoteText(note.Id, newText);
+				if (!textUpdated)
 				{
-					logger.Error($"AuthenticatedUserHandler_VM -> UpdateNoteData() -> repository.UpdateRemindTime: Update failed. Note was not found in DB. Time: {DateTime.Now}");
+					logger.Error($"AuthenticatedUserHandler_VM -> UpdateNoteText() -> repository.UpdateNoteText: Update failed. Note was not found in DB. Time: {DateTime.Now}");
+					return false;
+				}
+				return true;
+			}
+			return false;
+		}
+		public bool UpdateRemindTime(Note_VM note, DateTime? remindTime)
+		{
+			if(note is null) return false;
+			var reminder = note as Reminder_VM;
+			if(reminder is null)
+			{
+				if(remindTime is not null)
+				{
+					int reminderId = ConvertNoteToReminder(note, (DateTime)remindTime);
+					if (reminderId == -1) return false;
+					return true;
+				}
+				else
+				{
+					return false;
+				}
+			}
+			else
+			{
+				if (remindTime is null)
+				{
+					logger.Error($"AuthenticatedUserHandler_VM -> UpdateRemindTime(): Reminder got null RemindTime to update. Time: {DateTime.Now}");
+					return false;
+				}
+				if (reminder.RemindTime.Equals((DateTime)remindTime)) return false;
+				reminder.RemindTime = (DateTime)remindTime;
+				notificationCancellation.CancelNotification(reminder.Id);
+				CancellationTokenSource tokenSource = new();
+				notificationCancellation.AddTokenSource(reminder.Id, tokenSource);
+				bool remindTimeUpdatedInDB = repository.UpdateRemindTime(reminder.Id, (DateTime)remindTime);
+				if (!remindTimeUpdatedInDB)
+				{
+					logger.Error($"AuthenticatedUserHandler_VM -> UpdateRemindTime() -> repository.UpdateRemindTime(): Update failed. Note was not found in DB. Time: {DateTime.Now}");
 					return false;
 				}
 			}
