@@ -7,10 +7,11 @@ using System.Threading.Tasks;
 
 namespace Notes_ViewModel
 {
-	public interface INotificationManager
+	public interface INotificationHandler
 	{
+		public Func<string, string, Task>? ShowNotification { get; set; }
 		public bool AddTokenSource(int reminderId, CancellationTokenSource source);
 		public bool CancelNotification(int reminderId);
-		public bool RunNotification(Reminder_VM reminder);
+		public Task<bool> RunNotification(Reminder_VM reminder);
 	}
 }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.Identity.Client;
+using Newtonsoft.Json.Linq;
 using Notes_ViewModel.Models_VM;
 using System;
 using System.Collections.Generic;
@@ -8,10 +9,11 @@ using System.Threading.Tasks;
 
 namespace Notes_ViewModel
 {
-	public class NotificationManager: INotificationManager
+	public class NotificationHandler : INotificationHandler
 	{
-		private Notification? notification;
 		private readonly Dictionary<int, CancellationTokenSource> notificationTasksCancellations = [];
+		//it is sent from MainLayout render after user logged in
+		public Func<string, string, Task>?  ShowNotification { get; set; }
 
 		public bool AddTokenSource(int reminderId, CancellationTokenSource source)
 		{
@@ -38,17 +40,20 @@ namespace Notes_ViewModel
 			return true;
 		}
 
-		public bool RunNotification(Reminder_VM reminder)
+		public async Task<bool> RunNotification(Reminder_VM reminder)
 		{
 			if (reminder is null || reminder.RemindTime < DateTime.Now) return false;
 			var timeDiff = reminder.RemindTime - DateTime.Now;
 			//delayed by timeDiff
 			CancellationTokenSource tokenSource = new();
-			tokenSources.AddTokenSource(reminder.Id, tokenSource);
-			if (notification is not null)
+			AddTokenSource(reminder.Id, tokenSource);
+			await Task.Delay((int)timeDiff.TotalMilliseconds, tokenSource.Token);
+			if (tokenSource.Token.IsCancellationRequested)
 			{
-				await notification.ShowSimpeNotification(reminder.Header, reminder.Body, timeDiff, tokenSource.Token);
+				return false;
 			}
+			ShowNotification?.Invoke(reminder.Header, reminder.Body);
+			return true;
 		}
 	}
 }

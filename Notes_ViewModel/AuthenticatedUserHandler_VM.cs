@@ -9,14 +9,13 @@ namespace Notes_ViewModel
 	public class AuthenticatedUserHandler_VM
 	{
 		private readonly IRepository repository;
-		private readonly INotificationCancellation notificationCancellation;
+		private readonly INotificationHandler notificationHandler;
 		private LoggedInUser_VM user_VM = new();
 		private static readonly Logger logger = LogManager.GetCurrentClassLogger();
-		public Func<Reminder_VM, Task>? RunNotification;
-		public AuthenticatedUserHandler_VM(IRepository repo, INotificationCancellation cancellation)
+		public AuthenticatedUserHandler_VM(IRepository repo, INotificationHandler handler)
 		{
 			repository = repo;
-			notificationCancellation = cancellation;
+			notificationHandler = handler;
 		}
 		public void SetUser(int userId)
 		{
@@ -102,7 +101,7 @@ namespace Notes_ViewModel
 			}
 			if(note is Reminder_VM)
 			{
-				var cancelled = notificationCancellation.CancelNotification(note.Id);
+				var cancelled = notificationHandler.CancelNotification(note.Id);
 				if(!cancelled)
 				{
 					logger.Error($"AuthenticatedUserHandler_VM -> DeleteUserNote(): Notification cancellation failed. Time: {DateTime.Now}");
@@ -148,9 +147,8 @@ namespace Notes_ViewModel
 			user_VM.UserNotes.Add(note);
 			if(note is Reminder_VM reminder)
 			{
-				RunNotification?.Invoke(reminder);
+				notificationHandler.RunNotification(reminder);
 			}
-
 			if (noteId == -1)
 			{
 				logger.Error($"AuthenticatedUserHandler_VM -> AddNewNote() -> repository.AddUserNote: user was not found in DB. Time: {DateTime.Now}");
@@ -236,9 +234,8 @@ namespace Notes_ViewModel
 				}
 				if (reminder.RemindTime.Equals((DateTime)remindTime)) return false;
 				reminder.RemindTime = (DateTime)remindTime;
-				notificationCancellation.CancelNotification(reminder.Id);
-				CancellationTokenSource tokenSource = new();
-				notificationCancellation.AddTokenSource(reminder.Id, tokenSource);
+				notificationHandler.CancelNotification(reminder.Id);
+				notificationHandler.RunNotification(reminder);
 				bool remindTimeUpdatedInDB = repository.UpdateRemindTime(reminder.Id, (DateTime)remindTime);
 				if (!remindTimeUpdatedInDB)
 				{

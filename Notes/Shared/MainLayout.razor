@@ -2,7 +2,7 @@
 
 @inject UserState authState
 @inject NavigationManager navManager
-@inject NotificationManager tokenSources
+@inject INotificationHandler notificationHandler
 
 <PageTitle>Notes</PageTitle>
 
@@ -34,12 +34,19 @@
 		get => _handler_VM ?? throw new Exception("AuthenticatedUserHandler_VM is null");
 		set => _handler_VM = value ?? throw new Exception("AuthenticatedUserHandler_VM is null");
 	}
-	protected override async Task OnAfterRenderAsync(bool firstRender)
+	protected override void OnAfterRender(bool firstRender)
 	{
 		if (firstRender)
 		{
-			handler_VM.RunNotification = RunNotification;
-			await RunAllNotifications();
+			if(notification is not null)
+			{
+				notificationHandler.ShowNotification = notification.ShowSimpeNotification;
+			}
+			var reminderCollection = handler_VM.GetUserReminders();
+			foreach (var note in reminderCollection)
+			{
+				notificationHandler.RunNotification((Reminder_VM)note);
+			}
 		}
 	}
 	public void SignOut()
@@ -47,26 +54,5 @@
 		authState.UserLoggedIn = false;
 		handler_VM.NullifyUser();
 		navManager.NavigateTo("/");
-	}
-	public async Task RunNotification(Reminder_VM reminder)
-	{
-		if (reminder is null) return;
-		if (reminder.RemindTime < DateTime.Now) return;
-		var timeDiff = reminder.RemindTime - DateTime.Now;
-		//delayed by timeDiff
-		CancellationTokenSource tokenSource = new();
-		tokenSources.AddTokenSource(reminder.Id, tokenSource);
-		if(notification is not null)
-		{
-			await notification.ShowSimpeNotification(reminder.Header, reminder.Body, timeDiff, tokenSource.Token);
-		}
-	}
-	public async Task RunAllNotifications()
-	{
-		var reminderCollection = handler_VM.GetUserReminders();
-		foreach(var note in reminderCollection)
-		{
-			await RunNotification((Reminder_VM)note);
-		}
 	}
 }

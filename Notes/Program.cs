@@ -22,7 +22,7 @@ try
 	builder.Services.AddScoped<UserState>();
 	builder.Services.AddScoped<AuthenticatedUserHandler_VM>();
 	builder.Services.AddScoped<IRepository, NotesRepository>();
-	builder.Services.AddScoped<INotificationCancellation, NotificationManager>();
+	builder.Services.AddScoped<INotificationHandler, NotificationHandler>();
 	builder.Services.AddCssEvents();
 	builder.Services.AddNotifications();
 	builder.Logging.ClearProviders();
