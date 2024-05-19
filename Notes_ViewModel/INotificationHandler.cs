@@ -13,5 +13,6 @@ namespace Notes_ViewModel
 		public bool AddTokenSource(int reminderId, CancellationTokenSource source);
 		public bool CancelNotification(int reminderId);
 		public Task<bool> RunNotification(Reminder_VM reminder);
+		public void CancelAllNotifications();
 	}
 }

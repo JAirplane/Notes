@@ -52,7 +52,7 @@
 	public void SignOut()
 	{
 		authState.UserLoggedIn = false;
-		handler_VM.NullifyUser();
+		handler_VM.SignOut();
 		navManager.NavigateTo("/");
 	}
 }

@@ -99,12 +99,15 @@ namespace Notes_ViewModel
 			{
 				logger.Error($"AuthenticatedUserHandler_VM -> DeleteUserNote(): Note was not found in User_VM. Time: {DateTime.Now}");
 			}
-			if(note is Reminder_VM)
+			if(note is Reminder_VM reminder)
 			{
-				var cancelled = notificationHandler.CancelNotification(note.Id);
-				if(!cancelled)
+				if(reminder.RemindTime > DateTime.Now)
 				{
-					logger.Error($"AuthenticatedUserHandler_VM -> DeleteUserNote(): Notification cancellation failed. Time: {DateTime.Now}");
+					var cancelled = notificationHandler.CancelNotification(note.Id);
+					if (!cancelled)
+					{
+						logger.Error($"AuthenticatedUserHandler_VM -> DeleteUserNote(): Notification cancellation failed. Time: {DateTime.Now}");
+					}
 				}
 			}
 			bool isDeletedFromDb = repository.DeleteUserNote(noteId);
@@ -141,14 +144,6 @@ namespace Notes_ViewModel
 			note_model.Header = content.NoteHeader;
 			note_model.Body = content.NoteText;
 			int noteId = repository.AddUserNote(user_VM.Id, note_model);
-
-			note.Header = content.NoteHeader;
-			note.Body = content.NoteText;
-			user_VM.UserNotes.Add(note);
-			if(note is Reminder_VM reminder)
-			{
-				notificationHandler.RunNotification(reminder);
-			}
 			if (noteId == -1)
 			{
 				logger.Error($"AuthenticatedUserHandler_VM -> AddNewNote() -> repository.AddUserNote: user was not found in DB. Time: {DateTime.Now}");
@@ -156,6 +151,13 @@ namespace Notes_ViewModel
 			else
 			{
 				note.Id = noteId;
+			}
+			note.Header = content.NoteHeader;
+			note.Body = content.NoteText;
+			user_VM.UserNotes.Add(note);
+			if(note is Reminder_VM reminder)
+			{
+				notificationHandler.RunNotification(reminder);
 			}
 			return noteId;
 		}
@@ -367,9 +369,10 @@ namespace Notes_ViewModel
 		{
 			return GetUserTags().FirstOrDefault(tag => tag.TagName.Equals(tagName));
 		}
-		public void NullifyUser()
+		public void SignOut()
 		{
 			user_VM = new();
+			notificationHandler.CancelAllNotifications();
 		}
 	}
 }
